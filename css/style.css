@@ -1,0 +1,13 @@
+body {
+    font-family: system-ui, sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    text-align: center;
+    padding: 120px 20px;
+    margin: 0;
+}
+
+h1 {
+    font-size: 3.5rem;
+    color: #58a6ff;
+}
