@@ -1,4 +1,4 @@
-// ===== PORTFOLIO MANAGEMENT SYSTEM WITH BCRYPT SECURITY =====
+// ===== PORTFOLIO MANAGEMENT SYSTEM WITH SUPABASE AUTHENTICATION =====
 
 class PortfolioManager {
     constructor() {
@@ -7,87 +7,157 @@ class PortfolioManager {
         this.currentFilter = 'all';
         this.isAdmin = false;
         this.requirePasswordChange = false;
-        this.bcryptReady = false;
+        this.supabaseReady = false;
+        
+        // Supabase configuration - À REMPLIR AVEC VOS VALEURS
+        this.supabaseUrl = 'https://vgvudfjdibieuvukclqu.supabase.co';
+        this.supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndnVkZmpkaWJpZXV2dWtjbHF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMjQ4ODIsImV4cCI6MjA4NzcwMDg4Mn0.Ta1wTeLwDP4dAKaAhmA1BfqeRNNRSpVtL0C3zafzxXM';
+        this.supabase = null;
         
         // Default credentials
         this.defaultUsername = 'smithLePlusBeau';
         this.defaultPassword = '1234';
-        this.defaultPasswordHash = null; // Will be set when bcrypt is ready
         
         this.init();
     }
 
     async init() {
-        // Wait for bcrypt to be ready
-        await this.waitForBcrypt();
+        // Wait for Supabase to be ready
+        await this.waitForSupabase();
         
         this.loadWorks();
         this.loadAdminSettings();
         this.setupEventListeners();
         this.renderGallery();
         this.updateStats();
+        
+        // Vérifier la session existante
+        await this.checkExistingSession();
     }
 
-    // ===== BCRYPT SETUP =====
-    waitForBcrypt() {
+    // ===== SUPABASE SETUP =====
+    waitForSupabase() {
         return new Promise((resolve) => {
-            const checkBcrypt = () => {
-                if (typeof dcodeIO !== 'undefined' && dcodeIO.bcrypt) {
-                    this.bcryptReady = true;
-                    // Generate hash for default password
-                    this.defaultPasswordHash = dcodeIO.bcrypt.hashSync(this.defaultPassword, 10);
-                    console.log('🔐 bcrypt.js loaded and ready');
+            const checkSupabase = () => {
+                if (typeof supabase !== 'undefined') {
+                    this.supabaseReady = true;
+                    
+                    // Initialiser Supabase avec vos clés
+                    if (this.supabaseUrl !== 'VOTRE_URL_SUPABASE' && this.supabaseAnonKey !== 'VOTRE_CLE_ANON_SUPABASE') {
+                        this.supabase = supabase.createClient(this.supabaseUrl, this.supabaseAnonKey);
+                        console.log('🔐 Supabase client initialized');
+                    } else {
+                        console.warn('⚠️ Veuillez configurer vos clés Supabase dans le constructeur');
+                    }
                     resolve();
                 } else {
-                    setTimeout(checkBcrypt, 100);
+                    setTimeout(checkSupabase, 100);
                 }
             };
-            checkBcrypt();
+            checkSupabase();
         });
     }
 
-    // ===== SECURE CRYPTO FUNCTIONS =====
-    async hashPassword(password) {
-        if (!this.bcryptReady) {
-            console.error('bcrypt not ready');
+    // ===== SUPABASE AUTHENTICATION FUNCTIONS =====
+    async signIn(email, password) {
+        if (!this.supabase) {
+            console.error('Supabase not initialized');
+            return { error: 'Supabase non configuré' };
+        }
+        
+        try {
+            const { data, error } = await this.supabase.auth.signInWithPassword({
+                email,
+                password
+            });
+            
+            return { data, error };
+        } catch (error) {
+            console.error('Error signing in:', error);
+            return { error: error.message };
+        }
+    }
+
+    async signUp(email, password) {
+        if (!this.supabase) {
+            console.error('Supabase not initialized');
+            return { error: 'Supabase non configuré' };
+        }
+        
+        try {
+            const { data, error } = await this.supabase.auth.signUp({
+                email,
+                password
+            });
+            
+            return { data, error };
+        } catch (error) {
+            console.error('Error signing up:', error);
+            return { error: error.message };
+        }
+    }
+
+    async signOut() {
+        if (!this.supabase) {
+            console.error('Supabase not initialized');
+            return { error: 'Supabase non configuré' };
+        }
+        
+        try {
+            const { error } = await this.supabase.auth.signOut();
+            return { error };
+        } catch (error) {
+            console.error('Error signing out:', error);
+            return { error: error.message };
+        }
+    }
+
+    async getCurrentUser() {
+        if (!this.supabase) {
             return null;
         }
         
         try {
-            // Use bcrypt with salt rounds of 12 for high security
-            const salt = await dcodeIO.bcrypt.genSalt(12);
-            const hash = await dcodeIO.bcrypt.hash(password, salt);
-            return hash;
+            const { data: { user } } = await this.supabase.auth.getUser();
+            return user;
         } catch (error) {
-            console.error('Error hashing password:', error);
+            console.error('Error getting current user:', error);
             return null;
         }
     }
 
-    async verifyPassword(password, hash) {
-        if (!this.bcryptReady) {
-            console.error('bcrypt not ready');
-            return false;
-        }
+    async checkExistingSession() {
+        if (!this.supabase) return;
         
         try {
-            const match = await dcodeIO.bcrypt.compare(password, hash);
-            return match;
+            const { data: { session } } = await this.supabase.auth.getSession();
+            if (session) {
+                console.log('✅ Session trouvée:', session.user.email);
+                // Vérifier si c'est l'admin
+                if (session.user.email === `${this.defaultUsername}@admin.local`) {
+                    this.isAdmin = true;
+                    this.showAdminDashboard();
+                }
+            }
         } catch (error) {
-            console.error('Error verifying password:', error);
-            return false;
+            console.error('Error checking session:', error);
         }
     }
 
-    // ===== MIGRATION FOR OLD PASSWORDS =====
-    async migrateOldPassword(oldHash, newPassword) {
-        // Check if the old hash is not a bcrypt hash (migration needed)
-        if (oldHash && !oldHash.startsWith('$2') && oldHash.length < 60) {
-            console.log('🔄 Migrating old password hash to bcrypt');
-            const newHash = await this.hashPassword(newPassword);
-            return newHash;
+    // ===== MIGRATION FOR OLD SYSTEM =====
+    async migrateToSupabase() {
+        // Cette fonction peut être utilisée pour migrer les anciens comptes vers Supabase
+        console.log('🔄 Migration vers Supabase...');
+        
+        // Créer le compte admin par défaut s'il n'existe pas
+        const adminEmail = `${this.defaultUsername}@admin.local`;
+        const { data, error } = await this.signUp(adminEmail, this.defaultPassword);
+        
+        if (error && !error.message.includes('already registered')) {
+            console.error('Erreur lors de la création du compte admin:', error);
+        } else {
+            console.log('✅ Compte admin prêt dans Supabase');
         }
-        return oldHash;
     }
 
     // ===== DATA MANAGEMENT =====
@@ -158,30 +228,24 @@ class PortfolioManager {
         const savedSettings = localStorage.getItem('adminSettings');
         if (savedSettings) {
             const settings = JSON.parse(savedSettings);
-            this.currentPasswordHash = settings.passwordHash || this.defaultPasswordHash;
             this.requirePasswordChange = settings.requirePasswordChange !== false;
-            
-            // Check if migration is needed
-            if (settings.passwordHash && !settings.passwordHash.startsWith('$2')) {
-                console.log('🔄 Detected old password format, initiating migration...');
-                // For migration, we'll require password change on next login
-                this.requirePasswordChange = true;
-                this.saveAdminSettings();
-            }
         } else {
-            // First time setup - use default credentials with bcrypt
-            this.currentPasswordHash = this.defaultPasswordHash;
+            // First time setup
             this.requirePasswordChange = true;
             this.saveAdminSettings();
+        }
+        
+        // Si Supabase est configuré, migrer automatiquement
+        if (this.supabase && this.supabaseUrl !== 'VOTRE_URL_SUPABASE') {
+            await this.migrateToSupabase();
         }
     }
 
     async saveAdminSettings() {
         const settings = {
             username: this.defaultUsername,
-            passwordHash: this.currentPasswordHash,
             requirePasswordChange: this.requirePasswordChange,
-            bcryptVersion: '2.4.3',
+            supabaseVersion: '2.x',
             migratedAt: new Date().toISOString()
         };
         localStorage.setItem('adminSettings', JSON.stringify(settings));
@@ -510,8 +574,8 @@ class PortfolioManager {
         const username = usernameInput.value;
         const password = passwordInput.value;
         
-        if (!this.bcryptReady) {
-            alert('Système de sécurité en cours de chargement. Veuillez réessayer.');
+        if (!this.supabase) {
+            alert('Supabase non configuré. Veuillez configurer vos clés Supabase.');
             return;
         }
         
@@ -522,9 +586,34 @@ class PortfolioManager {
         submitBtn.disabled = true;
         
         try {
-            const isValid = await this.verifyPassword(password, this.currentPasswordHash);
+            // Convertir username en email pour Supabase
+            const email = username === this.defaultUsername ? `${this.defaultUsername}@admin.local` : username;
             
-            if (username === this.defaultUsername && isValid) {
+            const { data, error } = await this.signIn(email, password);
+            
+            if (error) {
+                // Si l'utilisateur n'existe pas, essayer de le créer
+                if (error.message.includes('Invalid login credentials')) {
+                    if (username === this.defaultUsername && password === this.defaultPassword) {
+                        // Créer le compte admin
+                        const { data: signUpData, error: signUpError } = await this.signUp(email, password);
+                        if (signUpError && !signUpError.message.includes('already registered')) {
+                            throw signUpError;
+                        }
+                        
+                        // Réessayer la connexion
+                        const { data: signInData, error: signInError } = await this.signIn(email, password);
+                        if (signInError) throw signInError;
+                        
+                        this.isAdmin = true;
+                        this.showPasswordChangeForm();
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    throw error;
+                }
+            } else {
                 this.isAdmin = true;
                 
                 // Check if password change is required
@@ -536,12 +625,10 @@ class PortfolioManager {
                 
                 usernameInput.value = '';
                 passwordInput.value = '';
-            } else {
-                alert('Identifiant ou mot de passe incorrect');
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('Erreur lors de la vérification. Veuillez réessayer.');
+            alert('Identifiant ou mot de passe incorrect');
         } finally {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
@@ -586,22 +673,33 @@ class PortfolioManager {
         // Show loading state
         const submitBtn = document.querySelector('#passwordChangeForm button[type="submit"]');
         const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Cryptage en cours...';
+        submitBtn.textContent = 'Mise à jour en cours...';
         submitBtn.disabled = true;
         
         try {
-            // Update password with bcrypt
-            this.currentPasswordHash = await this.hashPassword(newPassword);
+            // Obtenir l'utilisateur actuel
+            const user = await this.getCurrentUser();
+            if (!user) {
+                throw new Error('Utilisateur non trouvé');
+            }
+            
+            // Mettre à jour le mot de passe dans Supabase
+            const { error } = await this.supabase.auth.updateUser({
+                password: newPassword
+            });
+            
+            if (error) throw error;
+            
             this.requirePasswordChange = false;
             await this.saveAdminSettings();
             
             // Show admin dashboard
             this.showAdminDashboard();
             
-            alert('Mot de passe changé avec succès et sécurisé avec bcrypt !');
+            alert('Mot de passe changé avec succès dans Supabase !');
         } catch (error) {
             console.error('Password change error:', error);
-            alert('Erreur lors du changement de mot de passe. Veuillez réessayer.');
+            alert('Erreur lors du changement de mot de passe: ' + error.message);
         } finally {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
@@ -754,16 +852,21 @@ class PortfolioManager {
         if (newPassword && newPassword.length >= 8) {
             const submitBtn = document.getElementById('saveSettings');
             const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Cryptage...';
+            submitBtn.textContent = 'Mise à jour...';
             submitBtn.disabled = true;
             
             try {
-                this.currentPasswordHash = await this.hashPassword(newPassword);
-                await this.saveAdminSettings();
-                alert('Mot de passe admin mis à jour !');
+                // Mettre à jour le mot de passe dans Supabase
+                const { error } = await this.supabase.auth.updateUser({
+                    password: newPassword
+                });
+                
+                if (error) throw error;
+                
+                alert('Mot de passe admin mis à jour dans Supabase !');
             } catch (error) {
                 console.error('Password update error:', error);
-                alert('Erreur lors de la mise à jour du mot de passe.');
+                alert('Erreur lors de la mise à jour du mot de passe: ' + error.message);
             } finally {
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
@@ -875,7 +978,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    console.log('🎨 Portfolio Manager initialized with bcrypt security');
+    console.log('🎨 Portfolio Manager initialized with Supabase authentication');
 });
 
 // ===== SCROLL EFFECTS =====
@@ -895,4 +998,4 @@ window.addEventListener('scroll', function() {
 // ===== CONSOLE GREETING =====
 console.log('%c🎨 Portfolio Artistique', 'font-size: 20px; color: #000; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);');
 console.log('%c"La créativité sans limites"', 'font-style: italic; color: #666;');
-console.log('%c🔐 Sécurité renforcée avec bcrypt.js', 'font-size: 12px; color: #28a745;');
+console.log('%c🔐 Sécurité renforcée avec Supabase Auth', 'font-size: 12px; color: #28a745;');
