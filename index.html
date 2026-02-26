@@ -15,12 +15,111 @@
     </div>
 </nav>
 
-<div class="container py-5 text-center">
-    <h1 class="display-3 mb-4">Bienvenue sur mon site vitrine !</h1>
-    <p class="lead">100% statique + admin sécurisé avec Supabase</p>
+<header class="container py-5">
+    <div class="row align-items-end g-4">
+        <div class="col-lg-8">
+            <h1 class="display-3 mb-3" style="letter-spacing:-0.02em;">Illustration & Images</h1>
+            <p class="lead text-secondary m-0">Galerie (lecture publique) · Upload & gestion via Supabase (admin)</p>
+        </div>
+    </div>
+</header>
+
+<main class="container pb-5">
+    <div id="gallery" class="gallery-grid"></div>
+    <div id="gallery-empty" class="text-secondary d-none">Aucune image pour le moment.</div>
+</main>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Fermer">×</button>
+    <img class="lightbox-image" id="lightboxImage" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
+<script>
+    const galleryEl = document.getElementById('gallery')
+    const emptyEl = document.getElementById('gallery-empty')
+    const lightboxEl = document.getElementById('lightbox')
+    const lightboxImageEl = document.getElementById('lightboxImage')
+    const lightboxCaptionEl = document.getElementById('lightboxCaption')
+    const lightboxCloseEl = document.getElementById('lightboxClose')
+
+    function openLightbox(url, title) {
+        lightboxImageEl.src = url
+        lightboxCaptionEl.textContent = title || ''
+        lightboxEl.classList.add('active')
+        lightboxEl.setAttribute('aria-hidden', 'false')
+        document.body.style.overflow = 'hidden'
+    }
+
+    function closeLightbox() {
+        lightboxEl.classList.remove('active')
+        lightboxEl.setAttribute('aria-hidden', 'true')
+        lightboxImageEl.src = ''
+        document.body.style.overflow = ''
+    }
+
+    lightboxCloseEl.addEventListener('click', closeLightbox)
+    lightboxEl.addEventListener('click', (e) => {
+        if (e.target === lightboxEl) closeLightbox()
+    })
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightboxEl.classList.contains('active')) closeLightbox()
+    })
+
+    function escapeHtml(str) {
+        return (str || '').replace(/[&<>'"]/g, (c) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;',
+        }[c]))
+    }
+
+    async function loadGallery() {
+        galleryEl.innerHTML = ''
+        emptyEl.classList.add('d-none')
+
+        try {
+            const rows = await listPhotos()
+            if (!rows.length) {
+                emptyEl.classList.remove('d-none')
+                return
+            }
+
+            for (const row of rows) {
+                const signedUrl = await createSignedPhotoUrl(row.path)
+                const title = row.title ? escapeHtml(row.title) : ''
+
+                const item = document.createElement('button')
+                item.type = 'button'
+                item.className = 'gallery-item'
+                item.setAttribute('data-url', signedUrl)
+                item.setAttribute('data-title', title)
+                item.innerHTML = `
+                    <img src="${signedUrl}" alt="${title}" loading="lazy" />
+                    ${title ? `<div class="gallery-overlay"><div class="gallery-title">${title}</div></div>` : ''}
+                `
+                galleryEl.appendChild(item)
+            }
+        } catch (e) {
+            console.error(e)
+            emptyEl.textContent = 'Erreur lors du chargement de la galerie.'
+            emptyEl.classList.remove('d-none')
+        }
+    }
+
+    galleryEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('.gallery-item')
+        if (!btn) return
+        const url = btn.getAttribute('data-url')
+        const title = btn.getAttribute('data-title')
+        if (url) openLightbox(url, title)
+    })
+
+    loadGallery()
+</script>
 </body>
 </html>

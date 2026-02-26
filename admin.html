@@ -16,16 +16,176 @@
 </nav>
 
 <div class="container py-5">
-    <h1 class="mb-4">Bienvenue dans l'espace admin 👋</h1>
-    <div id="user-info" class="alert alert-success"></div>
+    <h1 class="mb-4">Gestion des photos</h1>
 
-    <!-- Ici tu ajouteras plus tard tes formulaires, liste de projets, etc. -->
-    <p class="lead">Tout est prêt ! Le mot de passe est hashé et sécurisé par Supabase.</p>
+    <div id="user-info" class="alert alert-success"></div>
+    <div id="admin-error" class="alert alert-danger d-none"></div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card bg-black text-white border-primary">
+                <div class="card-body p-4">
+                    <h4 class="mb-3">Ajouter une photo</h4>
+
+                    <form id="upload-form">
+                        <div class="mb-3">
+                            <label class="form-label">Titre (optionnel)</label>
+                            <input type="text" id="photo-title" class="form-control bg-dark text-white" placeholder="Ex: Série 2026">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Fichier</label>
+                            <input type="file" id="photo-file" class="form-control bg-dark text-white" accept="image/*" required>
+                            <div class="form-text text-secondary">Formats image uniquement.</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100" id="upload-btn">Uploader</button>
+                    </form>
+
+                    <hr class="border-secondary my-4" />
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-light" id="refresh-btn">Rafraîchir la liste</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="m-0">Photos</h4>
+                <span class="text-secondary" id="photos-count"></span>
+            </div>
+
+            <div id="photos-list" class="row g-3"></div>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script>
+    const photosListEl = document.getElementById('photos-list')
+    const photosCountEl = document.getElementById('photos-count')
+    const adminErrorEl = document.getElementById('admin-error')
+    const uploadForm = document.getElementById('upload-form')
+    const uploadBtn = document.getElementById('upload-btn')
+    const refreshBtn = document.getElementById('refresh-btn')
+
+    function showAdminError(message) {
+        adminErrorEl.textContent = message
+        adminErrorEl.classList.remove('d-none')
+    }
+
+    function clearAdminError() {
+        adminErrorEl.textContent = ''
+        adminErrorEl.classList.add('d-none')
+    }
+
+    function escapeHtml(str) {
+        return (str || '').replace(/[&<>'"]/g, (c) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;',
+        }[c]))
+    }
+
+    async function renderPhotos() {
+        clearAdminError()
+        photosListEl.innerHTML = ''
+        photosCountEl.textContent = ''
+
+        try {
+            const rows = await listPhotos()
+            photosCountEl.textContent = `${rows.length} élément(s)`
+
+            if (!rows.length) {
+                photosListEl.innerHTML = '<div class="col-12 text-secondary">Aucune photo pour le moment.</div>'
+                return
+            }
+
+            for (const row of rows) {
+                const signedUrl = await createSignedPhotoUrl(row.path)
+                const title = row.title ? escapeHtml(row.title) : 'Sans titre'
+                const createdAt = row.created_at ? new Date(row.created_at).toLocaleString('fr-FR') : ''
+
+                const col = document.createElement('div')
+                col.className = 'col-md-6'
+                col.innerHTML = `
+                    <div class="card bg-black text-white border-secondary h-100">
+                        <img src="${signedUrl}" class="card-img-top" alt="${title}" style="aspect-ratio: 4/3; object-fit: cover;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div>
+                                    <div class="fw-semibold">${title}</div>
+                                    <div class="text-secondary" style="font-size: 0.9rem;">${createdAt}</div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-danger" data-photo-id="${row.id}">Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                `
+
+                photosListEl.appendChild(col)
+            }
+        } catch (e) {
+            console.error(e)
+            showAdminError(e?.message || 'Erreur lors du chargement des photos')
+        }
+    }
+
+    photosListEl.addEventListener('click', async (e) => {
+        const btn = e.target.closest('button[data-photo-id]')
+        if (!btn) return
+
+        const id = btn.getAttribute('data-photo-id')
+        if (!id) return
+
+        if (!confirm('Supprimer cette photo ?')) return
+
+        btn.disabled = true
+        try {
+            const deleted = await deletePhotoRow(id)
+            await deletePhotoFile(deleted?.path)
+            await renderPhotos()
+        } catch (err) {
+            console.error(err)
+            showAdminError(err?.message || 'Erreur lors de la suppression')
+        } finally {
+            btn.disabled = false
+        }
+    })
+
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        clearAdminError()
+
+        const title = document.getElementById('photo-title').value
+        const file = document.getElementById('photo-file').files[0]
+
+        uploadBtn.disabled = true
+        uploadBtn.textContent = 'Upload en cours...'
+
+        try {
+            const path = await uploadPhotoFile(file)
+            await insertPhotoRow({ title, path })
+            uploadForm.reset()
+            await renderPhotos()
+        } catch (err) {
+            console.error(err)
+            showAdminError(err?.message || 'Erreur lors de l\'upload')
+        } finally {
+            uploadBtn.disabled = false
+            uploadBtn.textContent = 'Uploader'
+        }
+    })
+
+    refreshBtn.addEventListener('click', async () => {
+        await renderPhotos()
+    })
+
     async function initAdmin() {
         const session = await checkAuth()
         if (!session) {
@@ -33,11 +193,20 @@
             return
         }
 
+        const isAdmin = await isAdminSession()
+        if (!isAdmin) {
+            showAdminError("Accès refusé : vous n'êtes pas admin.")
+            return
+        }
+
         document.getElementById('user-info').innerHTML = `
-                Connecté en tant que : <strong>${session.user.email}</strong><br>
-                ID utilisateur : ${session.user.id}
-            `
+            Connecté en tant que : <strong>${session.user.email}</strong><br>
+            ID utilisateur : ${session.user.id}
+        `
+
+        await renderPhotos()
     }
+
     initAdmin()
 </script>
 </body>
