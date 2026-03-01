@@ -24,7 +24,12 @@ async function updateMyPassword(newPassword) {
     if (!session) throw new Error('Session expirée, veuillez vous reconnecter')
 
     const pwd = (newPassword || '').trim()
-    if (pwd.length < 8) throw new Error('Le mot de passe doit contenir au moins 8 caractères')
+    if (pwd.length < 10) throw new Error('Le mot de passe doit contenir au moins 10 caractères')
+
+    if (!/[a-z]/.test(pwd)) throw new Error('Le mot de passe doit contenir au moins une lettre minuscule')
+    if (!/[A-Z]/.test(pwd)) throw new Error('Le mot de passe doit contenir au moins une lettre majuscule')
+    if (!/[0-9]/.test(pwd)) throw new Error('Le mot de passe doit contenir au moins un chiffre')
+    if (!/[^A-Za-z0-9]/.test(pwd)) throw new Error('Le mot de passe doit contenir au moins un symbole')
 
     const { error } = await window.supabase.auth.updateUser({ password: pwd })
     if (error) throw error
