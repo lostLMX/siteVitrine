@@ -19,6 +19,18 @@ async function isAdminSession() {
     return session.user.email === getAdminEmail()
 }
 
+async function updateMyPassword(newPassword) {
+    const session = await checkAuth()
+    if (!session) throw new Error('Session expirée, veuillez vous reconnecter')
+
+    const pwd = (newPassword || '').trim()
+    if (pwd.length < 8) throw new Error('Le mot de passe doit contenir au moins 8 caractères')
+
+    const { error } = await window.supabase.auth.updateUser({ password: pwd })
+    if (error) throw error
+    return true
+}
+
 async function listPhotos() {
     const { data, error } = await window.supabase
         .from(PHOTOS_TABLE)

@@ -44,6 +44,17 @@
 
                     <hr class="border-secondary my-4" />
 
+                    <h4 class="mb-3">Sécurité</h4>
+
+                    <form id="password-form">
+                        <div class="mb-3">
+                            <label class="form-label">Nouveau mot de passe</label>
+                            <input type="password" id="new-password" class="form-control bg-dark text-white" placeholder="Au moins 8 caractères" required>
+                        </div>
+                        <button type="submit" class="btn btn-outline-warning w-100" id="password-btn">Changer le mot de passe</button>
+                        <div class="form-text text-secondary mt-2">Tu restes connecté. Pense à noter ton nouveau mot de passe.</div>
+                    </form>
+
                     <div class="d-flex gap-2">
                         <button class="btn btn-outline-light" id="refresh-btn">Rafraîchir la liste</button>
                     </div>
@@ -70,6 +81,8 @@
     const adminErrorEl = document.getElementById('admin-error')
     const uploadForm = document.getElementById('upload-form')
     const uploadBtn = document.getElementById('upload-btn')
+    const passwordForm = document.getElementById('password-form')
+    const passwordBtn = document.getElementById('password-btn')
     const refreshBtn = document.getElementById('refresh-btn')
 
     function showAdminError(message) {
@@ -179,6 +192,29 @@
         } finally {
             uploadBtn.disabled = false
             uploadBtn.textContent = 'Uploader'
+        }
+    })
+
+    passwordForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        clearAdminError()
+
+        const newPassword = document.getElementById('new-password').value
+        if (!confirm('Confirmer le changement de mot de passe ?')) return
+
+        passwordBtn.disabled = true
+        passwordBtn.textContent = 'Mise à jour...'
+
+        try {
+            await updateMyPassword(newPassword)
+            passwordForm.reset()
+            alert('Mot de passe mis à jour')
+        } catch (err) {
+            console.error(err)
+            showAdminError(err?.message || 'Erreur lors de la mise à jour du mot de passe')
+        } finally {
+            passwordBtn.disabled = false
+            passwordBtn.textContent = 'Changer le mot de passe'
         }
     })
 
