@@ -73,14 +73,89 @@
 
 <section id="contact" class="section-astra section-footer">
     <div class="container">
-        <div class="row g-4 align-items-start">
-            <div class="col-lg-7" data-reveal>
-                <h2 class="section-title">Contact</h2>
-                <p class="section-subtitle">Pour une commande, un devis, ou une question.</p>
-                <div class="contact-box">
-                    <div class="contact-line"><span class="label">Email</span><span class="value">contact@astradraconis.fr</span></div>
-                    <div class="contact-line"><span class="label">Instagram</span><span class="value">@astra.draconis</span></div>
-                    <div class="contact-line"><span class="label">Délais</span><span class="value">selon complexité</span></div>
+        <div class="section-head text-center" data-reveal>
+            <h2 class="section-title">Contact</h2>
+        </div>
+        <div class="row g-4 align-items-stretch justify-content-center">
+            <div class="col-lg-5" data-reveal>
+                <div class="contact-form-box">
+                    <form id="contactForm" novalidate>
+
+                        <div class="row g-2">
+                            <div class="col-sm-6">
+                                <div class="cform-group">
+                                    <label class="cform-label" for="name">Nom</label>
+                                    <input class="cform-input" type="text" id="name" name="from_name" placeholder="Votre prénom ou pseudo" required>
+                                    <div class="cform-error" id="nameError">Veuillez entrer votre nom</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="cform-group">
+                                    <label class="cform-label" for="email">Votre email</label>
+                                    <input class="cform-input" type="email" id="email" name="from_email" placeholder="pour vous répondre" required>
+                                    <div class="cform-error" id="emailError">Email invalide</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cform-group">
+                            <label class="cform-label" for="subject">Sujet</label>
+                            <input class="cform-input" type="text" id="subject" name="subject" placeholder="Ex : commande sur mesure, question sur une pièce…" required>
+                        </div>
+
+                        <div class="cform-group">
+                            <label class="cform-label" for="message">Votre message</label>
+                            <textarea class="cform-input cform-textarea" id="message" name="message" placeholder="Thème souhaité, dimensions, budget, délai… Tout détail est utile !" required></textarea>
+                            <div class="cform-error" id="messageError">Le message ne peut pas être vide</div>
+                        </div>
+
+                        <button class="cform-btn" type="submit" id="submitBtn">
+                            <span id="submitLabel">✦ Envoyer le message</span>
+                            <span id="submitSpinner" class="cform-spinner" aria-hidden="true"></span>
+                        </button>
+
+                        <div id="formFeedback" class="cform-feedback" aria-live="polite"></div>
+
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-5" data-reveal>
+                <div class="contact-info-box">
+                    <p class="contact-social-intro">Retrouvez-moi sur les réseaux ou écrivez-moi directement ✨</p>
+                    <div class="contact-social-list">
+                        <a class="contact-social-item" href="mailto:contact@astradraconis.fr">
+                            <span class="cs-icon">📧</span>
+                            <span class="cs-body">
+                                <span class="cs-label">Email</span>
+                                <span class="cs-value">contact@astradraconis.fr</span>
+                            </span>
+                            <span class="cs-arrow">↗</span>
+                        </a>
+                        <a class="contact-social-item" href="https://instagram.com/astra.draconis" target="_blank" rel="noopener">
+                            <span class="cs-icon">📸</span>
+                            <span class="cs-body">
+                                <span class="cs-label">Instagram</span>
+                                <span class="cs-value">@astra.draconis</span>
+                            </span>
+                            <span class="cs-arrow">↗</span>
+                        </a>
+                        <a class="contact-social-item" href="https://tiktok.com/@astradraconis" target="_blank" rel="noopener">
+                            <span class="cs-icon">🎵</span>
+                            <span class="cs-body">
+                                <span class="cs-label">TikTok</span>
+                                <span class="cs-value">@astradraconis</span>
+                            </span>
+                            <span class="cs-arrow">↗</span>
+                        </a>
+                        <a class="contact-social-item" href="https://www.vinted.fr/member/astradraconis" target="_blank" rel="noopener">
+                            <span class="cs-icon">🛍️</span>
+                            <span class="cs-body">
+                                <span class="cs-label">Vinted</span>
+                                <span class="cs-value">astradraconis</span>
+                            </span>
+                            <span class="cs-arrow">↗</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,6 +177,7 @@
 <script src="js/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
     const galleryEl = document.getElementById('gallery')
     const emptyEl = document.getElementById('gallery-empty')
@@ -186,6 +262,60 @@
 
     loadGallery()
     document.getElementById('year').textContent = new Date().getFullYear()
+
+    // ── EmailJS ─────────────────────────────────────────────────────────────
+    // 1. Crée un compte sur https://www.emailjs.com (gratuit jusqu'à 200 emails/mois)
+    // 2. Crée un Service (Gmail, Outlook…) → copie le Service ID ci-dessous
+    // 3. Crée un Template avec les variables : {{from_name}}, {{from_email}}, {{subject}}, {{message}}
+    // 4. Va dans Account > API Keys → copie ta Public Key ci-dessous
+    const EMAILJS_PUBLIC_KEY  = 'liMjV9NWx8XcpRhrX'   // ← remplace
+    const EMAILJS_SERVICE_ID  = 'service_qkadqko'   // ← remplace
+    const EMAILJS_TEMPLATE_ID = 'template_skwwhe5'  // ← remplace
+
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY })
+
+    document.getElementById('contactForm').addEventListener('submit', async function (e) {
+        e.preventDefault()
+        const form       = this
+        const btn        = document.getElementById('submitBtn')
+        const label      = document.getElementById('submitLabel')
+        const spinner    = document.getElementById('submitSpinner')
+        const feedback   = document.getElementById('formFeedback')
+
+        // reset
+        feedback.className = 'cform-feedback'
+        feedback.textContent = ''
+
+        // validation simple
+        let valid = true
+        const nameEl  = document.getElementById('name')
+        const emailEl = document.getElementById('email')
+        const msgEl   = document.getElementById('message')
+        if (!nameEl.value.trim())                        { document.getElementById('nameError').style.display  = 'block'; valid = false } else { document.getElementById('nameError').style.display  = 'none' }
+        if (!emailEl.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { document.getElementById('emailError').style.display = 'block'; valid = false } else { document.getElementById('emailError').style.display = 'none' }
+        if (!msgEl.value.trim())                         { document.getElementById('messageError').style.display= 'block'; valid = false } else { document.getElementById('messageError').style.display= 'none' }
+        if (!valid) return
+
+        // spinner ON
+        label.style.display   = 'none'
+        spinner.style.display = 'inline-block'
+        btn.disabled = true
+
+        try {
+            await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form)
+            feedback.textContent  = '✅ Message envoyé ! Je vous réponds sous 48h.'
+            feedback.classList.add('cform-feedback--ok')
+            form.reset()
+        } catch (err) {
+            console.error(err)
+            feedback.textContent  = '❌ Erreur lors de l\'envoi. Réessayez ou écrivez directement par email.'
+            feedback.classList.add('cform-feedback--err')
+        } finally {
+            label.style.display   = 'inline'
+            spinner.style.display = 'none'
+            btn.disabled = false
+        }
+    })
 </script>
 </body>
 </html>

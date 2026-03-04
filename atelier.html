@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra Draconis — Atelier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .atelier-nav {
+            background: rgba(8, 12, 26, 0.80);
+            border-bottom: 1px solid rgba(191, 233, 255, 0.12);
+            backdrop-filter: blur(10px);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .atelier-brand {
+            font-family: Cinzel, ui-serif, Georgia, serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(191, 233, 255, 0.75);
+        }
+        .atelier-brand span { color: #9ed7ff; text-shadow: 0 0 18px rgba(158,215,255,0.4); }
+        .atelier-section { padding: 40px 0 60px; }
+        .atelier-panel {
+            background: rgba(10, 16, 34, 0.55);
+            border: 1px solid rgba(191, 233, 255, 0.14);
+            border-radius: 18px;
+            padding: 28px 26px;
+            backdrop-filter: blur(8px);
+        }
+        .atelier-panel-title {
+            font-family: Cinzel, ui-serif, Georgia, serif;
+            font-size: 0.78rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(191, 233, 255, 0.55);
+            margin: 0 0 20px;
+        }
+        .atelier-divider {
+            border: none;
+            border-top: 1px solid rgba(191, 233, 255, 0.10);
+            margin: 22px 0;
+        }
+        .atelier-user-info {
+            background: rgba(110, 180, 255, 0.07);
+            border: 1px solid rgba(110, 180, 255, 0.18);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            color: rgba(191, 233, 255, 0.70);
+            margin-bottom: 24px;
+        }
+        .atelier-user-info strong { color: rgba(230, 238, 247, 0.92); }
+        .atelier-error {
+            background: rgba(255, 80, 80, 0.08);
+            border: 1px solid rgba(255, 80, 80, 0.25);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            color: rgba(255, 140, 140, 0.90);
+            margin-bottom: 16px;
+            display: none;
+        }
+        .btn-atelier-primary {
+            width: 100%;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, rgba(110, 180, 255, 0.20), rgba(80, 120, 220, 0.25));
+            border: 1px solid rgba(191, 233, 255, 0.30);
+            border-radius: 8px;
+            color: rgba(230, 238, 247, 0.95);
+            font-family: Cinzel, ui-serif, Georgia, serif;
+            font-size: 0.76rem;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+        }
+        .btn-atelier-primary:hover {
+            background: linear-gradient(135deg, rgba(110, 180, 255, 0.30), rgba(80, 120, 220, 0.38));
+            border-color: rgba(191, 233, 255, 0.50);
+            box-shadow: 0 4px 20px rgba(110, 180, 255, 0.15);
+        }
+        .btn-atelier-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+        .btn-atelier-warn {
+            width: 100%;
+            padding: 9px 20px;
+            background: transparent;
+            border: 1px solid rgba(255, 190, 80, 0.30);
+            border-radius: 8px;
+            color: rgba(255, 210, 120, 0.85);
+            font-family: Cinzel, ui-serif, Georgia, serif;
+            font-size: 0.76rem;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 180ms ease, border-color 180ms ease;
+        }
+        .btn-atelier-warn:hover { background: rgba(255, 190, 80, 0.08); border-color: rgba(255, 190, 80, 0.55); }
+        .btn-atelier-ghost {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid rgba(191, 233, 255, 0.20);
+            border-radius: 8px;
+            color: rgba(191, 233, 255, 0.65);
+            font-size: 0.78rem;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            transition: background 180ms ease, border-color 180ms ease;
+        }
+        .btn-atelier-ghost:hover { background: rgba(191, 233, 255, 0.07); border-color: rgba(191, 233, 255, 0.38); }
+        .btn-atelier-danger {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            background: transparent;
+            border: 1px solid rgba(255, 80, 80, 0.30);
+            border-radius: 6px;
+            color: rgba(255, 140, 140, 0.80);
+            cursor: pointer;
+            transition: background 180ms ease, border-color 180ms ease;
+        }
+        .btn-atelier-danger:hover { background: rgba(255, 80, 80, 0.10); border-color: rgba(255, 80, 80, 0.55); }
+        .btn-atelier-logout {
+            padding: 7px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 80, 80, 0.28);
+            border-radius: 8px;
+            color: rgba(255, 140, 140, 0.75);
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: background 180ms ease, border-color 180ms ease;
+        }
+        .btn-atelier-logout:hover { background: rgba(255,80,80,0.09); border-color: rgba(255,80,80,0.50); }
+        .photo-card {
+            background: rgba(6, 10, 22, 0.50);
+            border: 1px solid rgba(191, 233, 255, 0.12);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .photo-card img { width:100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+        .photo-card-body {
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .photo-card-title { color: rgba(230,238,247,0.88); font-size: 0.85rem; font-weight: 500; }
+        .photo-card-date { color: rgba(191,233,255,0.45); font-size: 0.75rem; margin-top: 2px; }
+        .photos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .photos-count {
+            font-family: Cinzel, ui-serif, Georgia, serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: rgba(191, 233, 255, 0.45);
+        }
+    </style>
+</head>
+<body class="theme-astra">
+<div class="stars"></div>
+<div class="nebula"></div>
+
+<nav class="atelier-nav">
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="atelier-brand"><span>✦</span> Atelier</span>
+        <button onclick="logout()" class="btn-atelier-logout">Déconnexion</button>
+    </div>
+</nav>
+
+<div class="atelier-section">
+    <div class="container">
+        <div id="atelier-error" class="atelier-error"></div>
+        <div id="user-info" class="atelier-user-info d-none"></div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="atelier-panel">
+                    <p class="atelier-panel-title">✦ Ajouter une photo</p>
+                    <form id="upload-form">
+                        <div class="cform-group">
+                            <label class="cform-label" for="photo-title">Titre <span style="opacity:.5">(optionnel)</span></label>
+                            <input type="text" id="photo-title" class="cform-input" placeholder="Ex : Book Nook forêt enchantée">
+                        </div>
+                        <div class="cform-group" style="margin-top:12px;">
+                            <label class="cform-label" for="photo-file">Fichier image</label>
+                            <input type="file" id="photo-file" class="cform-input" accept="image/*" required style="padding: 7px 13px; cursor:pointer;">
+                        </div>
+                        <button type="submit" class="btn-atelier-primary" style="margin-top:18px;" id="upload-btn">
+                            <span id="uploadLabel">↑ Uploader</span>
+                            <span id="uploadSpinner" class="cform-spinner" style="display:none;"></span>
+                        </button>
+                    </form>
+
+                    <hr class="atelier-divider">
+
+                    <p class="atelier-panel-title">✦ Sécurité</p>
+                    <form id="password-form">
+                        <div class="cform-group">
+                            <label class="cform-label" for="new-password">Nouveau mot de passe</label>
+                            <div style="position:relative;">
+                                <input type="password" id="new-password" class="cform-input" placeholder="10+ car., min/maj/chiffre/symbole" required style="padding-right:48px;">
+                                <button type="button" id="toggle-password" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(191,233,255,0.45);cursor:pointer;font-size:0.78rem;">👁</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-atelier-warn" style="margin-top:14px;" id="password-btn">
+                            <span id="pwdLabel">Changer le mot de passe</span>
+                            <span id="pwdSpinner" class="cform-spinner" style="display:none;"></span>
+                        </button>
+                    </form>
+
+                    <hr class="atelier-divider">
+
+                    <button class="btn-atelier-ghost" id="refresh-btn">↻ Rafraîchir la liste</button>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="photos-header">
+                    <span class="atelier-panel-title" style="margin:0;">✦ Galerie</span>
+                    <span class="photos-count" id="photos-count"></span>
+                </div>
+                <div id="photos-list" class="row g-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script>
+    const photosListEl   = document.getElementById('photos-list')
+    const photosCountEl  = document.getElementById('photos-count')
+    const adminErrorEl   = document.getElementById('atelier-error')
+    const uploadForm     = document.getElementById('upload-form')
+    const uploadBtn      = document.getElementById('upload-btn')
+    const passwordForm   = document.getElementById('password-form')
+    const passwordBtn    = document.getElementById('password-btn')
+    const togglePwdBtn   = document.getElementById('toggle-password')
+    const refreshBtn     = document.getElementById('refresh-btn')
+
+    function showError(msg) {
+        adminErrorEl.textContent = msg
+        adminErrorEl.style.display = 'block'
+    }
+    function clearError() {
+        adminErrorEl.textContent = ''
+        adminErrorEl.style.display = 'none'
+    }
+
+    function escapeHtml(str) {
+        return (str || '').replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))
+    }
+
+    async function renderPhotos() {
+        clearError()
+        photosListEl.innerHTML = ''
+        photosCountEl.textContent = ''
+        try {
+            const rows = await listPhotos()
+            photosCountEl.textContent = `${rows.length} élément${rows.length !== 1 ? 's' : ''}`
+            if (!rows.length) {
+                photosListEl.innerHTML = '<div class="col-12" style="color:rgba(191,233,255,0.40);font-size:0.85rem;">Aucune photo pour le moment.</div>'
+                return
+            }
+            for (const row of rows) {
+                const signedUrl = await createSignedPhotoUrl(row.path)
+                const title     = row.title ? escapeHtml(row.title) : 'Sans titre'
+                const createdAt = row.created_at ? new Date(row.created_at).toLocaleString('fr-FR') : ''
+                const col = document.createElement('div')
+                col.className = 'col-md-6'
+                col.innerHTML = `
+                    <div class="photo-card">
+                        <img src="${signedUrl}" alt="${title}" loading="lazy">
+                        <div class="photo-card-body">
+                            <div>
+                                <div class="photo-card-title">${title}</div>
+                                <div class="photo-card-date">${createdAt}</div>
+                            </div>
+                            <button class="btn-atelier-danger" data-photo-id="${row.id}">Supprimer</button>
+                        </div>
+                    </div>`
+                photosListEl.appendChild(col)
+            }
+        } catch (e) {
+            console.error(e)
+            showError(e?.message || 'Erreur lors du chargement')
+        }
+    }
+
+    photosListEl.addEventListener('click', async (e) => {
+        const btn = e.target.closest('button[data-photo-id]')
+        if (!btn) return
+        const id = btn.getAttribute('data-photo-id')
+        if (!id || !confirm('Supprimer cette photo ?')) return
+        btn.disabled = true
+        try {
+            const deleted = await deletePhotoRow(id)
+            await deletePhotoFile(deleted?.path)
+            await renderPhotos()
+        } catch (err) {
+            console.error(err)
+            showError(err?.message || 'Erreur lors de la suppression')
+            btn.disabled = false
+        }
+    })
+
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        clearError()
+        const title   = document.getElementById('photo-title').value
+        const file    = document.getElementById('photo-file').files[0]
+        const label   = document.getElementById('uploadLabel')
+        const spinner = document.getElementById('uploadSpinner')
+        uploadBtn.disabled = true
+        label.style.display = 'none'
+        spinner.style.display = 'inline-block'
+        try {
+            const path = await uploadPhotoFile(file)
+            await insertPhotoRow({ title, path })
+            uploadForm.reset()
+            await renderPhotos()
+        } catch (err) {
+            console.error(err)
+            showError(err?.message || 'Erreur lors de l\'upload')
+        } finally {
+            uploadBtn.disabled = false
+            label.style.display = 'inline'
+            spinner.style.display = 'none'
+        }
+    })
+
+    passwordForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        clearError()
+        const newPassword = document.getElementById('new-password').value
+        if (!confirm('Confirmer le changement de mot de passe ?')) return
+        const label   = document.getElementById('pwdLabel')
+        const spinner = document.getElementById('pwdSpinner')
+        passwordBtn.disabled = true
+        label.style.display = 'none'
+        spinner.style.display = 'inline-block'
+        try {
+            await updateMyPassword(newPassword)
+            passwordForm.reset()
+            alert('Mot de passe mis à jour ✓')
+        } catch (err) {
+            console.error(err)
+            showError(err?.message || 'Erreur lors de la mise à jour')
+        } finally {
+            passwordBtn.disabled = false
+            label.style.display = 'inline'
+            spinner.style.display = 'none'
+        }
+    })
+
+    togglePwdBtn.addEventListener('click', () => {
+        const input = document.getElementById('new-password')
+        const isHidden = input.type === 'password'
+        input.type = isHidden ? 'text' : 'password'
+        togglePwdBtn.textContent = isHidden ? '🙈' : '👁'
+    })
+
+    refreshBtn.addEventListener('click', async () => { await renderPhotos() })
+
+    async function logout() {
+        await supabase.auth.signOut()
+        window.location.href = 'portail.html'
+    }
+
+    async function initAdmin() {
+        const session = await checkAuth()
+        if (!session) {
+            window.location.href = 'portail.html'
+            return
+        }
+        const isAdmin = await isAdminSession()
+        if (!isAdmin) {
+            showError("Accès refusé.")
+            return
+        }
+        const userInfoEl = document.getElementById('user-info')
+        userInfoEl.classList.remove('d-none')
+        userInfoEl.innerHTML = `Connecté : <strong>${session.user.email}</strong>`
+        await renderPhotos()
+    }
+
+    initAdmin()
+</script>
+</body>
+</html>
