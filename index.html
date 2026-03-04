@@ -62,9 +62,31 @@
 
 <main id="galerie" class="section-astra">
     <div class="container">
+
+        <div id="admin-carousel-wrap" data-reveal>
+            <div class="admin-carousel-header">
+                <span class="admin-carousel-label">✦ Aperçu — Collection complète</span>
+            </div>
+            <div class="admin-carousel-outer">
+                <button class="carousel-nav-btn" id="carouselPrev" aria-label="Précédent">&#8249;</button>
+                <div class="admin-carousel-viewport">
+                    <div class="admin-carousel-track" id="carouselTrack"></div>
+                </div>
+                <button class="carousel-nav-btn" id="carouselNext" aria-label="Suivant">&#8250;</button>
+            </div>
+        </div>
+
+        <div class="gallery-search-wrap" data-reveal>
+            <div class="gallery-search-inner">
+                <span class="gallery-search-icon">🔍</span>
+                <input type="search" id="gallerySearch" class="gallery-search-input" placeholder="Rechercher un Book Nook…" autocomplete="off">
+                <span class="gallery-search-count" id="searchCount"></span>
+            </div>
+        </div>
+
         <div class="section-head" data-reveal>
             <h2 class="section-title">Galerie des Book Nook</h2>
-            <p class="section-subtitle">Clique pour ouvrir en grand. Les images viennent de Supabase.</p>
+            <p class="section-subtitle">Clique pour ouvrir en grand.</p>
         </div>
         <div id="gallery" class="gallery-grid"></div>
         <div id="gallery-empty" class="text-secondary d-none">Aucune image pour le moment.</div>
@@ -169,8 +191,12 @@
 
 <div class="lightbox" id="lightbox" aria-hidden="true">
     <button class="lightbox-close" id="lightboxClose" aria-label="Fermer">×</button>
-    <img class="lightbox-image" id="lightboxImage" alt="">
-    <div class="lightbox-caption" id="lightboxCaption"></div>
+    <div class="lightbox-content">
+        <img class="lightbox-image" id="lightboxImage" alt="">
+        <div class="lightbox-info" id="lightboxInfo" style="display:none;">
+            <p class="lightbox-info-title" id="lightboxTitle"></p>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -179,16 +205,33 @@
 <script src="js/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-    const galleryEl = document.getElementById('gallery')
-    const emptyEl = document.getElementById('gallery-empty')
-    const lightboxEl = document.getElementById('lightbox')
+    const galleryEl       = document.getElementById('gallery')
+    const emptyEl         = document.getElementById('gallery-empty')
+    const lightboxEl      = document.getElementById('lightbox')
     const lightboxImageEl = document.getElementById('lightboxImage')
-    const lightboxCaptionEl = document.getElementById('lightboxCaption')
+    const lightboxInfoEl  = document.getElementById('lightboxInfo')
+    const lightboxTitleEl = document.getElementById('lightboxTitle')
     const lightboxCloseEl = document.getElementById('lightboxClose')
+    const searchInput     = document.getElementById('gallerySearch')
+    const searchCount     = document.getElementById('searchCount')
+    const carouselWrap    = document.getElementById('admin-carousel-wrap')
+    const carouselTrack   = document.getElementById('carouselTrack')
+    const carouselPrev    = document.getElementById('carouselPrev')
+    const carouselNext    = document.getElementById('carouselNext')
 
+    let allPhotos  = []
+    let carouselIndex = 0
+
+    // ── Lightbox ─────────────────────────────────────────────────────────────
     function openLightbox(url, title) {
         lightboxImageEl.src = url
-        lightboxCaptionEl.textContent = title || ''
+        lightboxImageEl.alt = title || ''
+        if (title) {
+            lightboxTitleEl.textContent = title
+            lightboxInfoEl.style.display = 'block'
+        } else {
+            lightboxInfoEl.style.display = 'none'
+        }
         lightboxEl.classList.add('active')
         lightboxEl.setAttribute('aria-hidden', 'false')
         document.body.style.overflow = 'hidden'
@@ -202,49 +245,50 @@
     }
 
     lightboxCloseEl.addEventListener('click', closeLightbox)
-    lightboxEl.addEventListener('click', (e) => {
-        if (e.target === lightboxEl) closeLightbox()
-    })
+    lightboxEl.addEventListener('click', (e) => { if (e.target === lightboxEl) closeLightbox() })
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && lightboxEl.classList.contains('active')) closeLightbox()
     })
 
     function escapeHtml(str) {
-        return (str || '').replace(/[&<>'"]/g, (c) => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            "'": '&#39;',
-            '"': '&quot;',
-        }[c]))
+        return (str || '').replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))
+    }
+
+    // ── Galerie ───────────────────────────────────────────────────────────────
+    function renderGallery(rows) {
+        galleryEl.innerHTML = ''
+        if (!rows.length) {
+            emptyEl.classList.remove('d-none')
+            emptyEl.textContent = 'Aucune image pour le moment.'
+            return
+        }
+        emptyEl.classList.add('d-none')
+        for (const row of rows) {
+            const title = row.title ? escapeHtml(row.title) : ''
+            const item = document.createElement('button')
+            item.type = 'button'
+            item.className = 'gallery-item'
+            item.setAttribute('data-url', row._signedUrl)
+            item.setAttribute('data-title', title)
+            item.innerHTML = `
+                <img src="${row._signedUrl}" alt="${title}" loading="lazy" />
+                ${title ? `<div class="gallery-overlay"><div class="gallery-title">${title}</div></div>` : ''}
+            `
+            galleryEl.appendChild(item)
+        }
     }
 
     async function loadGallery() {
         galleryEl.innerHTML = ''
         emptyEl.classList.add('d-none')
-
         try {
-            const rows = await listPhotos()
-            if (!rows.length) {
-                emptyEl.classList.remove('d-none')
-                return
-            }
-
+            const rows = await listPhotos(PHOTO_CATEGORY.GALLERY)
             for (const row of rows) {
-                const signedUrl = await createSignedPhotoUrl(row.path)
-                const title = row.title ? escapeHtml(row.title) : ''
-
-                const item = document.createElement('button')
-                item.type = 'button'
-                item.className = 'gallery-item'
-                item.setAttribute('data-url', signedUrl)
-                item.setAttribute('data-title', title)
-                item.innerHTML = `
-                    <img src="${signedUrl}" alt="${title}" loading="lazy" />
-                    ${title ? `<div class="gallery-overlay"><div class="gallery-title">${title}</div></div>` : ''}
-                `
-                galleryEl.appendChild(item)
+                row._signedUrl = await createSignedPhotoUrl(row.path)
             }
+            allPhotos = rows
+            renderGallery(allPhotos)
+            updateSearchCount(allPhotos.length, allPhotos.length)
         } catch (e) {
             console.error(e)
             emptyEl.textContent = 'Erreur lors du chargement de la galerie.'
@@ -255,12 +299,97 @@
     galleryEl.addEventListener('click', (e) => {
         const btn = e.target.closest('.gallery-item')
         if (!btn) return
-        const url = btn.getAttribute('data-url')
-        const title = btn.getAttribute('data-title')
-        if (url) openLightbox(url, title)
+        openLightbox(btn.getAttribute('data-url'), btn.getAttribute('data-title'))
     })
 
-    loadGallery()
+    // ── Recherche ─────────────────────────────────────────────────────────────
+    function updateSearchCount(shown, total) {
+        searchCount.textContent = shown < total ? `${shown} / ${total}` : `${total} création${total !== 1 ? 's' : ''}`
+    }
+
+    searchInput.addEventListener('input', () => {
+        const q = searchInput.value.trim().toLowerCase()
+        if (!q) {
+            renderGallery(allPhotos)
+            updateSearchCount(allPhotos.length, allPhotos.length)
+            return
+        }
+        const filtered = allPhotos.filter(r => (r.title || '').toLowerCase().includes(q))
+        renderGallery(filtered)
+        updateSearchCount(filtered.length, allPhotos.length)
+        if (!filtered.length) {
+            emptyEl.textContent = 'Aucune correspondance pour cette recherche.'
+            emptyEl.classList.remove('d-none')
+        }
+    })
+
+    // ── Carrousel admin ───────────────────────────────────────────────────────
+    const CAROUSEL_VISIBLE = 3
+
+    function buildCarousel(rows) {
+        carouselTrack.innerHTML = ''
+        for (const row of rows) {
+            const title = row.title ? escapeHtml(row.title) : ''
+            const slide = document.createElement('button')
+            slide.type = 'button'
+            slide.className = 'carousel-slide'
+            slide.setAttribute('data-url', row._signedUrl)
+            slide.setAttribute('data-title', title)
+            slide.innerHTML = `
+                <img src="${row._signedUrl}" alt="${title}" loading="lazy">
+                ${title ? `<div class="carousel-slide-label">${title}</div>` : ''}
+            `
+            slide.addEventListener('click', () => openLightbox(row._signedUrl, title))
+            carouselTrack.appendChild(slide)
+        }
+        carouselIndex = 0
+        updateCarousel()
+    }
+
+    function getSlideStep() {
+        const first = carouselTrack.firstElementChild
+        if (!first) return 0
+        return first.getBoundingClientRect().width + 12
+    }
+
+    function updateCarousel() {
+        const total = carouselTrack.children.length
+        const maxIndex = Math.max(0, total - CAROUSEL_VISIBLE)
+        carouselIndex = Math.min(Math.max(carouselIndex, 0), maxIndex)
+        const step = getSlideStep()
+        carouselTrack.style.transform = `translateX(-${carouselIndex * step}px)`
+        carouselPrev.disabled = carouselIndex === 0
+        carouselNext.disabled = carouselIndex >= maxIndex
+    }
+
+    carouselPrev.addEventListener('click', () => { carouselIndex--; updateCarousel() })
+    carouselNext.addEventListener('click', () => { carouselIndex++; updateCarousel() })
+    window.addEventListener('resize', () => updateCarousel())
+
+    async function loadCarouselPhotos() {
+        try {
+            const rows = await listPhotos(PHOTO_CATEGORY.CAROUSEL)
+            for (const row of rows) {
+                row._signedUrl = await createSignedPhotoUrl(row.path)
+            }
+            return rows
+        } catch (e) {
+            console.error(e)
+            return []
+        }
+    }
+
+    async function initPage() {
+        await loadGallery()
+        const carouselPhotos = await loadCarouselPhotos()
+        if (carouselPhotos.length) {
+            buildCarousel(carouselPhotos)
+        } else {
+            document.getElementById('admin-carousel-wrap').style.display = 'none'
+        }
+    }
+
+    initPage()
     document.getElementById('year').textContent = new Date().getFullYear()
 
     // ── EmailJS ─────────────────────────────────────────────────────────────
