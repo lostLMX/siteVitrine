@@ -1,7 +1,8 @@
 // ── Configuration ────────────────────────────────────────────────────────────
+// Admins : ajoutez/retirez des utilisateurs directement dans le dashboard Supabase
+// (Authentication > Users) — aucun email à coder en dur ici.
 const SUPABASE_URL      = 'https://vgvudfjdibieuvukclqu.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndnVkZmpkaWJpZXV2dWtjbHF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMjQ4ODIsImV4cCI6MjA4NzcwMDg4Mn0.Ta1wTeLwDP4dAKaAhmA1BfqeRNNRSpVtL0C3zafzxXM'
-const ADMIN_EMAIL       = 'dorian.collindu28@gmail.com'
 const PHOTOS_BUCKET     = 'photos'
 const PHOTOS_TABLE      = 'photos'
 const SIGNED_URL_TTL    = 60 * 60        // 1 heure en secondes
@@ -25,21 +26,21 @@ async function checkAuth() {
 
 async function isAdminSession() {
     const session = await checkAuth()
-    return session?.user?.email === ADMIN_EMAIL
+    return !!session
 }
 
-// Redirige vers portail.html si non connecté ou non admin.
-// Appeler en haut de atelier.html.
+// Redirige vers portail.html si non connecté.
+// Tout utilisateur authentifié dans Supabase est admin.
+// Gérez les comptes dans Authentication > Users du dashboard Supabase.
 async function requireAdmin() {
     const session = await checkAuth()
     if (!session) { window.location.replace('portail.html'); return null }
-    if (session.user.email !== ADMIN_EMAIL) { window.location.replace('portail.html'); return null }
     return session
 }
 
 // Écoute les changements de session (expiry, logout depuis un autre onglet…)
 window.supabase.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_OUT' && !window.location.pathname.endsWith('index.html') && !window.location.pathname.endsWith('portail.html')) {
+    if (event === 'SIGNED_OUT' && window.location.pathname.endsWith('atelier.html')) {
         window.location.replace('index.html')
     }
 })
@@ -145,4 +146,109 @@ async function deletePhotoFile(path) {
     _signedUrlCache.delete(path)
     const { error } = await window.supabase.storage.from(PHOTOS_BUCKET).remove([path])
     if (error) throw error
+}
+
+// ── Articles — lecture ────────────────────────────────────────────────────────
+// SQL à exécuter dans Supabase (SQL Editor) si ces tables n'existent pas :
+//
+// CREATE TABLE articles (
+//     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+//     title TEXT NOT NULL,
+//     description TEXT,
+//     cover_path TEXT,
+//     created_at TIMESTAMPTZ DEFAULT NOW()
+// );
+// CREATE TABLE article_photos (
+//     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+//     article_id UUID REFERENCES articles(id) ON DELETE CASCADE NOT NULL,
+//     path TEXT NOT NULL,
+//     caption TEXT,
+//     sort_order INTEGER DEFAULT 0,
+//     created_at TIMESTAMPTZ DEFAULT NOW()
+// );
+// ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE article_photos ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "Public read articles" ON articles FOR SELECT USING (true);
+// CREATE POLICY "Public read article_photos" ON article_photos FOR SELECT USING (true);
+// CREATE POLICY "Auth write articles" ON articles FOR ALL USING (auth.role() = 'authenticated');
+// CREATE POLICY "Auth write article_photos" ON article_photos FOR ALL USING (auth.role() = 'authenticated');
+
+async function listArticles() {
+    const { data, error } = await window.supabase
+        .from('articles')
+        .select('id, title, description, cover_path, created_at')
+        .order('created_at', { ascending: false })
+    if (error) throw error
+    return data || []
+}
+
+async function getArticle(id) {
+    const { data, error } = await window.supabase
+        .from('articles')
+        .select('id, title, description, cover_path, created_at')
+        .eq('id', id)
+        .single()
+    if (error) throw error
+    return data
+}
+
+async function insertArticle({ title, description = null, cover_path = null }) {
+    const { data, error } = await window.supabase
+        .from('articles')
+        .insert([{ title: title?.trim(), description: description?.trim() || null, cover_path }])
+        .select('id, title, description, cover_path, created_at')
+        .single()
+    if (error) throw error
+    return data
+}
+
+async function updateArticle(id, fields) {
+    const { data, error } = await window.supabase
+        .from('articles')
+        .update(fields)
+        .eq('id', id)
+        .select('id, title, description, cover_path, created_at')
+        .single()
+    if (error) throw error
+    return data
+}
+
+async function deleteArticle(id) {
+    const { error } = await window.supabase
+        .from('articles')
+        .delete()
+        .eq('id', id)
+    if (error) throw error
+}
+
+// ── Article photos — lecture/écriture ─────────────────────────────────────────
+async function listArticlePhotos(articleId) {
+    const { data, error } = await window.supabase
+        .from('article_photos')
+        .select('id, article_id, path, caption, sort_order, created_at')
+        .eq('article_id', articleId)
+        .order('sort_order', { ascending: true })
+    if (error) throw error
+    return data || []
+}
+
+async function insertArticlePhotoRow({ article_id, path, caption = null, sort_order = 0 }) {
+    const { data, error } = await window.supabase
+        .from('article_photos')
+        .insert([{ article_id, path, caption: caption?.trim() || null, sort_order }])
+        .select('id, article_id, path, caption, sort_order, created_at')
+        .single()
+    if (error) throw error
+    return data
+}
+
+async function deleteArticlePhotoRow(id) {
+    const { data, error } = await window.supabase
+        .from('article_photos')
+        .delete()
+        .eq('id', id)
+        .select('path')
+        .single()
+    if (error) throw error
+    return data
 }

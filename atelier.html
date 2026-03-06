@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -8,163 +8,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .atelier-nav {
-            background: rgba(8, 12, 26, 0.80);
-            border-bottom: 1px solid rgba(191, 233, 255, 0.12);
-            backdrop-filter: blur(10px);
-            padding: 14px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .atelier-brand {
-            font-family: Cinzel, ui-serif, Georgia, serif;
-            font-size: 0.85rem;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: rgba(191, 233, 255, 0.75);
-        }
-        .atelier-brand span { color: #9ed7ff; text-shadow: 0 0 18px rgba(158,215,255,0.4); }
-        .atelier-section { padding: 40px 0 60px; }
-        .atelier-panel {
-            background: rgba(10, 16, 34, 0.55);
-            border: 1px solid rgba(191, 233, 255, 0.14);
-            border-radius: 18px;
-            padding: 28px 26px;
-            backdrop-filter: blur(8px);
-        }
-        .atelier-panel-title {
-            font-family: Cinzel, ui-serif, Georgia, serif;
-            font-size: 0.78rem;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: rgba(191, 233, 255, 0.55);
-            margin: 0 0 20px;
-        }
-        .atelier-divider {
-            border: none;
-            border-top: 1px solid rgba(191, 233, 255, 0.10);
-            margin: 22px 0;
-        }
-        .atelier-user-info {
-            background: rgba(110, 180, 255, 0.07);
-            border: 1px solid rgba(110, 180, 255, 0.18);
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 0.82rem;
-            color: rgba(191, 233, 255, 0.70);
-            margin-bottom: 24px;
-        }
-        .atelier-user-info strong { color: rgba(230, 238, 247, 0.92); }
-        .atelier-error {
-            background: rgba(255, 80, 80, 0.08);
-            border: 1px solid rgba(255, 80, 80, 0.25);
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 0.82rem;
-            color: rgba(255, 140, 140, 0.90);
-            margin-bottom: 16px;
-            display: none;
-        }
-        .btn-atelier-primary {
-            width: 100%;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, rgba(110, 180, 255, 0.20), rgba(80, 120, 220, 0.25));
-            border: 1px solid rgba(191, 233, 255, 0.30);
-            border-radius: 8px;
-            color: rgba(230, 238, 247, 0.95);
-            font-family: Cinzel, ui-serif, Georgia, serif;
-            font-size: 0.76rem;
-            letter-spacing: 0.10em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-        }
-        .btn-atelier-primary:hover {
-            background: linear-gradient(135deg, rgba(110, 180, 255, 0.30), rgba(80, 120, 220, 0.38));
-            border-color: rgba(191, 233, 255, 0.50);
-            box-shadow: 0 4px 20px rgba(110, 180, 255, 0.15);
-        }
-        .btn-atelier-primary:disabled { opacity: 0.55; cursor: not-allowed; }
-        .btn-atelier-warn {
-            width: 100%;
-            padding: 9px 20px;
-            background: transparent;
-            border: 1px solid rgba(255, 190, 80, 0.30);
-            border-radius: 8px;
-            color: rgba(255, 210, 120, 0.85);
-            font-family: Cinzel, ui-serif, Georgia, serif;
-            font-size: 0.76rem;
-            letter-spacing: 0.10em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: background 180ms ease, border-color 180ms ease;
-        }
-        .btn-atelier-warn:hover { background: rgba(255, 190, 80, 0.08); border-color: rgba(255, 190, 80, 0.55); }
-        .btn-atelier-ghost {
-            padding: 8px 16px;
-            background: transparent;
-            border: 1px solid rgba(191, 233, 255, 0.20);
-            border-radius: 8px;
-            color: rgba(191, 233, 255, 0.65);
-            font-size: 0.78rem;
-            letter-spacing: 0.06em;
-            cursor: pointer;
-            transition: background 180ms ease, border-color 180ms ease;
-        }
-        .btn-atelier-ghost:hover { background: rgba(191, 233, 255, 0.07); border-color: rgba(191, 233, 255, 0.38); }
-        .btn-atelier-danger {
-            padding: 4px 12px;
-            font-size: 0.75rem;
-            background: transparent;
-            border: 1px solid rgba(255, 80, 80, 0.30);
-            border-radius: 6px;
-            color: rgba(255, 140, 140, 0.80);
-            cursor: pointer;
-            transition: background 180ms ease, border-color 180ms ease;
-        }
-        .btn-atelier-danger:hover { background: rgba(255, 80, 80, 0.10); border-color: rgba(255, 80, 80, 0.55); }
-        .btn-atelier-logout {
-            padding: 7px 16px;
-            background: transparent;
-            border: 1px solid rgba(255, 80, 80, 0.28);
-            border-radius: 8px;
-            color: rgba(255, 140, 140, 0.75);
-            font-size: 0.78rem;
-            letter-spacing: 0.05em;
-            cursor: pointer;
-            transition: background 180ms ease, border-color 180ms ease;
-        }
-        .btn-atelier-logout:hover { background: rgba(255,80,80,0.09); border-color: rgba(255,80,80,0.50); }
-        .photo-card {
-            background: rgba(6, 10, 22, 0.50);
-            border: 1px solid rgba(191, 233, 255, 0.12);
-            border-radius: 14px;
-            overflow: hidden;
-        }
-        .photo-card img { width:100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
-        .photo-card-body {
-            padding: 10px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-        }
-        .photo-card-title { color: rgba(230,238,247,0.88); font-size: 0.85rem; font-weight: 500; }
-        .photo-card-date { color: rgba(191,233,255,0.45); font-size: 0.75rem; margin-top: 2px; }
-        .photos-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .photos-count {
-            font-family: Cinzel, ui-serif, Georgia, serif;
-            font-size: 0.75rem;
-            letter-spacing: 0.10em;
-            text-transform: uppercase;
-            color: rgba(191, 233, 255, 0.45);
-        }
+        .atelier-nav { background:rgba(8,12,26,.80); border-bottom:1px solid rgba(191,233,255,.12); backdrop-filter:blur(10px); padding:14px 0; position:sticky; top:0; z-index:100; }
+        .atelier-brand { font-family:Cinzel,serif; font-size:.85rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(191,233,255,.75); }
+        .atelier-brand span { color:#9ed7ff; text-shadow:0 0 18px rgba(158,215,255,.4); }
+        .atelier-section { padding:40px 0 60px; }
+        .atelier-panel { background:rgba(10,16,34,.55); border:1px solid rgba(191,233,255,.14); border-radius:18px; padding:28px 26px; backdrop-filter:blur(8px); }
+        .atelier-panel-title { font-family:Cinzel,serif; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(191,233,255,.55); margin:0 0 20px; }
+        .atelier-divider { border:none; border-top:1px solid rgba(191,233,255,.10); margin:22px 0; }
+        .atelier-user-info { background:rgba(110,180,255,.07); border:1px solid rgba(110,180,255,.18); border-radius:10px; padding:10px 14px; font-size:.82rem; color:rgba(191,233,255,.70); margin-bottom:24px; }
+        .atelier-user-info strong { color:rgba(230,238,247,.92); }
+        .atelier-error { background:rgba(255,80,80,.08); border:1px solid rgba(255,80,80,.25); border-radius:10px; padding:10px 14px; font-size:.82rem; color:rgba(255,140,140,.90); margin-bottom:16px; display:none; }
+        .btn-atelier-primary { width:100%; padding:10px 20px; background:linear-gradient(135deg,rgba(110,180,255,.20),rgba(80,120,220,.25)); border:1px solid rgba(191,233,255,.30); border-radius:8px; color:rgba(230,238,247,.95); font-family:Cinzel,serif; font-size:.76rem; letter-spacing:.10em; text-transform:uppercase; cursor:pointer; transition:background 180ms,border-color 180ms; }
+        .btn-atelier-primary:hover { background:linear-gradient(135deg,rgba(110,180,255,.30),rgba(80,120,220,.38)); border-color:rgba(191,233,255,.50); }
+        .btn-atelier-primary:disabled { opacity:.55; cursor:not-allowed; }
+        .btn-atelier-warn { width:100%; padding:9px 20px; background:transparent; border:1px solid rgba(255,190,80,.30); border-radius:8px; color:rgba(255,210,120,.85); font-family:Cinzel,serif; font-size:.76rem; letter-spacing:.10em; text-transform:uppercase; cursor:pointer; transition:background 180ms; }
+        .btn-atelier-warn:hover { background:rgba(255,190,80,.08); border-color:rgba(255,190,80,.55); }
+        .btn-atelier-ghost { padding:8px 16px; background:transparent; border:1px solid rgba(191,233,255,.20); border-radius:8px; color:rgba(191,233,255,.65); font-size:.78rem; cursor:pointer; transition:background 180ms; }
+        .btn-atelier-ghost:hover { background:rgba(191,233,255,.07); border-color:rgba(191,233,255,.38); }
+        .btn-atelier-danger { padding:4px 12px; font-size:.75rem; background:transparent; border:1px solid rgba(255,80,80,.30); border-radius:6px; color:rgba(255,140,140,.80); cursor:pointer; }
+        .btn-atelier-danger:hover { background:rgba(255,80,80,.10); border-color:rgba(255,80,80,.55); }
+        .btn-atelier-logout { padding:7px 16px; background:transparent; border:1px solid rgba(255,80,80,.28); border-radius:8px; color:rgba(255,140,140,.75); font-size:.78rem; cursor:pointer; }
+        .btn-atelier-logout:hover { background:rgba(255,80,80,.09); }
+        .photo-card { background:rgba(6,10,22,.50); border:1px solid rgba(191,233,255,.12); border-radius:14px; overflow:hidden; }
+        .photo-card img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
+        .photo-card-body { padding:10px 12px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+        .photo-card-title { color:rgba(230,238,247,.88); font-size:.85rem; font-weight:500; }
+        .photo-card-date { color:rgba(191,233,255,.45); font-size:.75rem; margin-top:2px; }
+        .photos-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+        .photos-count { font-family:Cinzel,serif; font-size:.75rem; letter-spacing:.10em; text-transform:uppercase; color:rgba(191,233,255,.45); }
+        .article-mgmt-card { background:rgba(6,10,22,.50); border:1px solid rgba(191,233,255,.14); border-radius:14px; overflow:hidden; margin-bottom:16px; }
+        .article-mgmt-header { padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:8px; cursor:pointer; }
+        .article-mgmt-header:hover { background:rgba(191,233,255,.04); }
+        .article-mgmt-title { font-family:Cinzel,serif; font-size:.88rem; letter-spacing:.06em; text-transform:uppercase; color:rgba(230,238,247,.92); }
+        .article-mgmt-meta { font-size:.75rem; color:rgba(191,233,255,.45); margin-top:2px; }
+        .article-mgmt-body { padding:0 16px 16px; border-top:1px solid rgba(191,233,255,.08); display:none; }
+        .article-mgmt-body.open { display:block; }
+        .article-mgmt-cover { width:100%; max-height:180px; object-fit:cover; border-radius:8px; margin:12px 0 4px; }
+        .article-photos-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; margin:10px 0; }
+        .art-photo-thumb { position:relative; border-radius:8px; overflow:hidden; border:1px solid rgba(191,233,255,.12); }
+        .art-photo-thumb img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
+        .art-photo-del { position:absolute; top:4px; right:4px; background:rgba(0,0,0,.55); border:1px solid rgba(255,80,80,.40); border-radius:4px; color:rgba(255,140,140,.90); font-size:.70rem; padding:2px 7px; cursor:pointer; }
     </style>
 </head>
 <body class="theme-astra">
@@ -177,6 +60,7 @@
         <div class="atelier-tabs">
             <button class="atelier-tab active" data-tab="gallery">🖼️ Galerie</button>
             <button class="atelier-tab" data-tab="carousel">🎠 Carrousel</button>
+            <button class="atelier-tab" data-tab="articles">📝 Articles</button>
             <button class="atelier-tab" data-tab="security">🔒 Sécurité</button>
         </div>
         <button onclick="logout()" class="btn-atelier-logout">Déconnexion</button>
@@ -184,117 +68,153 @@
 </nav>
 
 <div class="atelier-section">
-    <div class="container">
-        <div id="atelier-error" class="atelier-error"></div>
-        <div id="user-info" class="atelier-user-info d-none"></div>
+<div class="container">
+<div id="atelier-error" class="atelier-error"></div>
+<div id="user-info" class="atelier-user-info d-none"></div>
 
-        <!-- TAB: Galerie -->
-        <div id="tab-gallery" class="tab-pane">
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <div class="atelier-panel">
-                        <p class="atelier-panel-title">✦ Ajouter à la galerie</p>
-                        <form id="upload-form-gallery">
-                            <div class="cform-group">
-                                <label class="cform-label">Titre <span style="opacity:.5">(optionnel)</span></label>
-                                <input type="text" id="gallery-title" class="cform-input" placeholder="Ex : Book Nook forêt enchantée">
-                            </div>
-                            <div class="cform-group" style="margin-top:12px;">
-                                <label class="cform-label">Fichier image</label>
-                                <input type="file" id="gallery-file" class="cform-input" accept="image/*" required style="padding:7px 13px;cursor:pointer;">
-                            </div>
-                            <button type="submit" class="btn-atelier-primary" style="margin-top:18px;" id="upload-btn-gallery">
-                                <span id="uploadLabelGallery">↑ Uploader</span>
-                                <span id="uploadSpinnerGallery" class="cform-spinner" style="display:none;"></span>
-                            </button>
-                        </form>
-                        <hr class="atelier-divider">
-                        <button class="btn-atelier-ghost" id="refresh-gallery">↻ Rafraîchir</button>
+<!-- TAB: Galerie -->
+<div id="tab-gallery" class="tab-pane">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="atelier-panel">
+                <p class="atelier-panel-title">✦ Ajouter à la galerie</p>
+                <form id="upload-form-gallery">
+                    <div class="cform-group">
+                        <label class="cform-label">Titre <span style="opacity:.5">(optionnel)</span></label>
+                        <input type="text" id="gallery-title" class="cform-input" placeholder="Ex : Book Nook forêt enchantée">
                     </div>
-                </div>
-                <div class="col-lg-8">
-                    <div class="photos-header">
-                        <span class="atelier-panel-title" style="margin:0;">✦ Photos de la galerie</span>
-                        <span class="photos-count" id="count-gallery"></span>
+                    <div class="cform-group" style="margin-top:12px;">
+                        <label class="cform-label">Fichier image</label>
+                        <input type="file" id="gallery-file" class="cform-input" accept="image/*" required style="padding:7px 13px;cursor:pointer;">
                     </div>
-                    <div id="list-gallery" class="row g-3"></div>
-                </div>
+                    <button type="submit" class="btn-atelier-primary" style="margin-top:18px;" id="upload-btn-gallery">
+                        <span id="uploadLabelGallery">↑ Uploader</span>
+                        <span id="uploadSpinnerGallery" class="cform-spinner" style="display:none;"></span>
+                    </button>
+                </form>
+                <hr class="atelier-divider">
+                <button class="btn-atelier-ghost" id="refresh-gallery">↻ Rafraîchir</button>
             </div>
         </div>
-
-        <!-- TAB: Carrousel -->
-        <div id="tab-carousel" class="tab-pane d-none">
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <div class="atelier-panel">
-                        <p class="atelier-panel-title">✦ Ajouter au carrousel</p>
-                        <form id="upload-form-carousel">
-                            <div class="cform-group">
-                                <label class="cform-label">Titre <span style="opacity:.5">(optionnel)</span></label>
-                                <input type="text" id="carousel-title" class="cform-input" placeholder="Ex : Collection printemps">
-                            </div>
-                            <div class="cform-group" style="margin-top:12px;">
-                                <label class="cform-label">Fichier image</label>
-                                <input type="file" id="carousel-file" class="cform-input" accept="image/*" required style="padding:7px 13px;cursor:pointer;">
-                            </div>
-                            <button type="submit" class="btn-atelier-primary" style="margin-top:18px;" id="upload-btn-carousel">
-                                <span id="uploadLabelCarousel">↑ Uploader</span>
-                                <span id="uploadSpinnerCarousel" class="cform-spinner" style="display:none;"></span>
-                            </button>
-                        </form>
-                        <hr class="atelier-divider">
-                        <button class="btn-atelier-ghost" id="refresh-carousel">↻ Rafraîchir</button>
-                    </div>
-                </div>
-                <div class="col-lg-8">
-                    <div class="photos-header">
-                        <span class="atelier-panel-title" style="margin:0;">✦ Photos du carrousel</span>
-                        <span class="photos-count" id="count-carousel"></span>
-                    </div>
-                    <div id="list-carousel" class="row g-3"></div>
-                </div>
+        <div class="col-lg-8">
+            <div class="photos-header">
+                <span class="atelier-panel-title" style="margin:0;">✦ Photos de la galerie</span>
+                <span class="photos-count" id="count-gallery"></span>
             </div>
+            <div id="list-gallery" class="row g-3"></div>
         </div>
-
-        <!-- TAB: Sécurité -->
-        <div id="tab-security" class="tab-pane d-none">
-            <div class="row justify-content-center">
-                <div class="col-lg-5">
-                    <div class="atelier-panel">
-                        <p class="atelier-panel-title">✦ Changer le mot de passe</p>
-                        <form id="password-form">
-                            <div class="cform-group">
-                                <label class="cform-label" for="new-password">Nouveau mot de passe</label>
-                                <div style="position:relative;">
-                                    <input type="password" id="new-password" class="cform-input" placeholder="10+ car., min/maj/chiffre/symbole" required style="padding-right:48px;">
-                                    <button type="button" id="toggle-password" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(191,233,255,0.45);cursor:pointer;font-size:0.78rem;">👁</button>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn-atelier-warn" style="margin-top:14px;" id="password-btn">
-                                <span id="pwdLabel">Changer le mot de passe</span>
-                                <span id="pwdSpinner" class="cform-spinner" style="display:none;"></span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
+
+<!-- TAB: Carrousel -->
+<div id="tab-carousel" class="tab-pane d-none">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="atelier-panel">
+                <p class="atelier-panel-title">✦ Ajouter au carrousel</p>
+                <form id="upload-form-carousel">
+                    <div class="cform-group">
+                        <label class="cform-label">Titre <span style="opacity:.5">(optionnel)</span></label>
+                        <input type="text" id="carousel-title" class="cform-input" placeholder="Ex : Collection printemps">
+                    </div>
+                    <div class="cform-group" style="margin-top:12px;">
+                        <label class="cform-label">Fichier image</label>
+                        <input type="file" id="carousel-file" class="cform-input" accept="image/*" required style="padding:7px 13px;cursor:pointer;">
+                    </div>
+                    <button type="submit" class="btn-atelier-primary" style="margin-top:18px;" id="upload-btn-carousel">
+                        <span id="uploadLabelCarousel">↑ Uploader</span>
+                        <span id="uploadSpinnerCarousel" class="cform-spinner" style="display:none;"></span>
+                    </button>
+                </form>
+                <hr class="atelier-divider">
+                <button class="btn-atelier-ghost" id="refresh-carousel">↻ Rafraîchir</button>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="photos-header">
+                <span class="atelier-panel-title" style="margin:0;">✦ Photos du carrousel</span>
+                <span class="photos-count" id="count-carousel"></span>
+            </div>
+            <div id="list-carousel" class="row g-3"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB: Articles -->
+<div id="tab-articles" class="tab-pane d-none">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="atelier-panel">
+                <p class="atelier-panel-title">✦ Créer un article</p>
+                <form id="article-create-form">
+                    <div class="cform-group">
+                        <label class="cform-label">Titre <span style="color:rgba(255,140,140,.7)">*</span></label>
+                        <input type="text" id="art-title" class="cform-input" placeholder="Ex : Donjon médiéval" required>
+                    </div>
+                    <div class="cform-group" style="margin-top:12px;">
+                        <label class="cform-label">Description <span style="opacity:.5">(optionnel)</span></label>
+                        <textarea id="art-desc" class="cform-input cform-textarea" placeholder="Décrivez la pièce : thème, matériaux, dimensions…" style="min-height:80px;"></textarea>
+                    </div>
+                    <div class="cform-group" style="margin-top:12px;">
+                        <label class="cform-label">Photo de couverture <span style="opacity:.5">(optionnel)</span></label>
+                        <input type="file" id="art-cover-file" class="cform-input" accept="image/*" style="padding:7px 13px;cursor:pointer;">
+                    </div>
+                    <button type="submit" class="btn-atelier-primary" style="margin-top:18px;" id="article-create-btn">
+                        <span id="artCreateLabel">✦ Créer l'article</span>
+                        <span id="artCreateSpinner" class="cform-spinner" style="display:none;"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="photos-header">
+                <span class="atelier-panel-title" style="margin:0;">✦ Articles publiés</span>
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="photos-count" id="count-articles"></span>
+                    <button class="btn-atelier-ghost" id="refresh-articles">↻ Rafraîchir</button>
+                </div>
+            </div>
+            <div id="list-articles"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB: Sécurité -->
+<div id="tab-security" class="tab-pane d-none">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="atelier-panel">
+                <p class="atelier-panel-title">✦ Changer le mot de passe</p>
+                <form id="password-form">
+                    <div class="cform-group">
+                        <label class="cform-label" for="new-password">Nouveau mot de passe</label>
+                        <div style="position:relative;">
+                            <input type="password" id="new-password" class="cform-input" placeholder="10+ car., min/maj/chiffre/symbole" required style="padding-right:48px;">
+                            <button type="button" id="toggle-password" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(191,233,255,0.45);cursor:pointer;font-size:0.78rem;">👁</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-atelier-warn" style="margin-top:14px;" id="password-btn">
+                        <span id="pwdLabel">Changer le mot de passe</span>
+                        <span id="pwdSpinner" class="cform-spinner" style="display:none;"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- /container -->
+</div><!-- /atelier-section -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script>
     const adminErrorEl = document.getElementById('atelier-error')
-
     function showError(msg) { adminErrorEl.textContent = msg; adminErrorEl.style.display = 'block' }
     function clearError()   { adminErrorEl.textContent = '';  adminErrorEl.style.display = 'none'  }
-    function escapeHtml(str) {
-        return (str || '').replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))
-    }
+    function escapeHtml(s)  { return (s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])) }
 
-    // ── Tabs ─────────────────────────────────────────────────────────────────
+    // Tabs
     document.querySelectorAll('.atelier-tab').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.atelier-tab').forEach(t => t.classList.remove('active'))
@@ -304,130 +224,230 @@
         })
     })
 
-    // ── Render photo list ─────────────────────────────────────────────────────
+    // Galerie / Carrousel
     async function renderList(category, listEl, countEl) {
-        clearError()
-        listEl.innerHTML = ''
-        countEl.textContent = ''
+        clearError(); listEl.innerHTML = ''; countEl.textContent = ''
         try {
             const rows = await listPhotos(category)
-            countEl.textContent = `${rows.length} élément${rows.length !== 1 ? 's' : ''}`
-            if (!rows.length) {
-                listEl.innerHTML = '<div class="col-12" style="color:rgba(191,233,255,0.40);font-size:0.85rem;">Aucune photo pour le moment.</div>'
-                return
-            }
+            countEl.textContent = `${rows.length} element${rows.length!==1?'s':''}`
+            if (!rows.length) { listEl.innerHTML='<div class="col-12" style="color:rgba(191,233,255,0.40);font-size:0.85rem;">Aucune photo.</div>'; return }
             for (const row of rows) {
-                const signedUrl = await createSignedPhotoUrl(row.path)
-                const title     = row.title ? escapeHtml(row.title) : 'Sans titre'
-                const createdAt = row.created_at ? new Date(row.created_at).toLocaleString('fr-FR') : ''
+                const url = await createSignedPhotoUrl(row.path)
+                const title = row.title ? escapeHtml(row.title) : 'Sans titre'
+                const date  = row.created_at ? new Date(row.created_at).toLocaleString('fr-FR') : ''
                 const col = document.createElement('div')
                 col.className = 'col-md-6'
-                col.innerHTML = `
-                    <div class="photo-card">
-                        <img src="${signedUrl}" alt="${title}" loading="lazy">
-                        <div class="photo-card-body">
-                            <div>
-                                <div class="photo-card-title">${title}</div>
-                                <div class="photo-card-date">${createdAt}</div>
-                            </div>
-                            <button class="btn-atelier-danger" data-photo-id="${row.id}" data-photo-path="${escapeHtml(row.path)}">Supprimer</button>
-                        </div>
-                    </div>`
+                col.innerHTML = `<div class="photo-card"><img src="${url}" alt="${title}" loading="lazy">
+                    <div class="photo-card-body"><div><div class="photo-card-title">${title}</div><div class="photo-card-date">${date}</div></div>
+                    <button class="btn-atelier-danger" data-photo-id="${row.id}" data-photo-path="${escapeHtml(row.path)}">Supprimer</button></div></div>`
                 listEl.appendChild(col)
             }
-        } catch (e) { console.error(e); showError(e?.message || 'Erreur chargement') }
+        } catch(e) { console.error(e); showError(e?.message||'Erreur') }
     }
 
-    // ── Delete delegation ─────────────────────────────────────────────────────
     async function handleDelete(e, category, listEl, countEl) {
-        const btn = e.target.closest('button[data-photo-id]')
-        if (!btn) return
+        const btn = e.target.closest('button[data-photo-id]'); if (!btn) return
         const id = btn.getAttribute('data-photo-id')
         if (!id || !confirm('Supprimer cette photo ?')) return
         btn.disabled = true
-        try {
-            const deleted = await deletePhotoRow(id)
-            await deletePhotoFile(deleted?.path)
-            await renderList(category, listEl, countEl)
-        } catch (err) { console.error(err); showError(err?.message || 'Erreur suppression'); btn.disabled = false }
+        try { const d = await deletePhotoRow(id); await deletePhotoFile(d?.path); await renderList(category,listEl,countEl) }
+        catch(err) { console.error(err); showError(err?.message||'Erreur'); btn.disabled=false }
     }
 
-    // ── Upload helper ─────────────────────────────────────────────────────────
-    async function handleUpload({ form, titleId, fileId, btnId, labelId, spinnerId, category, listEl, countEl }) {
+    async function handleUpload({form,titleId,fileId,btnId,labelId,spinnerId,category,listEl,countEl}) {
         clearError()
-        const title   = document.getElementById(titleId).value
-        const file    = document.getElementById(fileId).files[0]
-        const btn     = document.getElementById(btnId)
-        const label   = document.getElementById(labelId)
-        const spinner = document.getElementById(spinnerId)
-        btn.disabled = true; label.style.display = 'none'; spinner.style.display = 'inline-block'
+        const file=document.getElementById(fileId).files[0], btn=document.getElementById(btnId)
+        const label=document.getElementById(labelId), spinner=document.getElementById(spinnerId)
+        btn.disabled=true; label.style.display='none'; spinner.style.display='inline-block'
         try {
             const path = await uploadPhotoFile(file)
-            await insertPhotoRow({ title, path, category })
-            form.reset()
-            await renderList(category, listEl, countEl)
-        } catch (err) { console.error(err); showError(err?.message || "Erreur upload") }
-        finally { btn.disabled = false; label.style.display = 'inline'; spinner.style.display = 'none' }
+            await insertPhotoRow({title:document.getElementById(titleId).value, path, category})
+            form.reset(); await renderList(category,listEl,countEl)
+        } catch(err) { console.error(err); showError(err?.message||'Erreur upload') }
+        finally { btn.disabled=false; label.style.display='inline'; spinner.style.display='none' }
     }
 
-    // ── Gallery tab ───────────────────────────────────────────────────────────
-    const listGallery  = document.getElementById('list-gallery')
-    const countGallery = document.getElementById('count-gallery')
+    const listGallery=document.getElementById('list-gallery'), countGallery=document.getElementById('count-gallery')
+    document.getElementById('upload-form-gallery').addEventListener('submit',async e=>{e.preventDefault();await handleUpload({form:e.target,titleId:'gallery-title',fileId:'gallery-file',btnId:'upload-btn-gallery',labelId:'uploadLabelGallery',spinnerId:'uploadSpinnerGallery',category:PHOTO_CATEGORY.GALLERY,listEl:listGallery,countEl:countGallery})})
+    listGallery.addEventListener('click',e=>handleDelete(e,PHOTO_CATEGORY.GALLERY,listGallery,countGallery))
+    document.getElementById('refresh-gallery').addEventListener('click',()=>renderList(PHOTO_CATEGORY.GALLERY,listGallery,countGallery))
 
-    document.getElementById('upload-form-gallery').addEventListener('submit', async (e) => {
-        e.preventDefault()
-        await handleUpload({ form: e.target, titleId: 'gallery-title', fileId: 'gallery-file',
-            btnId: 'upload-btn-gallery', labelId: 'uploadLabelGallery', spinnerId: 'uploadSpinnerGallery',
-            category: PHOTO_CATEGORY.GALLERY, listEl: listGallery, countEl: countGallery })
+    const listCarousel=document.getElementById('list-carousel'), countCarousel=document.getElementById('count-carousel')
+    document.getElementById('upload-form-carousel').addEventListener('submit',async e=>{e.preventDefault();await handleUpload({form:e.target,titleId:'carousel-title',fileId:'carousel-file',btnId:'upload-btn-carousel',labelId:'uploadLabelCarousel',spinnerId:'uploadSpinnerCarousel',category:PHOTO_CATEGORY.CAROUSEL,listEl:listCarousel,countEl:countCarousel})})
+    listCarousel.addEventListener('click',e=>handleDelete(e,PHOTO_CATEGORY.CAROUSEL,listCarousel,countCarousel))
+    document.getElementById('refresh-carousel').addEventListener('click',()=>renderList(PHOTO_CATEGORY.CAROUSEL,listCarousel,countCarousel))
+</script>
+<script>
+    // Articles
+    const listArticlesEl=document.getElementById('list-articles'), countArticlesEl=document.getElementById('count-articles')
+
+    async function renderArticlePhotos(articleId, containerEl) {
+        containerEl.innerHTML='<div style="color:rgba(191,233,255,.35);font-size:.8rem;">Chargement…</div>'
+        try {
+            const photos = await listArticlePhotos(articleId)
+            if (!photos.length) { containerEl.innerHTML='<div style="color:rgba(191,233,255,.35);font-size:.8rem;">Aucune photo encore.</div>'; return }
+            const grid = document.createElement('div')
+            grid.className = 'article-photos-grid'
+            for (const photo of photos) {
+                let url=null; try { url=await createSignedPhotoUrl(photo.path) } catch(_){continue}
+                const thumb=document.createElement('div'); thumb.className='art-photo-thumb'
+                thumb.innerHTML=`<img src="${url}" alt="${escapeHtml(photo.caption||'')}" loading="lazy">
+                    <button class="art-photo-del" data-art-photo-id="${photo.id}" data-art-photo-path="${escapeHtml(photo.path)}">✕</button>`
+                grid.appendChild(thumb)
+            }
+            containerEl.innerHTML=''; containerEl.appendChild(grid)
+        } catch(e) { containerEl.innerHTML=`<div style="color:rgba(255,140,140,.7);font-size:.8rem;">${escapeHtml(e.message)}</div>` }
+    }
+
+    async function renderArticles() {
+        clearError(); listArticlesEl.innerHTML=''; countArticlesEl.textContent=''
+        try {
+            const articles = await listArticles()
+            countArticlesEl.textContent=`${articles.length} article${articles.length!==1?'s':''}`
+            if (!articles.length) { listArticlesEl.innerHTML='<div style="color:rgba(191,233,255,0.40);font-size:0.85rem;">Aucun article.</div>'; return }
+            for (const art of articles) {
+                const card=document.createElement('div'); card.className='article-mgmt-card'
+                const date=art.created_at?new Date(art.created_at).toLocaleString('fr-FR'):''
+                const hasCover=!!art.cover_path
+                card.innerHTML=`
+                    <div class="article-mgmt-header" data-article-id="${art.id}">
+                        <div><div class="article-mgmt-title">${escapeHtml(art.title)}</div><div class="article-mgmt-meta">${date}</div></div>
+                        <div class="d-flex gap-2">
+                            <a href="article.html?id=${art.id}" target="_blank" class="btn-atelier-ghost" style="font-size:.72rem;padding:4px 10px;" onclick="event.stopPropagation()">Voir ↗</a>
+                            <button class="btn-atelier-danger" data-delete-article="${art.id}" onclick="event.stopPropagation()">Supprimer</button>
+                        </div>
+                    </div>
+                    <div class="article-mgmt-body" id="art-body-${art.id}">
+                        <div id="art-cover-${art.id}"></div>
+                        <div id="art-photos-${art.id}"></div>
+                        <hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
+                        <p style="font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">Ajouter une photo</p>
+                        <form class="art-photo-upload-form d-flex gap-2 flex-wrap align-items-center" data-article-id="${art.id}">
+                            <input type="text" placeholder="Légende (optionnel)" class="cform-input" name="caption" style="flex:1;min-width:130px;">
+                            <input type="file" accept="image/*" class="cform-input art-photo-file" style="flex:1;min-width:130px;padding:6px 10px;cursor:pointer;">
+                            <button type="submit" class="btn-atelier-primary" style="width:auto;padding:9px 16px;">↑</button>
+                        </form>
+                        ${hasCover?'':
+                        `<hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
+                        <p style="font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">Photo de couverture</p>
+                        <form class="art-cover-upload-form d-flex gap-2 flex-wrap align-items-center" data-article-id="${art.id}">
+                            <input type="file" accept="image/*" class="cform-input" style="flex:1;min-width:130px;padding:6px 10px;cursor:pointer;">
+                            <button type="submit" class="btn-atelier-primary" style="width:auto;padding:9px 16px;">↑ Couverture</button>
+                        </form>`}
+                    </div>`
+                listArticlesEl.appendChild(card)
+                if (art.cover_path) {
+                    try {
+                        const url=await createSignedPhotoUrl(art.cover_path)
+                        document.getElementById(`art-cover-${art.id}`).innerHTML=`<img src="${url}" class="article-mgmt-cover" alt="Couverture"><p style="font-size:.72rem;color:rgba(191,233,255,.4);margin:0 0 8px;">Couverture actuelle</p>`
+                    } catch(_) {}
+                }
+            }
+        } catch(e) { console.error(e); showError(e?.message||'Erreur articles') }
+    }
+
+    listArticlesEl.addEventListener('click', async e => {
+        const delBtn=e.target.closest('[data-delete-article]')
+        if (delBtn) {
+            const id=delBtn.getAttribute('data-delete-article')
+            if (!confirm('Supprimer cet article et toutes ses photos ?')) return
+            delBtn.disabled=true
+            try {
+                const photos=await listArticlePhotos(id)
+                for (const p of photos) await deletePhotoFile(p.path).catch(()=>{})
+                const arts=await listArticles(); const art=arts.find(x=>x.id===id)
+                if (art?.cover_path) await deletePhotoFile(art.cover_path).catch(()=>{})
+                await deleteArticle(id); await renderArticles()
+            } catch(err) { console.error(err); showError(err?.message||'Erreur'); delBtn.disabled=false }
+            return
+        }
+        const delPhotoBtn=e.target.closest('.art-photo-del')
+        if (delPhotoBtn) {
+            const id=delPhotoBtn.getAttribute('data-art-photo-id'), path=delPhotoBtn.getAttribute('data-art-photo-path')
+            if (!id||!confirm('Supprimer cette photo ?')) return
+            delPhotoBtn.disabled=true
+            try { await deleteArticlePhotoRow(id); await deletePhotoFile(path); delPhotoBtn.closest('.art-photo-thumb')?.remove() }
+            catch(err) { console.error(err); showError(err?.message||'Erreur'); delPhotoBtn.disabled=false }
+            return
+        }
+        const header=e.target.closest('.article-mgmt-header')
+        if (header) {
+            const id=header.getAttribute('data-article-id')
+            const body=document.getElementById(`art-body-${id}`)
+            body.classList.toggle('open')
+            if (body.classList.contains('open')) await renderArticlePhotos(id,document.getElementById(`art-photos-${id}`))
+        }
     })
-    listGallery.addEventListener('click', (e) => handleDelete(e, PHOTO_CATEGORY.GALLERY, listGallery, countGallery))
-    document.getElementById('refresh-gallery').addEventListener('click', () => renderList(PHOTO_CATEGORY.GALLERY, listGallery, countGallery))
 
-    // ── Carousel tab ──────────────────────────────────────────────────────────
-    const listCarousel  = document.getElementById('list-carousel')
-    const countCarousel = document.getElementById('count-carousel')
-
-    document.getElementById('upload-form-carousel').addEventListener('submit', async (e) => {
+    listArticlesEl.addEventListener('submit', async e => {
+        const photoForm=e.target.closest('.art-photo-upload-form'), coverForm=e.target.closest('.art-cover-upload-form')
+        if (!photoForm && !coverForm) return
         e.preventDefault()
-        await handleUpload({ form: e.target, titleId: 'carousel-title', fileId: 'carousel-file',
-            btnId: 'upload-btn-carousel', labelId: 'uploadLabelCarousel', spinnerId: 'uploadSpinnerCarousel',
-            category: PHOTO_CATEGORY.CAROUSEL, listEl: listCarousel, countEl: countCarousel })
+        const form=photoForm||coverForm, articleId=form.getAttribute('data-article-id')
+        const fileInput=form.querySelector('input[type=file]'), file=fileInput?.files[0]
+        const submitBtn=form.querySelector('button[type=submit]')
+        if (!file) { showError('Veuillez sélectionner un fichier.'); return }
+        submitBtn.disabled=true
+        try {
+            const path=await uploadPhotoFile(file,'articles')
+            if (photoForm) {
+                const caption=form.querySelector('input[name=caption]')?.value||null
+                const sortOrder=(await listArticlePhotos(articleId)).length
+                await insertArticlePhotoRow({article_id:articleId,path,caption,sort_order:sortOrder})
+                form.reset(); await renderArticlePhotos(articleId,document.getElementById(`art-photos-${articleId}`))
+            } else {
+                await updateArticle(articleId,{cover_path:path}); form.reset(); await renderArticles()
+            }
+        } catch(err) { console.error(err); showError(err?.message||'Erreur upload') }
+        finally { submitBtn.disabled=false }
     })
-    listCarousel.addEventListener('click', (e) => handleDelete(e, PHOTO_CATEGORY.CAROUSEL, listCarousel, countCarousel))
-    document.getElementById('refresh-carousel').addEventListener('click', () => renderList(PHOTO_CATEGORY.CAROUSEL, listCarousel, countCarousel))
 
-    // ── Security tab ──────────────────────────────────────────────────────────
-    document.getElementById('password-form').addEventListener('submit', async (e) => {
-        e.preventDefault()
-        clearError()
-        const newPassword = document.getElementById('new-password').value
+    document.getElementById('article-create-form').addEventListener('submit', async e => {
+        e.preventDefault(); clearError()
+        const title=document.getElementById('art-title').value.trim()
+        const desc=document.getElementById('art-desc').value.trim()
+        const file=document.getElementById('art-cover-file').files[0]
+        const btn=document.getElementById('article-create-btn'), label=document.getElementById('artCreateLabel'), spinner=document.getElementById('artCreateSpinner')
+        if (!title) { showError('Le titre est requis.'); return }
+        btn.disabled=true; label.style.display='none'; spinner.style.display='inline-block'
+        try {
+            let cover_path=null; if (file) cover_path=await uploadPhotoFile(file,'articles')
+            await insertArticle({title,description:desc||null,cover_path})
+            e.target.reset()
+            document.querySelectorAll('.atelier-tab').forEach(t=>t.classList.remove('active'))
+            document.querySelectorAll('.tab-pane').forEach(p=>p.classList.add('d-none'))
+            document.querySelector('[data-tab="articles"]').classList.add('active')
+            document.getElementById('tab-articles').classList.remove('d-none')
+            await renderArticles()
+        } catch(err) { console.error(err); showError(err?.message||'Erreur création') }
+        finally { btn.disabled=false; label.style.display='inline'; spinner.style.display='none' }
+    })
+
+    document.getElementById('refresh-articles').addEventListener('click', renderArticles)
+
+    // Sécurité
+    document.getElementById('password-form').addEventListener('submit', async e => {
+        e.preventDefault(); clearError()
         if (!confirm('Confirmer le changement de mot de passe ?')) return
-        const label = document.getElementById('pwdLabel'), spinner = document.getElementById('pwdSpinner')
-        const btn   = document.getElementById('password-btn')
-        btn.disabled = true; label.style.display = 'none'; spinner.style.display = 'inline-block'
-        try { await updateMyPassword(newPassword); e.target.reset(); alert('Mot de passe mis à jour ✓') }
-        catch (err) { console.error(err); showError(err?.message || 'Erreur mise à jour') }
-        finally { btn.disabled = false; label.style.display = 'inline'; spinner.style.display = 'none' }
+        const label=document.getElementById('pwdLabel'), spinner=document.getElementById('pwdSpinner'), btn=document.getElementById('password-btn')
+        btn.disabled=true; label.style.display='none'; spinner.style.display='inline-block'
+        try { await updateMyPassword(document.getElementById('new-password').value); e.target.reset(); alert('Mot de passe mis à jour ✓') }
+        catch(err) { console.error(err); showError(err?.message||'Erreur') }
+        finally { btn.disabled=false; label.style.display='inline'; spinner.style.display='none' }
     })
-
     document.getElementById('toggle-password').addEventListener('click', () => {
-        const input = document.getElementById('new-password')
-        const isHidden = input.type === 'password'
-        input.type = isHidden ? 'text' : 'password'
-        document.getElementById('toggle-password').textContent = isHidden ? '🙈' : '👁'
+        const input=document.getElementById('new-password'), hidden=input.type==='password'
+        input.type=hidden?'text':'password'; document.getElementById('toggle-password').textContent=hidden?'🙈':'👁'
     })
 
-    // ── Init ──────────────────────────────────────────────────────────────────
+    // Init
     async function initAdmin() {
-        const session = await requireAdmin()
-        if (!session) return
-        const userInfoEl = document.getElementById('user-info')
-        userInfoEl.classList.remove('d-none')
-        userInfoEl.innerHTML = `Connecté : <strong>${session.user.email}</strong>`
-        await renderList(PHOTO_CATEGORY.GALLERY, listGallery, countGallery)
-        await renderList(PHOTO_CATEGORY.CAROUSEL, listCarousel, countCarousel)
+        const session=await requireAdmin(); if (!session) return
+        const el=document.getElementById('user-info'); el.classList.remove('d-none')
+        el.innerHTML=`Connecté : <strong>${session.user.email}</strong>`
+        await renderList(PHOTO_CATEGORY.GALLERY,listGallery,countGallery)
+        await renderList(PHOTO_CATEGORY.CAROUSEL,listCarousel,countCarousel)
     }
-
     initAdmin()
 </script>
 </body>
