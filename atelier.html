@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="assets/logo.png" type="image/png">
     <style>
         .atelier-nav { background:rgba(8,12,26,.80); border-bottom:1px solid rgba(191,233,255,.12); backdrop-filter:blur(10px); padding:14px 0; position:sticky; top:0; z-index:100; }
         .atelier-brand { font-family:Cinzel,serif; font-size:.85rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(191,233,255,.75); }
@@ -58,8 +59,7 @@
     <div class="container d-flex justify-content-between align-items-center">
         <span class="atelier-brand"><span>✦</span> Atelier</span>
         <div class="atelier-tabs">
-            <button class="atelier-tab active" data-tab="gallery">🖼️ Galerie</button>
-            <button class="atelier-tab" data-tab="carousel">🎠 Carrousel</button>
+            <button class="atelier-tab active" data-tab="carousel">🎠 Carrousel</button>
             <button class="atelier-tab" data-tab="articles">📝 Articles</button>
             <button class="atelier-tab" data-tab="security">🔒 Sécurité</button>
         </div>
@@ -72,42 +72,8 @@
 <div id="atelier-error" class="atelier-error"></div>
 <div id="user-info" class="atelier-user-info d-none"></div>
 
-<!-- TAB: Galerie -->
-<div id="tab-gallery" class="tab-pane">
-    <div class="row g-4">
-        <div class="col-lg-4">
-            <div class="atelier-panel">
-                <p class="atelier-panel-title">✦ Ajouter à la galerie</p>
-                <form id="upload-form-gallery">
-                    <div class="cform-group">
-                        <label class="cform-label">Titre <span style="opacity:.5">(optionnel)</span></label>
-                        <input type="text" id="gallery-title" class="cform-input" placeholder="Ex : Book Nook forêt enchantée">
-                    </div>
-                    <div class="cform-group" style="margin-top:12px;">
-                        <label class="cform-label">Fichier image</label>
-                        <input type="file" id="gallery-file" class="cform-input" accept="image/*" required style="padding:7px 13px;cursor:pointer;">
-                    </div>
-                    <button type="submit" class="btn-atelier-primary" style="margin-top:18px;" id="upload-btn-gallery">
-                        <span id="uploadLabelGallery">↑ Uploader</span>
-                        <span id="uploadSpinnerGallery" class="cform-spinner" style="display:none;"></span>
-                    </button>
-                </form>
-                <hr class="atelier-divider">
-                <button class="btn-atelier-ghost" id="refresh-gallery">↻ Rafraîchir</button>
-            </div>
-        </div>
-        <div class="col-lg-8">
-            <div class="photos-header">
-                <span class="atelier-panel-title" style="margin:0;">✦ Photos de la galerie</span>
-                <span class="photos-count" id="count-gallery"></span>
-            </div>
-            <div id="list-gallery" class="row g-3"></div>
-        </div>
-    </div>
-</div>
-
 <!-- TAB: Carrousel -->
-<div id="tab-carousel" class="tab-pane d-none">
+<div id="tab-carousel" class="tab-pane">
     <div class="row g-4">
         <div class="col-lg-4">
             <div class="atelier-panel">
@@ -158,6 +124,10 @@
                     <div class="cform-group" style="margin-top:12px;">
                         <label class="cform-label">Photo de couverture <span style="opacity:.5">(optionnel)</span></label>
                         <input type="file" id="art-cover-file" class="cform-input" accept="image/*" style="padding:7px 13px;cursor:pointer;">
+                    </div>
+                    <div class="cform-group" style="margin-top:12px;">
+                        <label class="cform-label">Photos supplémentaires <span style="opacity:.5">(optionnel, multiple)</span></label>
+                        <input type="file" id="art-extra-photos" class="cform-input" accept="image/*" multiple style="padding:7px 13px;cursor:pointer;">
                     </div>
                     <button type="submit" class="btn-atelier-primary" style="margin-top:18px;" id="article-create-btn">
                         <span id="artCreateLabel">✦ Créer l'article</span>
@@ -267,11 +237,6 @@
         finally { btn.disabled=false; label.style.display='inline'; spinner.style.display='none' }
     }
 
-    const listGallery=document.getElementById('list-gallery'), countGallery=document.getElementById('count-gallery')
-    document.getElementById('upload-form-gallery').addEventListener('submit',async e=>{e.preventDefault();await handleUpload({form:e.target,titleId:'gallery-title',fileId:'gallery-file',btnId:'upload-btn-gallery',labelId:'uploadLabelGallery',spinnerId:'uploadSpinnerGallery',category:PHOTO_CATEGORY.GALLERY,listEl:listGallery,countEl:countGallery})})
-    listGallery.addEventListener('click',e=>handleDelete(e,PHOTO_CATEGORY.GALLERY,listGallery,countGallery))
-    document.getElementById('refresh-gallery').addEventListener('click',()=>renderList(PHOTO_CATEGORY.GALLERY,listGallery,countGallery))
-
     const listCarousel=document.getElementById('list-carousel'), countCarousel=document.getElementById('count-carousel')
     document.getElementById('upload-form-carousel').addEventListener('submit',async e=>{e.preventDefault();await handleUpload({form:e.target,titleId:'carousel-title',fileId:'carousel-file',btnId:'upload-btn-carousel',labelId:'uploadLabelCarousel',spinnerId:'uploadSpinnerCarousel',category:PHOTO_CATEGORY.CAROUSEL,listEl:listCarousel,countEl:countCarousel})})
     listCarousel.addEventListener('click',e=>handleDelete(e,PHOTO_CATEGORY.CAROUSEL,listCarousel,countCarousel))
@@ -314,17 +279,32 @@
                         <div><div class="article-mgmt-title">${escapeHtml(art.title)}</div><div class="article-mgmt-meta">${date}</div></div>
                         <div class="d-flex gap-2">
                             <a href="article.html?id=${art.id}" target="_blank" class="btn-atelier-ghost" style="font-size:.72rem;padding:4px 10px;" onclick="event.stopPropagation()">Voir ↗</a>
-                            <button class="btn-atelier-danger" data-delete-article="${art.id}" onclick="event.stopPropagation()">Supprimer</button>
+                            <button class="btn-atelier-danger" data-delete-article="${art.id}">Supprimer</button>
                         </div>
                     </div>
                     <div class="article-mgmt-body" id="art-body-${art.id}">
+                        <div id="art-edit-${art.id}" style="padding:12px 0 4px;">
+                            <p style="font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">✦ Modifier l'article</p>
+                            <form class="art-edit-form" data-article-id="${art.id}">
+                                <div class="cform-group">
+                                    <label class="cform-label">Titre</label>
+                                    <input type="text" name="title" class="cform-input" value="${escapeHtml(art.title)}" required>
+                                </div>
+                                <div class="cform-group" style="margin-top:8px;">
+                                    <label class="cform-label">Description</label>
+                                    <textarea name="description" class="cform-input cform-textarea" style="min-height:70px;">${escapeHtml(art.description||'')}</textarea>
+                                </div>
+                                <button type="submit" class="btn-atelier-primary" style="margin-top:10px;">&#10003; Enregistrer</button>
+                            </form>
+                            <hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
+                        </div>
                         <div id="art-cover-${art.id}"></div>
                         <div id="art-photos-${art.id}"></div>
                         <hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
                         <p style="font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">Ajouter une photo</p>
                         <form class="art-photo-upload-form d-flex gap-2 flex-wrap align-items-center" data-article-id="${art.id}">
                             <input type="text" placeholder="Légende (optionnel)" class="cform-input" name="caption" style="flex:1;min-width:130px;">
-                            <input type="file" accept="image/*" class="cform-input art-photo-file" style="flex:1;min-width:130px;padding:6px 10px;cursor:pointer;">
+                            <input type="file" accept="image/*" multiple class="cform-input art-photo-file" style="flex:1;min-width:130px;padding:6px 10px;cursor:pointer;">
                             <button type="submit" class="btn-atelier-primary" style="width:auto;padding:9px 16px;">↑</button>
                         </form>
                         ${hasCover?'':
@@ -381,21 +361,39 @@
 
     listArticlesEl.addEventListener('submit', async e => {
         const photoForm=e.target.closest('.art-photo-upload-form'), coverForm=e.target.closest('.art-cover-upload-form')
-        if (!photoForm && !coverForm) return
+        const editForm=e.target.closest('.art-edit-form')
+        if (!photoForm && !coverForm && !editForm) return
         e.preventDefault()
+        if (editForm) {
+            const id=editForm.getAttribute('data-article-id')
+            const title=editForm.querySelector('[name=title]').value.trim()
+            const description=editForm.querySelector('[name=description]').value.trim()
+            if (!title) { showError('Le titre est requis.'); return }
+            const btn=editForm.querySelector('button[type=submit]')
+            btn.disabled=true
+            try { await updateArticle(id,{title,description:description||null}); await renderArticles() }
+            catch(err) { console.error(err); showError(err?.message||'Erreur modification') }
+            finally { btn.disabled=false }
+            return
+        }
         const form=photoForm||coverForm, articleId=form.getAttribute('data-article-id')
-        const fileInput=form.querySelector('input[type=file]'), file=fileInput?.files[0]
+        const fileInput=form.querySelector('input[type=file]')
+        const files=fileInput ? Array.from(fileInput.files) : []
         const submitBtn=form.querySelector('button[type=submit]')
-        if (!file) { showError('Veuillez sélectionner un fichier.'); return }
+        if (!files.length) { showError('Veuillez sélectionner un fichier.'); return }
         submitBtn.disabled=true
         try {
-            const path=await uploadPhotoFile(file,'articles')
             if (photoForm) {
                 const caption=form.querySelector('input[name=caption]')?.value||null
-                const sortOrder=(await listArticlePhotos(articleId)).length
-                await insertArticlePhotoRow({article_id:articleId,path,caption,sort_order:sortOrder})
+                let sortOrder=(await listArticlePhotos(articleId)).length
+                for (const file of files) {
+                    const path=await uploadPhotoFile(file,'articles')
+                    await insertArticlePhotoRow({article_id:articleId,path,caption,sort_order:sortOrder})
+                    sortOrder++
+                }
                 form.reset(); await renderArticlePhotos(articleId,document.getElementById(`art-photos-${articleId}`))
             } else {
+                const path=await uploadPhotoFile(files[0],'articles')
                 await updateArticle(articleId,{cover_path:path}); form.reset(); await renderArticles()
             }
         } catch(err) { console.error(err); showError(err?.message||'Erreur upload') }
@@ -407,12 +405,19 @@
         const title=document.getElementById('art-title').value.trim()
         const desc=document.getElementById('art-desc').value.trim()
         const file=document.getElementById('art-cover-file').files[0]
+        const extraFiles=Array.from(document.getElementById('art-extra-photos').files)
         const btn=document.getElementById('article-create-btn'), label=document.getElementById('artCreateLabel'), spinner=document.getElementById('artCreateSpinner')
         if (!title) { showError('Le titre est requis.'); return }
         btn.disabled=true; label.style.display='none'; spinner.style.display='inline-block'
         try {
             let cover_path=null; if (file) cover_path=await uploadPhotoFile(file,'articles')
-            await insertArticle({title,description:desc||null,cover_path})
+            const newArt=await insertArticle({title,description:desc||null,cover_path})
+            let sortOrder=0
+            for (const f of extraFiles) {
+                const path=await uploadPhotoFile(f,'articles')
+                await insertArticlePhotoRow({article_id:newArt.id,path,caption:null,sort_order:sortOrder})
+                sortOrder++
+            }
             e.target.reset()
             document.querySelectorAll('.atelier-tab').forEach(t=>t.classList.remove('active'))
             document.querySelectorAll('.tab-pane').forEach(p=>p.classList.add('d-none'))
@@ -445,8 +450,8 @@
         const session=await requireAdmin(); if (!session) return
         const el=document.getElementById('user-info'); el.classList.remove('d-none')
         el.innerHTML=`Connecté : <strong>${session.user.email}</strong>`
-        await renderList(PHOTO_CATEGORY.GALLERY,listGallery,countGallery)
         await renderList(PHOTO_CATEGORY.CAROUSEL,listCarousel,countCarousel)
+        await renderArticles()
     }
     initAdmin()
 </script>

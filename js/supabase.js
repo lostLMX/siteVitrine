@@ -2,7 +2,7 @@
 // Admins : ajoutez/retirez des utilisateurs directement dans le dashboard Supabase
 // (Authentication > Users) — aucun email à coder en dur ici.
 const SUPABASE_URL      = 'https://vgvudfjdibieuvukclqu.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndnVkZmpkaWJpZXV2dWtjbHF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMjQ4ODIsImV4cCI6MjA4NzcwMDg4Mn0.Ta1wTeLwDP4dAKaAhmA1BfqeRNNRSpVtL0C3zafzxXM'
+const SUPABASE_ANON_KEY = 'sb_publishable_OOK6f85ZrW9yxj58lTVBfw__hP0m_oo'
 const PHOTOS_BUCKET     = 'photos'
 const PHOTOS_TABLE      = 'photos'
 const SIGNED_URL_TTL    = 60 * 60        // 1 heure en secondes

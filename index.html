@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="assets/logo.png" type="image/png">
 </head>
 <body class="theme-astra">
 <div class="stars" aria-hidden="true"></div>
@@ -36,28 +37,24 @@
 
 <header id="top" class="hero-astra">
     <div class="container hero-inner">
-        <div class="row align-items-center g-4">
-            <div class="col-lg-7">
-                <p class="hero-kicker" data-reveal data-i18n="hero.kicker">Vitrine · Galerie · Book Nook</p>
-                <h1 class="hero-title" data-reveal>Astra Draconis</h1>
-                <p class="hero-subtitle" data-reveal data-i18n="hero.subtitle">
-                    Book Nook artisanaux au souffle médiéval, baignés d'azur astral.
-                    Une galerie à parcourir comme un grimoire.
-                </p>
-                <div class="d-flex gap-2 flex-wrap" data-reveal>
-                    <a class="btn btn-ice" href="galerie.html" data-i18n="hero.cta.gallery">Voir la galerie</a>
-                    <a class="btn btn-outline-ice" href="presentation.html" data-i18n="hero.cta.about">En savoir plus</a>
-                    <a class="btn btn-outline-ice" href="contact.html" data-i18n="hero.cta.contact">Nous contacter</a>
+        <div class="text-center">
+            <div class="hero-logo mx-auto" data-reveal style="max-width:420px;margin-bottom:32px;">
+                <img src="assets/logo.png" alt="Logo Astra Draconis" onerror="this.closest('.hero-logo').classList.add('is-missing')">
+                <div class="hero-logo-fallback" aria-hidden="true">
+                    <div class="sigil">✷</div>
+                    <div class="sigil-text">Ajoute ton logo dans <code>assets/logo.png</code></div>
                 </div>
             </div>
-            <div class="col-lg-5">
-                <div class="hero-logo" data-reveal>
-                    <img src="assets/logo.png" alt="Logo Astra Draconis" onerror="this.closest('.hero-logo').classList.add('is-missing')">
-                    <div class="hero-logo-fallback" aria-hidden="true">
-                        <div class="sigil">✷</div>
-                        <div class="sigil-text">Ajoute ton logo dans <code>assets/logo.png</code></div>
-                    </div>
-                </div>
+            <p class="hero-kicker" data-reveal data-i18n="hero.kicker">Vitrine · Galerie · Book Nook</p>
+            <h1 class="hero-title" data-reveal>Astra Draconis</h1>
+            <p class="hero-subtitle mx-auto" data-reveal data-i18n="hero.subtitle" style="max-width:56ch;">
+                Book Nook artisanaux au souffle médiéval, baignés d'azur astral.
+                Une galerie à parcourir comme un grimoire.
+            </p>
+            <div class="d-flex gap-2 flex-wrap justify-content-center" data-reveal style="margin-top:16px;">
+                <a class="btn btn-ice" href="galerie.html" data-i18n="hero.cta.gallery">Voir la galerie</a>
+                <a class="btn btn-outline-ice" href="presentation.html" data-i18n="hero.cta.about">En savoir plus</a>
+                <a class="btn btn-outline-ice" href="contact.html" data-i18n="hero.cta.contact">Nous contacter</a>
             </div>
         </div>
     </div>

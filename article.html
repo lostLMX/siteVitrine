@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,33 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <style>
+        .article-thumb-strip {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .article-thumb {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 7px;
+            border: 2px solid rgba(191,233,255,.14);
+            cursor: pointer;
+            transition: border-color 180ms ease, transform 180ms ease;
+            flex-shrink: 0;
+        }
+        .article-thumb:hover {
+            border-color: rgba(158,215,255,.65);
+            transform: translateY(-2px);
+        }
+        .article-thumb.active {
+            border-color: rgba(158,215,255,.85);
+            box-shadow: 0 0 0 2px rgba(158,215,255,.25);
+        }
+    </style>
 </head>
 <body class="theme-astra">
 <div class="stars" aria-hidden="true"></div>
@@ -61,6 +88,7 @@
                         </div>
                     </div>
                     <p class="article-photo-count" id="photoCount"></p>
+                    <div class="article-thumb-strip" id="thumbStrip"></div>
                 </div>
             </div>
         </div>
@@ -150,14 +178,38 @@
                 }
 
                 const countEl = document.getElementById('photoCount')
+                const thumbStrip = document.getElementById('thumbStrip')
+                const carouselEl = document.getElementById('articleCarousel')
+
                 const updateCount = () => {
-                    const carousel = bootstrap.Carousel.getInstance(document.getElementById('articleCarousel'))
+                    const carousel = bootstrap.Carousel.getInstance(carouselEl)
                     const idx = carousel ? carousel._activeElement
                         ? Array.from(carouselInner.children).indexOf(carousel._activeElement) + 1
                         : 1 : 1
                     countEl.textContent = `${idx} / ${photos.length}`
+                    thumbStrip.querySelectorAll('.article-thumb').forEach((t, i) => {
+                        t.classList.toggle('active', i === idx - 1)
+                    })
                 }
-                document.getElementById('articleCarousel').addEventListener('slid.bs.carousel', updateCount)
+
+                for (let i = 0; i < photos.length; i++) {
+                    const photo = photos[i]
+                    let turl = null
+                    try { turl = await createSignedPhotoUrl(photo.path) } catch (_) { continue }
+                    const thumb = document.createElement('img')
+                    thumb.src = turl
+                    thumb.alt = photo.caption || ''
+                    thumb.className = 'article-thumb' + (i === 0 ? ' active' : '')
+                    thumb.loading = 'lazy'
+                    const idx = i
+                    thumb.addEventListener('click', () => {
+                        const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carouselEl)
+                        bsCarousel.to(idx)
+                    })
+                    thumbStrip.appendChild(thumb)
+                }
+
+                carouselEl.addEventListener('slid.bs.carousel', updateCount)
                 updateCount()
             }
 
