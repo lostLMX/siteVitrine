@@ -1,6 +1,7 @@
 // ── Translations ──────────────────────────────────────────────────────────────
 const TRANSLATIONS = {
     fr: {
+        'nav.home':     'Accueil',
         'nav.about':    'Présentation',
         'nav.gallery':  'Galerie',
         'nav.contact':  'Contact',
@@ -52,6 +53,7 @@ const TRANSLATIONS = {
 
         'about.page.title':       'Présentation',
         'about.kicker':           'L\'artisan derrière Astra Draconis',
+        'about.intro.lead':       'Une passion transmise à travers chaque pièce.',
         'about.intro':            'Passionné(e) de fantasy, de médiéval et de création artisanale, je confectionne à la main des Book Nooks uniques qui transforment vos étagères en portails vers d\'autres mondes.',
         'about.craft.title':      'L\'Artisanat',
         'about.craft.text':       'Chaque pièce est imaginée, sculptée et peinte avec soin. Des matériaux sélectionnés, des détails minutieux, une âme inimitable.',
@@ -67,6 +69,7 @@ const TRANSLATIONS = {
     },
     en: {
         'nav.about':    'About',
+        'nav.home':     'Home',
         'nav.gallery':  'Gallery',
         'nav.contact':  'Contact',
 
@@ -117,6 +120,7 @@ const TRANSLATIONS = {
 
         'about.page.title':       'About',
         'about.kicker':           'The artisan behind Astra Draconis',
+        'about.intro.lead':       'A passion poured into every piece.',
         'about.intro':            'Passionate about fantasy, medieval worlds and handcraft, I create unique Book Nooks that transform your shelves into portals to other worlds.',
         'about.craft.title':      'The Craft',
         'about.craft.text':       'Every piece is imagined, sculpted and painted with care. Carefully selected materials, minute details, an inimitable soul.',
@@ -157,8 +161,11 @@ function applyTranslations() {
         const text = TRANSLATIONS[currentLang]?.[key]
         if (text !== undefined) el.setAttribute('aria-label', text)
     })
+    const label = currentLang === 'fr' ? 'EN' : 'FR'
     const langBtn = document.getElementById('langBtn')
-    if (langBtn) langBtn.textContent = currentLang === 'fr' ? 'EN' : 'FR'
+    if (langBtn) langBtn.textContent = label
+    const langBtnMobile = document.getElementById('langBtnMobile')
+    if (langBtnMobile) langBtnMobile.textContent = label
     document.documentElement.lang = currentLang
 }
 
