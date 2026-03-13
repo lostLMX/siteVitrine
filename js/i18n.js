@@ -52,7 +52,7 @@ const TRANSLATIONS = {
         'contact.social.intro':            'Retrouvez-moi sur les réseaux ou écrivez-moi directement ✨',
 
         'about.page.title':       'Présentation',
-        'about.lead':             'Astra Draconis est né pour insuffler l'esprit du médiéval-fantastique chez les passionnés d'univers féeriques.',
+        'about.lead':             'Astra Draconis est né pour insuffler l\'esprit du médiéval-fantastique chez les passionnés d\'univers féeriques.',
         'about.kicker':           'Un voyage entre médiéval et astral',
         'about.intro.lead':       'Une passion transmise à travers chaque pièce.',
         'about.intro':            'Passionné(e) de fantasy, de médiéval et de création artisanale, je confectionne à la main des Book Nooks uniques qui transforment vos étagères en portails vers d\'autres mondes.',

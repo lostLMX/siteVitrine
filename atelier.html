@@ -256,12 +256,18 @@
             if (!photos.length) { containerEl.innerHTML='<div style="color:rgba(191,233,255,.35);font-size:.8rem;">Aucune photo encore.</div>'; return }
             const grid = document.createElement('div')
             grid.className = 'article-photos-grid'
+            let failCount = 0, lastErr = null
             for (const photo of photos) {
-                let url=null; try { url=await createSignedPhotoUrl(photo.path) } catch(_){continue}
+                let url=null; try { url=await createSignedPhotoUrl(photo.path) } catch(err){ console.error('[atelier] photo signedUrl failed:', photo.path, err); lastErr=err; failCount++; continue }
+                if (!url) { failCount++; continue }
                 const thumb=document.createElement('div'); thumb.className='art-photo-thumb'
                 thumb.innerHTML=`<img src="${url}" alt="${escapeHtml(photo.caption||'')}" loading="lazy">
                     <button class="art-photo-del" data-art-photo-id="${photo.id}" data-art-photo-path="${escapeHtml(photo.path)}">✕</button>`
                 grid.appendChild(thumb)
+            }
+            if (failCount === photos.length && lastErr) {
+                containerEl.innerHTML=`<div style="color:rgba(255,140,140,.7);font-size:.8rem;">Erreur chargement photos : ${escapeHtml(lastErr.message)}</div>`
+                return
             }
             containerEl.innerHTML=''; containerEl.appendChild(grid)
         } catch(e) { containerEl.innerHTML=`<div style="color:rgba(255,140,140,.7);font-size:.8rem;">${escapeHtml(e.message)}</div>` }
@@ -323,7 +329,7 @@
                     try {
                         const url=await createSignedPhotoUrl(art.cover_path)
                         document.getElementById(`art-cover-${art.id}`).innerHTML=`<img src="${url}" class="article-mgmt-cover" alt="Couverture"><p style="font-size:.72rem;color:rgba(191,233,255,.4);margin:0 0 8px;">Couverture actuelle</p>`
-                    } catch(_) {}
+                    } catch(err) { console.error('[atelier] cover signedUrl failed:', art.cover_path, err); }
                 }
             }
         } catch(e) { console.error(e); showError(e?.message||'Erreur articles') }
@@ -450,11 +456,16 @@
 
     // Init
     async function initAdmin() {
-        const session=await requireAdmin(); if (!session) return
-        const el=document.getElementById('user-info'); el.classList.remove('d-none')
-        el.innerHTML=`Connecté : <strong>${session.user.email}</strong>`
-        await renderList(PHOTO_CATEGORY.CAROUSEL,listCarousel,countCarousel)
-        await renderArticles()
+        try {
+            const session=await requireAdmin(); if (!session) return
+            const el=document.getElementById('user-info'); el.classList.remove('d-none')
+            el.innerHTML=`Connecté : <strong>${session.user.email}</strong>`
+            await renderList(PHOTO_CATEGORY.CAROUSEL,listCarousel,countCarousel)
+            await renderArticles()
+        } catch(err) {
+            console.error('[initAdmin]', err)
+            showError('Erreur initialisation : ' + (err?.message || err))
+        }
     }
     initAdmin()
 </script>
