@@ -7,33 +7,158 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="assets/logo.png" type="image/png">
     <style>
-        .article-thumb-strip {
+        /* ── Article detail layout ─────────────────────────────────── */
+        .art-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(191,233,255,.60);
+            font-family: 'Cinzel', serif;
+            font-size: .72rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            text-decoration: none;
+            margin-bottom: 28px;
+            transition: color 180ms ease;
+        }
+        .art-back:hover { color: rgba(191,233,255,.95); }
+
+        .art-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            line-height: 1.1;
+            text-align: center;
+            color: rgba(243,246,255,.96);
+            margin: 0 0 32px;
+        }
+
+        /* ── Main image ─────────────────────────────────────────────── */
+        .art-main-wrap {
+            position: relative;
+            max-width: 720px;
+            margin: 0 auto 20px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(10,16,34,.55);
+            border: 1px solid rgba(191,233,255,.10);
+            box-shadow: 0 32px 90px rgba(0,0,0,.65);
+            aspect-ratio: 4 / 3;
+        }
+        .art-main-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: opacity 240ms ease;
+        }
+        .art-main-img.fading { opacity: 0; }
+        .art-main-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(191,233,255,.20);
+            font-size: 4rem;
+        }
+        .art-main-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 16px;
+            background: linear-gradient(transparent, rgba(4,8,18,.75));
+            color: rgba(210,225,242,.82);
+            font-size: .84rem;
+            font-style: italic;
+            text-align: center;
+            min-height: 0;
+        }
+
+        /* ── Thumbnail carousel ─────────────────────────────────────── */
+        .art-carousel-outer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 720px;
+            margin: 0 auto 32px;
+        }
+        .art-carousel-btn {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border: 1px solid rgba(191,233,255,.22);
+            border-radius: 50%;
+            background: rgba(10,16,34,.55);
+            color: rgba(191,233,255,.70);
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+        }
+        .art-carousel-btn:hover {
+            border-color: rgba(191,233,255,.55);
+            color: rgba(230,238,247,.95);
+            background: rgba(30,50,90,.55);
+        }
+        .art-carousel-btn:disabled {
+            opacity: .30;
+            cursor: default;
+        }
+        .art-carousel-viewport {
+            flex: 1;
+            overflow: hidden;
+        }
+        .art-carousel-track {
             display: flex;
             gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 14px;
+            transition: transform 280ms ease;
         }
-        .article-thumb {
-            width: 80px;
-            height: 60px;
+        .art-thumb {
+            flex-shrink: 0;
+            width: 90px;
+            height: 68px;
             object-fit: cover;
-            border-radius: 7px;
+            border-radius: 8px;
             border: 2px solid rgba(191,233,255,.14);
             cursor: pointer;
-            transition: border-color 180ms ease, transform 180ms ease;
-            flex-shrink: 0;
+            transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
         }
-        .article-thumb:hover {
-            border-color: rgba(158,215,255,.65);
+        .art-thumb:hover {
+            border-color: rgba(158,215,255,.55);
             transform: translateY(-2px);
         }
-        .article-thumb.active {
-            border-color: rgba(158,215,255,.85);
-            box-shadow: 0 0 0 2px rgba(158,215,255,.25);
+        .art-thumb.active {
+            border-color: rgba(158,215,255,.90);
+            box-shadow: 0 0 0 2px rgba(158,215,255,.22), 0 6px 18px rgba(0,0,0,.45);
+        }
+
+        /* ── Description ────────────────────────────────────────────── */
+        .art-desc {
+            max-width: 640px;
+            margin: 0 auto 0;
+            text-align: center;
+            color: rgba(195,206,228,.82);
+            font-size: 1.05rem;
+            line-height: 1.72;
+            font-style: italic;
+        }
+
+        /* ── State helpers ──────────────────────────────────────────── */
+        .art-status {
+            text-align: center;
+            padding: 60px 0;
+            color: rgba(191,233,255,.45);
+            font-style: italic;
         }
     </style>
 </head>
@@ -41,66 +166,89 @@
 <div class="stars" aria-hidden="true"></div>
 <div class="nebula" aria-hidden="true"></div>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-astra sticky-top">
-    <div class="container">
-        <a class="navbar-brand brand-astra" href="index.html">
-            <span class="brand-mark" aria-hidden="true">✦</span>
-            <span class="brand-text">Astra Draconis</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navAstra" aria-controls="navAstra" aria-expanded="false" aria-label="Menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navAstra">
-            <div class="navbar-nav ms-auto gap-lg-2 align-items-lg-center">
-                <a class="nav-link" href="presentation.html" data-i18n="nav.about">Présentation</a>
-                <a class="nav-link active" href="galerie.html" data-i18n="nav.gallery">Galerie</a>
-                <a class="nav-link" href="contact.html" data-i18n="nav.contact">Contact</a>
+<!-- ── Navigation ──────────────────────────────────────────────────── -->
+<nav class="navbar-ad">
+    <div class="navbar-ad-container">
+        <div class="navbar-ad-desktop">
+            <div class="navbar-ad-left">
+                <a class="nav-ad-link" href="index.html" data-i18n="nav.home">Accueil</a>
+                <span class="nav-sep" aria-hidden="true">✦</span>
+                <a class="nav-ad-link" href="presentation.html" data-i18n="nav.about">Présentation</a>
+            </div>
+            <a class="navbar-ad-brand" href="index.html">
+                <img class="navbar-ad-logo" src="assets/logo.png" alt="Astra Draconis">
+                <span class="navbar-ad-name">Astra Draconis</span>
+            </a>
+            <div class="navbar-ad-right">
+                <a class="nav-ad-link active" href="galerie.html" data-i18n="nav.gallery">Galerie</a>
+                <span class="nav-sep" aria-hidden="true">✦</span>
+                <a class="nav-ad-link" href="contact.html" data-i18n="nav.contact">Contact</a>
                 <button id="langBtn" class="lang-btn" onclick="toggleLang()">EN</button>
             </div>
+        </div>
+        <div class="navbar-ad-mobile-header">
+            <a class="navbar-ad-mobile-brand" href="index.html">
+                <img src="assets/logo.png" alt="Astra Draconis">
+                <span>Astra Draconis</span>
+            </a>
+            <button class="navbar-ad-toggle" id="mobileNavBtn" aria-label="Menu">☰</button>
+        </div>
+        <div class="navbar-ad-mobile" id="mobileNav">
+            <a class="nav-ad-link-mobile" href="index.html" data-i18n="nav.home">Accueil</a>
+            <a class="nav-ad-link-mobile" href="presentation.html" data-i18n="nav.about">Présentation</a>
+            <a class="nav-ad-link-mobile active" href="galerie.html" data-i18n="nav.gallery">Galerie</a>
+            <a class="nav-ad-link-mobile" href="contact.html" data-i18n="nav.contact">Contact</a>
+            <button class="lang-btn mt-2" onclick="toggleLang()" id="langBtnMobile">EN</button>
         </div>
     </div>
 </nav>
 
+<!-- ── Article content ─────────────────────────────────────────────── -->
 <section class="section-astra">
     <div class="container">
-        <a class="article-back-btn" href="galerie.html" data-i18n="article.back">← Retour à la galerie</a>
 
-        <div id="article-loading" class="text-secondary" data-i18n="article.loading">Chargement…</div>
-        <div id="article-not-found" class="text-secondary d-none" data-i18n="article.not.found">Article introuvable.</div>
+        <div id="art-loading" class="art-status" data-i18n="article.loading">Chargement…</div>
+        <div id="art-not-found" class="art-status d-none" data-i18n="article.not.found">Article introuvable.</div>
 
-        <div id="article-content" class="d-none">
-            <h1 class="article-detail-title" id="article-title"></h1>
-            <p class="article-detail-desc" id="article-desc"></p>
+        <div id="art-body" class="d-none">
+            <a class="art-back" href="galerie.html" data-i18n="article.back">← Retour à la galerie</a>
 
-            <div class="row">
-                <div class="col-lg-10 col-xl-8">
-                    <div class="article-carousel-wrap">
-                        <div id="articleCarousel" class="carousel slide" data-bs-ride="false">
-                            <div class="carousel-inner" id="carouselInner"></div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#articleCarousel" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Précédent</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#articleCarousel" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Suivant</span>
-                            </button>
-                        </div>
-                    </div>
-                    <p class="article-photo-count" id="photoCount"></p>
-                    <div class="article-thumb-strip" id="thumbStrip"></div>
-                </div>
+            <h1 class="art-title" id="art-title"></h1>
+
+            <!-- Main image -->
+            <div class="art-main-wrap" id="artMainWrap">
+                <img class="art-main-img" id="artMainImg" src="" alt="">
+                <div class="art-main-placeholder d-none" id="artMainPlaceholder">✷</div>
+                <div class="art-main-caption" id="artMainCaption" style="display:none;"></div>
             </div>
+
+            <!-- Thumbnail carousel -->
+            <div class="art-carousel-outer" id="artCarouselOuter" style="display:none;">
+                <button class="art-carousel-btn" id="artPrev" aria-label="Précédent">&#8249;</button>
+                <div class="art-carousel-viewport">
+                    <div class="art-carousel-track" id="artTrack"></div>
+                </div>
+                <button class="art-carousel-btn" id="artNext" aria-label="Suivant">&#8250;</button>
+            </div>
+
+            <!-- Description -->
+            <p class="art-desc" id="art-desc" style="display:none;"></p>
         </div>
+
     </div>
 </section>
 
+<!-- ── Footer ─────────────────────────────────────────────────────── -->
 <footer class="section-astra section-footer">
     <div class="container">
-        <div class="footer-astra" data-reveal>
-            <div class="footer-line">© <span id="year"></span> Astra Draconis</div>
+        <div class="footer-astra">
+            <span class="footer-line">© <span id="year"></span> Astra Draconis</span>
+            <span class="footer-sep" aria-hidden="true">✦</span>
             <a class="footer-line" href="contact.html" data-i18n="nav.contact">Contact</a>
+            <span class="footer-sep" aria-hidden="true">✦</span>
             <a class="footer-line" href="galerie.html" data-i18n="nav.gallery">Galerie</a>
+            <span class="footer-sep" aria-hidden="true">✦</span>
+            <a class="footer-line" href="index.html" data-i18n="footer.back">Retour en haut</a>
         </div>
     </div>
 </footer>
@@ -117,12 +265,89 @@
         return (str || '').replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))
     }
 
+    // ── Carousel state ───────────────────────────────────────────────
+    let photoData   = []
+    let currentIdx  = 0
+    let carouselOff = 0
+    const THUMB_W   = 98  // thumb width + gap
+
+    const mainImg     = document.getElementById('artMainImg')
+    const mainCaption = document.getElementById('artMainCaption')
+    const track       = document.getElementById('artTrack')
+    const prevBtn     = document.getElementById('artPrev')
+    const nextBtn     = document.getElementById('artNext')
+
+    function selectPhoto(idx) {
+        if (idx < 0 || idx >= photoData.length) return
+        currentIdx = idx
+
+        mainImg.classList.add('fading')
+        setTimeout(() => {
+            mainImg.src = photoData[idx].url
+            mainImg.alt = escapeHtml(photoData[idx].caption || '')
+            mainImg.classList.remove('fading')
+        }, 120)
+
+        if (photoData[idx].caption) {
+            mainCaption.textContent = photoData[idx].caption
+            mainCaption.style.display = ''
+        } else {
+            mainCaption.style.display = 'none'
+        }
+
+        track.querySelectorAll('.art-thumb').forEach((t, i) => {
+            t.classList.toggle('active', i === idx)
+        })
+
+        ensureThumbVisible(idx)
+    }
+
+    function ensureThumbVisible(idx) {
+        const viewport = document.querySelector('.art-carousel-viewport')
+        if (!viewport) return
+        const vw = viewport.offsetWidth
+        const maxOff = Math.max(0, photoData.length * THUMB_W - vw)
+        const desired = idx * THUMB_W - vw / 2 + THUMB_W / 2
+        carouselOff = Math.min(Math.max(0, desired), maxOff)
+        track.style.transform = `translateX(-${carouselOff}px)`
+        updateCarouselBtns()
+    }
+
+    function updateCarouselBtns() {
+        const viewport = document.querySelector('.art-carousel-viewport')
+        if (!viewport) return
+        const vw = viewport.offsetWidth
+        const maxOff = Math.max(0, photoData.length * THUMB_W - vw)
+        prevBtn.disabled = carouselOff <= 0
+        nextBtn.disabled = carouselOff >= maxOff
+    }
+
+    prevBtn.addEventListener('click', () => {
+        const viewport = document.querySelector('.art-carousel-viewport')
+        const vw = viewport ? viewport.offsetWidth : 300
+        carouselOff = Math.max(0, carouselOff - vw * 0.75)
+        track.style.transform = `translateX(-${carouselOff}px)`
+        updateCarouselBtns()
+    })
+
+    nextBtn.addEventListener('click', () => {
+        const viewport = document.querySelector('.art-carousel-viewport')
+        const vw = viewport ? viewport.offsetWidth : 300
+        const maxOff = Math.max(0, photoData.length * THUMB_W - vw)
+        carouselOff = Math.min(maxOff, carouselOff + vw * 0.75)
+        track.style.transform = `translateX(-${carouselOff}px)`
+        updateCarouselBtns()
+    })
+
+    window.addEventListener('resize', () => updateCarouselBtns())
+
+    // ── Load article ─────────────────────────────────────────────────
     async function initArticle() {
-        const params    = new URLSearchParams(window.location.search)
-        const articleId = params.get('id')
-        const loadingEl = document.getElementById('article-loading')
-        const notFoundEl = document.getElementById('article-not-found')
-        const contentEl = document.getElementById('article-content')
+        const params     = new URLSearchParams(window.location.search)
+        const articleId  = params.get('id')
+        const loadingEl  = document.getElementById('art-loading')
+        const notFoundEl = document.getElementById('art-not-found')
+        const bodyEl     = document.getElementById('art-body')
 
         if (!articleId) {
             loadingEl.classList.add('d-none')
@@ -135,86 +360,60 @@
             if (!article) throw new Error('not found')
 
             document.title = `Astra Draconis — ${article.title}`
-            document.getElementById('article-title').textContent = article.title
-            const descEl = document.getElementById('article-desc')
+            document.getElementById('art-title').textContent = article.title
+
+            const descEl = document.getElementById('art-desc')
             if (article.description) {
                 descEl.textContent = article.description
-            } else {
-                descEl.style.display = 'none'
+                descEl.style.display = ''
             }
 
             const photos = await listArticlePhotos(articleId)
-            const carouselInner = document.getElementById('carouselInner')
 
             if (photos.length === 0) {
                 if (article.cover_path) {
                     const url = await createSignedPhotoUrl(article.cover_path)
-                    carouselInner.innerHTML = `
-                        <div class="carousel-item active">
-                            <img src="${url}" alt="${escapeHtml(article.title)}">
-                        </div>`
+                    photoData = [{ url, caption: '' }]
                 } else {
-                    carouselInner.innerHTML = `<div class="carousel-item active" style="background:rgba(10,16,34,.55);min-height:300px;display:flex;align-items:center;justify-content:center;color:rgba(191,233,255,.25);font-size:3rem;">✷</div>`
+                    mainImg.classList.add('d-none')
+                    document.getElementById('artMainPlaceholder').classList.remove('d-none')
                 }
-                document.getElementById('photoCount').style.display = 'none'
             } else {
-                const controls = document.querySelectorAll('.carousel-control-prev, .carousel-control-next')
-                if (photos.length === 1) controls.forEach(c => c.style.display = 'none')
+                for (const photo of photos) {
+                    try {
+                        const url = await createSignedPhotoUrl(photo.path)
+                        photoData.push({ url, caption: photo.caption || '' })
+                    } catch (_) {}
+                }
+            }
 
-                for (let i = 0; i < photos.length; i++) {
-                    const photo = photos[i]
-                    let url = null
-                    try { url = await createSignedPhotoUrl(photo.path) } catch (_) { continue }
-                    const item = document.createElement('div')
-                    item.className = 'carousel-item' + (i === 0 ? ' active' : '')
-                    item.innerHTML = `
-                        <img src="${url}" alt="${escapeHtml(photo.caption || article.title)}">
-                        ${photo.caption ? `
-                        <div class="carousel-caption article-carousel-caption">
-                            <p>${escapeHtml(photo.caption)}</p>
-                        </div>` : ''}
-                    `
-                    carouselInner.appendChild(item)
+            if (photoData.length > 0) {
+                mainImg.src = photoData[0].url
+                mainImg.alt = escapeHtml(photoData[0].caption || article.title)
+                if (photoData[0].caption) {
+                    mainCaption.textContent = photoData[0].caption
+                    mainCaption.style.display = ''
                 }
 
-                const countEl = document.getElementById('photoCount')
-                const thumbStrip = document.getElementById('thumbStrip')
-                const carouselEl = document.getElementById('articleCarousel')
+                if (photoData.length > 1) {
+                    document.getElementById('artCarouselOuter').style.display = ''
 
-                const updateCount = () => {
-                    const carousel = bootstrap.Carousel.getInstance(carouselEl)
-                    const idx = carousel ? carousel._activeElement
-                        ? Array.from(carouselInner.children).indexOf(carousel._activeElement) + 1
-                        : 1 : 1
-                    countEl.textContent = `${idx} / ${photos.length}`
-                    thumbStrip.querySelectorAll('.article-thumb').forEach((t, i) => {
-                        t.classList.toggle('active', i === idx - 1)
+                    photoData.forEach((p, i) => {
+                        const thumb = document.createElement('img')
+                        thumb.src     = p.url
+                        thumb.alt     = escapeHtml(p.caption || '')
+                        thumb.className = 'art-thumb' + (i === 0 ? ' active' : '')
+                        thumb.loading = 'lazy'
+                        thumb.addEventListener('click', () => selectPhoto(i))
+                        track.appendChild(thumb)
                     })
-                }
 
-                for (let i = 0; i < photos.length; i++) {
-                    const photo = photos[i]
-                    let turl = null
-                    try { turl = await createSignedPhotoUrl(photo.path) } catch (_) { continue }
-                    const thumb = document.createElement('img')
-                    thumb.src = turl
-                    thumb.alt = photo.caption || ''
-                    thumb.className = 'article-thumb' + (i === 0 ? ' active' : '')
-                    thumb.loading = 'lazy'
-                    const idx = i
-                    thumb.addEventListener('click', () => {
-                        const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carouselEl)
-                        bsCarousel.to(idx)
-                    })
-                    thumbStrip.appendChild(thumb)
+                    updateCarouselBtns()
                 }
-
-                carouselEl.addEventListener('slid.bs.carousel', updateCount)
-                updateCount()
             }
 
             loadingEl.classList.add('d-none')
-            contentEl.classList.remove('d-none')
+            bodyEl.classList.remove('d-none')
 
         } catch (e) {
             console.error(e)
