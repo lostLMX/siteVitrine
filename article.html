@@ -314,32 +314,17 @@
     }
 
     function updateCarouselBtns() {
-        const viewport = document.querySelector('.art-carousel-viewport')
-        if (!viewport) return
-        const vw = viewport.offsetWidth
-        const maxOff = Math.max(0, photoData.length * THUMB_W - vw)
-        prevBtn.disabled = carouselOff <= 0
-        nextBtn.disabled = carouselOff >= maxOff
+        prevBtn.disabled = currentIdx <= 0
+        nextBtn.disabled = currentIdx >= photoData.length - 1
     }
 
     prevBtn.addEventListener('click', () => {
-        const viewport = document.querySelector('.art-carousel-viewport')
-        const vw = viewport ? viewport.offsetWidth : 300
-        carouselOff = Math.max(0, carouselOff - vw * 0.75)
-        track.style.transform = `translateX(-${carouselOff}px)`
-        updateCarouselBtns()
+        if (currentIdx > 0) selectPhoto(currentIdx - 1)
     })
 
     nextBtn.addEventListener('click', () => {
-        const viewport = document.querySelector('.art-carousel-viewport')
-        const vw = viewport ? viewport.offsetWidth : 300
-        const maxOff = Math.max(0, photoData.length * THUMB_W - vw)
-        carouselOff = Math.min(maxOff, carouselOff + vw * 0.75)
-        track.style.transform = `translateX(-${carouselOff}px)`
-        updateCarouselBtns()
+        if (currentIdx < photoData.length - 1) selectPhoto(currentIdx + 1)
     })
-
-    window.addEventListener('resize', () => updateCarouselBtns())
 
     // ── Load article ─────────────────────────────────────────────────
     async function initArticle() {
@@ -379,6 +364,12 @@
                     document.getElementById('artMainPlaceholder').classList.remove('d-none')
                 }
             } else {
+                if (article.cover_path) {
+                    try {
+                        const url = await createSignedPhotoUrl(article.cover_path)
+                        photoData.push({ url, caption: '' })
+                    } catch (_) {}
+                }
                 for (const photo of photos) {
                     try {
                         const url = await createSignedPhotoUrl(photo.path)
