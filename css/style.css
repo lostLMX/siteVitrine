@@ -1466,7 +1466,7 @@ body.theme-astra {
     position: relative;
     color: var(--text, #f3f6ff);
     overflow-x: hidden;
-    background-image: url('../assets/nebuleuse.jpeg');
+    background-image: url('../assets/nebuleuse.png');
     background-size: cover;
     background-position: center center;
     background-attachment: fixed;
