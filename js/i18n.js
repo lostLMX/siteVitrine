@@ -1,4 +1,4 @@
-// ── Translations ──────────────────────────────────────────────────────────────
+﻿// ── Translations ──────────────────────────────────────────────────────────────
 const TRANSLATIONS = {
     fr: {
         'nav.home':     'Accueil',
@@ -52,14 +52,15 @@ const TRANSLATIONS = {
         'contact.social.intro':            'Retrouvez-moi sur les réseaux ou écrivez-moi directement ✨',
 
         'about.page.title':       'Présentation',
-        'about.kicker':           'L\'artisan derrière Astra Draconis',
+        'about.lead':             'Astra Draconis est né pour insuffler l'esprit du médiéval-fantastique chez les passionnés d'univers féeriques.',
+        'about.kicker':           'Un voyage entre médiéval et astral',
         'about.intro.lead':       'Une passion transmise à travers chaque pièce.',
         'about.intro':            'Passionné(e) de fantasy, de médiéval et de création artisanale, je confectionne à la main des Book Nooks uniques qui transforment vos étagères en portails vers d\'autres mondes.',
-        'about.craft.title':      'L\'Artisanat',
+        'about.craft.title':      'Fait main',
         'about.craft.text':       'Chaque pièce est imaginée, sculptée et peinte avec soin. Des matériaux sélectionnés, des détails minutieux, une âme inimitable.',
-        'about.universe.title':   'L\'Univers',
+        'about.universe.title':   'Pièces uniques',
         'about.universe.text':    'Inspirées des donjons, des forêts enchantées, des châteaux médiévaux et des bibliothèques magiques, mes créations invitent à l\'évasion.',
-        'about.custom.title':     'Sur Mesure',
+        'about.custom.title':     'Expédition rapide',
         'about.custom.text':      'Vous avez une idée précise ? Un univers favori ? Je crée des pièces personnalisées selon vos envies et votre imagination.',
         'about.cta.gallery':      'Voir la galerie',
         'about.cta.contact':      'Nous contacter',
@@ -119,14 +120,15 @@ const TRANSLATIONS = {
         'contact.social.intro':            'Find me on social media or write directly ✨',
 
         'about.page.title':       'About',
-        'about.kicker':           'The artisan behind Astra Draconis',
+        'about.lead':             'Astra Draconis was born to breathe medieval-fantasy spirit into lovers of enchanted worlds.',
+        'about.kicker':           'A journey between medieval and astral',
         'about.intro.lead':       'A passion poured into every piece.',
         'about.intro':            'Passionate about fantasy, medieval worlds and handcraft, I create unique Book Nooks that transform your shelves into portals to other worlds.',
-        'about.craft.title':      'The Craft',
+        'about.craft.title':      'Handmade',
         'about.craft.text':       'Every piece is imagined, sculpted and painted with care. Carefully selected materials, minute details, an inimitable soul.',
-        'about.universe.title':   'The Universe',
+        'about.universe.title':   'Unique pieces',
         'about.universe.text':    'Inspired by dungeons, enchanted forests, medieval castles and magical libraries, my creations invite you to escape.',
-        'about.custom.title':     'Custom Orders',
+        'about.custom.title':     'Fast shipping',
         'about.custom.text':      'Have a specific idea? A favourite universe? I create personalised pieces tailored to your wishes and imagination.',
         'about.cta.gallery':      'View the gallery',
         'about.cta.contact':      'Contact us',

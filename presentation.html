@@ -10,6 +10,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="assets/logo.png" type="image/png">
+    <style>
+        .pres-hero { text-align:center; padding:64px 0 48px; }
+        .pres-hero-title { font-family:'Cinzel',serif; font-size:clamp(2.6rem,6vw,4.8rem); font-weight:400; color:#e8d08a; text-shadow:0 0 40px rgba(201,168,76,.35); letter-spacing:.04em; line-height:1.1; margin:0 0 20px; }
+        .pres-hero-divider { display:flex; align-items:center; justify-content:center; gap:16px; }
+        .pres-hero-divider::before,.pres-hero-divider::after { content:''; flex:1; max-width:120px; height:1px; }
+        .pres-hero-divider::before { background:linear-gradient(to right, transparent, rgba(138,110,47,.8)); }
+        .pres-hero-divider::after  { background:linear-gradient(to left,  transparent, rgba(138,110,47,.8)); }
+        .pres-hero-sub { font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:1.15rem; color:#c9a84c; letter-spacing:.06em; }
+
+        .pres-content-row { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; padding:16px 0 56px; }
+        @media(max-width:700px){ .pres-content-row { grid-template-columns:1fr; gap:36px; } }
+        .pres-lead { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.35rem; font-weight:500; line-height:1.55; color:rgba(212,201,176,1); margin-bottom:22px; }
+        .pres-body { font-family:'Cormorant Garamond',Georgia,serif; font-size:.98rem; line-height:1.9; color:rgba(157,148,128,.95); }
+        .book-nook-wrap { position:relative; border-radius:6px; overflow:hidden; box-shadow:0 0 60px rgba(74,158,202,.18),0 0 120px rgba(0,0,0,.8),inset 0 0 30px rgba(0,0,0,.5); aspect-ratio:3/4; background:#0a1a2e; }
+        .book-nook-wrap canvas { width:100%; height:100%; display:block; }
+
+        .pres-ornament { display:flex; align-items:center; gap:20px; padding:0 0 48px; }
+        .pres-ornament .po-line { flex:1; height:1px; background:linear-gradient(to right, transparent, rgba(138,110,47,.6) 40%, transparent); }
+        .po-diamond { width:10px; height:10px; background:rgba(138,110,47,.8); transform:rotate(45deg); position:relative; }
+        .po-diamond::before,.po-diamond::after { content:''; position:absolute; width:4px; height:4px; background:rgba(138,110,47,.7); top:3px; }
+        .po-diamond::before { left:-14px; } .po-diamond::after { right:-14px; }
+
+        .pres-features { display:grid; grid-template-columns:repeat(3,1fr); gap:0; padding:0 0 72px; }
+        @media(max-width:600px){ .pres-features { grid-template-columns:1fr; gap:32px; } .pres-feature { border-left:none !important; border-top:1px solid rgba(201,168,76,.12); padding-top:28px; } .pres-feature:first-child { border-top:none; } }
+        .pres-feature { text-align:center; padding:8px 32px; border-left:1px solid rgba(201,168,76,.12); }
+        .pres-feature:first-child { border-left:none; }
+        .pf-icon { width:64px; height:64px; margin:0 auto 18px; display:block; filter:drop-shadow(0 0 8px rgba(201,168,76,.4)); }
+        .pf-title { font-family:'Cinzel',serif; font-size:1.08rem; font-weight:400; color:#e8d08a; letter-spacing:.06em; margin-bottom:14px; }
+        .pf-desc  { font-family:'Cormorant Garamond',Georgia,serif; font-size:.95rem; line-height:1.75; color:rgba(138,128,112,.9); }
+    </style>
 </head>
 <body class="theme-astra">
 <div class="stars" aria-hidden="true"></div>
@@ -51,46 +81,93 @@
     </div>
 </nav>
 
-<header class="page-hero" id="top">
-    <div class="page-hero-inner">
-        <h1 class="page-hero-title" data-reveal data-i18n="about.page.title">Présentation</h1>
-        <div class="page-hero-subtitle-deco" data-reveal>
-            <span class="deco-rule"></span>
-            <span class="deco-dot">✦</span>
-            <span data-i18n="about.kicker">L’artisan derrière Astra Draconis</span>
-            <span class="deco-dot">✦</span>
-            <span class="deco-rule"></span>
-        </div>
-        <p class="page-hero-desc" data-reveal data-i18n="about.intro">
-            Passionné(e) de fantasy, de médiéval et de création artisanale, je confectionne à la main des Book Nooks uniques qui transforment vos étagères en portails vers d’autres mondes.
-        </p>
-    </div>
-</header>
-
-<section class="section-astra">
+<section class="section-astra" id="top">
     <div class="container">
-        <div class="ornament-divider" data-reveal>
-            <span class="od-line"></span>
-            <span class="od-gem">✶ ✶ ✶</span>
-            <span class="od-line right"></span>
+
+        <!-- Hero -->
+        <div class="pres-hero" data-reveal>
+            <h1 class="pres-hero-title" data-i18n="about.page.title">Presentation</h1>
+            <div class="pres-hero-divider">
+                <span class="pres-hero-sub" data-i18n="about.kicker">Un voyage entre medieval et astral</span>
+            </div>
         </div>
 
-        <div class="feature-trio" data-reveal>
-            <div class="feature-item">
-                <div class="feature-icon">⚒️</div>
-                <h2 class="feature-title" data-i18n="about.craft.title">L’Artisanat</h2>
-                <p class="feature-desc" data-i18n="about.craft.text">Chaque pièce imaginée, sculptée et peinte avec soin. Des matériaux sélectionnés, des détails minutieux.</p>
+        <!-- Description + Book nook -->
+        <div class="pres-content-row" data-reveal>
+            <div>
+                <p class="pres-lead" data-i18n="about.lead">Astra Draconis est ne pour insuffler l'esprit du medieval-fantastique chez les passionnes d'univers feeriques.</p>
+                <p class="pres-body" data-i18n="about.intro">Chaque book nook est faconne avec minutie et passion : sculpte, peint a la main, baigne dans une ambiance mystique d'azur astral. Ce sont de petites oeuvres uniques, riches en details, concues pour apporter un morceau d'aventure medievale a votre bibliotheque.</p>
             </div>
-            <div class="feature-item">
-                <div class="feature-icon">🐉</div>
-                <h2 class="feature-title" data-i18n="about.universe.title">L’Univers</h2>
-                <p class="feature-desc" data-i18n="about.universe.text">Inspirées des donjons, forêts enchantées et châteaux médiévaux. Un portail vers d’autres mondes.</p>
+            <div class="book-nook-wrap">
+                <img src="assets/chat1.jpg" alt="Book Nook" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
-            <div class="feature-item">
-                <div class="feature-icon">✨</div>
-                <h2 class="feature-title" data-i18n="about.custom.title">Sur Mesure</h2>
-                <p class="feature-desc" data-i18n="about.custom.text">Un univers favori ? Je crée des pièces personnalisées selon vos envies et votre imagination.</p>
+        </div>
+
+        <!-- Ornament divider -->
+        <div class="pres-ornament" data-reveal>
+            <div class="po-line"></div>
+            <div class="po-diamond"></div>
+            <div class="po-line"></div>
+        </div>
+
+        <!-- Features -->
+        <div class="pres-features" data-reveal>
+
+            <div class="pres-feature">
+                <svg class="pf-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="12" y1="52" x2="44" y2="20" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/>
+                    <polygon points="44,20 50,8 56,20" fill="#e8d08a" opacity="0.9"/>
+                    <circle cx="50" cy="8" r="4" fill="#fff8d0" opacity="0.95"/>
+                    <circle cx="20" cy="16" r="1.5" fill="#e8d08a"/>
+                    <circle cx="28" cy="10" r="1" fill="#e8d08a"/>
+                    <circle cx="14" cy="28" r="1" fill="#e8d08a"/>
+                    <circle cx="54" cy="30" r="1" fill="#e8d08a"/>
+                    <line x1="18" y1="14" x2="22" y2="18" stroke="#e8d08a" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="22" y1="14" x2="18" y2="18" stroke="#e8d08a" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="52" y1="28" x2="56" y2="32" stroke="#e8d08a" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="56" y1="28" x2="52" y2="32" stroke="#e8d08a" stroke-width="0.8" opacity="0.6"/>
+                </svg>
+                <h3 class="pf-title" data-i18n="about.craft.title">Fait main</h3>
+                <p class="pf-desc" data-i18n="about.craft.text">Chaque book nook est sculpte et peint a la main, avec des materiaux soigneusement choisis.</p>
             </div>
+
+            <div class="pres-feature">
+                <svg class="pf-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="32,6 52,24 32,58 12,24" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+                    <polygon points="32,6 52,24 32,24 12,24" fill="#2a4a6a" opacity="0.7" stroke="#c9a84c" stroke-width="1"/>
+                    <polygon points="32,24 52,24 32,58" fill="#1a3050" opacity="0.6"/>
+                    <polygon points="32,24 12,24 32,58" fill="#243a5a" opacity="0.5"/>
+                    <line x1="12" y1="24" x2="52" y2="24" stroke="#c9a84c" stroke-width="1"/>
+                    <line x1="32" y1="6" x2="32" y2="24" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+                    <circle cx="8" cy="14" r="1.5" fill="#e8d08a"/>
+                    <circle cx="56" cy="14" r="1.5" fill="#e8d08a"/>
+                    <circle cx="32" cy="2" r="1" fill="#e8d08a"/>
+                    <line x1="6" y1="12" x2="10" y2="16" stroke="#e8d08a" stroke-width="0.8" opacity="0.7"/>
+                    <line x1="10" y1="12" x2="6" y2="16" stroke="#e8d08a" stroke-width="0.8" opacity="0.7"/>
+                    <line x1="54" y1="12" x2="58" y2="16" stroke="#e8d08a" stroke-width="0.8" opacity="0.7"/>
+                    <line x1="58" y1="12" x2="54" y2="16" stroke="#e8d08a" stroke-width="0.8" opacity="0.7"/>
+                </svg>
+                <h3 class="pf-title" data-i18n="about.universe.title">Pieces uniques</h3>
+                <p class="pf-desc" data-i18n="about.universe.text">Des creations artisanales uniques au souffle medieval-fantastique, inspirees de mondes imaginaires.</p>
+            </div>
+
+            <div class="pres-feature">
+                <svg class="pf-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="22" width="34" height="22" rx="2" fill="#2a3a50" stroke="#c9a84c" stroke-width="1.2"/>
+                    <path d="M38 30 L52 30 L58 38 L58 44 L38 44 Z" fill="#1a2a3a" stroke="#c9a84c" stroke-width="1.2"/>
+                    <rect x="40" y="32" width="12" height="8" rx="1" fill="#4a9eca" opacity="0.5"/>
+                    <circle cx="14" cy="46" r="6" fill="#1a2a3a" stroke="#c9a84c" stroke-width="1.2"/>
+                    <circle cx="14" cy="46" r="2.5" fill="#c9a84c"/>
+                    <circle cx="48" cy="46" r="6" fill="#1a2a3a" stroke="#c9a84c" stroke-width="1.2"/>
+                    <circle cx="48" cy="46" r="2.5" fill="#c9a84c"/>
+                    <line x1="4" y1="28" x2="0" y2="28" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+                    <line x1="4" y1="32" x2="1" y2="32" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+                    <line x1="4" y1="36" x2="2" y2="36" stroke="#c9a84c" stroke-width="0.6" opacity="0.3"/>
+                </svg>
+                <h3 class="pf-title" data-i18n="about.custom.title">Expedition rapide</h3>
+                <p class="pf-desc" data-i18n="about.custom.text">Commandes expediees avec soin sous 3 a 5 jours ouvres, emballage protecteur inclus.</p>
+            </div>
+
         </div>
     </div>
 </section>
@@ -102,6 +179,8 @@
             <span class="footer-sep" aria-hidden="true">✦</span>
             <a class="footer-line" href="contact.html" data-i18n="nav.contact">Contact</a>
             <span class="footer-sep" aria-hidden="true">✦</span>
+            <a class="footer-line" href="galerie.html" data-i18n="nav.gallery">Galerie</a>
+            <span class="footer-sep" aria-hidden="true">+</span>
             <a class="footer-line" href="#top" data-i18n="footer.back">Retour en haut</a>
         </div>
     </div>
