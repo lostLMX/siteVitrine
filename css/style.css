@@ -1467,8 +1467,8 @@ body.theme-astra {
     color: var(--text, #f3f6ff);
     overflow-x: hidden;
     background-image: url('../assets/nebu.png');
-    background-size: cover;
-    background-position: center center;
+    background-size: 100% auto;
+    background-position: center top;
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-color: #020810;
