@@ -1185,7 +1185,9 @@ body.theme-astra { background: var(--bg0); }
     --panel:        rgba(10, 16, 30, 0.72);
     --panel-strong: rgba(12, 19, 35, 0.88);
     --font-title:   "Cinzel", serif;
-    --font-body:    "Cormorant Garamond", Georgia, ui-serif, serif;
+    --font-body:    "Spectral", "Cormorant Garamond", Georgia, ui-serif, serif;
+    --silver:       #C0C8D8;
+    --silver-dim:   rgba(155, 168, 190, 0.85);
 }
 
 /* ── Body — font + pure-black base (nebula sits on top) ──────────── */
@@ -1508,4 +1510,121 @@ main {
 .stars,
 .nebula {
     display: none !important;
+}
+
+/* ===== CHARTE OR & ARGENT ========================================== */
+
+/* ── Police corps unifiée ─────────────────────────────────────────── */
+body.theme-astra {
+    font-family: var(--font-body);
+    color: var(--silver);
+}
+
+/* ── Titres dorés ─────────────────────────────────────────────────── */
+.hero-title {
+    color: var(--gold);
+    text-shadow: 0 0 32px rgba(230, 194, 122, 0.35);
+}
+.section-title {
+    color: var(--gold);
+    text-shadow: 0 0 24px rgba(230, 194, 122, 0.22);
+}
+.page-hero-title {
+    color: var(--gold);
+    text-shadow: 0 2px 44px rgba(230, 194, 122, 0.28);
+}
+.article-card-title   { color: var(--gold); }
+.article-detail-title { color: var(--gold); text-shadow: 0 0 28px rgba(230, 194, 122, 0.22); }
+.about-card-title     { color: var(--gold); }
+.card-astra-title     { color: var(--gold); }
+.panel-title          { color: var(--gold); }
+.gallery-title        { color: var(--gold); }
+.lightbox-info-title  { color: var(--gold); }
+
+/* ── Texte courant argenté ─────────────────────────────────────────── */
+.hero-subtitle,
+.section-subtitle,
+.page-hero-desc,
+.article-card-desc,
+.about-intro-text,
+.about-card-text,
+.card-astra-text,
+.panel-text {
+    color: var(--silver-dim);
+}
+
+/* ── Bloc présentation homepage ───────────────────────────────────── */
+.section-about-home { padding-top: 0; }
+
+.about-home-block {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 36px 40px;
+    background: rgba(8, 14, 32, 0.58);
+    border: 1px solid rgba(230, 194, 122, 0.18);
+    border-radius: 14px;
+    backdrop-filter: blur(8px);
+    text-align: center;
+}
+
+.about-home-lead {
+    font-family: var(--font-body);
+    font-size: 1.22rem;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--silver);
+    margin-bottom: 18px;
+}
+
+.about-home-body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--silver-dim);
+    margin-bottom: 14px;
+}
+
+.about-home-body:last-child { margin-bottom: 0; }
+
+@media (max-width: 576px) {
+    .about-home-block { padding: 24px 20px; }
+    .about-home-lead  { font-size: 1.05rem; }
+}
+
+/* ── Centrage bloc Créations récentes ─────────────────────────────── */
+#featured-grid {
+    grid-template-columns: repeat(3, minmax(0, 320px));
+    justify-content: center;
+}
+@media (max-width: 900px) {
+    #featured-grid { grid-template-columns: repeat(2, minmax(0, 340px)); }
+}
+@media (max-width: 576px) {
+    #featured-grid { grid-template-columns: 1fr; }
+}
+
+.cs-icon i{
+    font-size:20px;
+}
+
+.instagram .cs-icon{
+    color:#E1306C;
+}
+
+.tiktok .cs-icon{
+    color:#fff;
+}
+
+.etsy .cs-icon{
+    color:#f1641e;
+}
+
+.vinted .cs-icon{
+    color:#007782;
+    font-weight:bold;
+}
+
+.etsy.disabled{
+    opacity:0.6;
+    pointer-events:none;
 }
