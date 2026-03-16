@@ -203,11 +203,10 @@
             const articles = await listArticles()
             const top3 = articles.slice(0, 3)
             if (!top3.length) { featuredEmpty.classList.remove('d-none'); return }
+            const paths = top3.filter(a => a.cover_path).map(a => a.cover_path)
+            const urlMap = paths.length ? await createSignedPhotoUrlsBatch(paths) : {}
             for (const art of top3) {
-                let coverUrl = null
-                if (art.cover_path) {
-                    try { coverUrl = await createSignedPhotoUrl(art.cover_path) } catch (_) {}
-                }
+                const coverUrl = art.cover_path ? (urlMap[art.cover_path] || null) : null
                 const card = document.createElement('a')
                 card.href = `article.html?id=${art.id}`
                 card.className = 'article-card'
@@ -231,18 +230,23 @@
         }
     }
 
-    async function initPage() {
-        document.getElementById('year').textContent = new Date().getFullYear()
+    async function loadCarousel() {
         try {
             const rows = await listPhotos(PHOTO_CATEGORY.CAROUSEL)
-            for (const row of rows) row._signedUrl = await createSignedPhotoUrl(row.path)
-            if (rows.length) buildCarousel(rows)
-            else document.getElementById('admin-carousel-wrap').style.display = 'none'
+            if (!rows.length) { document.getElementById('admin-carousel-wrap').style.display = 'none'; return }
+            const paths = rows.filter(r => r.path).map(r => r.path)
+            const urlMap = paths.length ? await createSignedPhotoUrlsBatch(paths) : {}
+            for (const row of rows) row._signedUrl = urlMap[row.path] || null
+            buildCarousel(rows)
         } catch (e) {
             console.error(e)
             document.getElementById('admin-carousel-wrap').style.display = 'none'
         }
-        await loadFeatured()
+    }
+
+    async function initPage() {
+        document.getElementById('year').textContent = new Date().getFullYear()
+        await Promise.all([loadCarousel(), loadFeatured()])
     }
 
     initPage()

@@ -145,11 +145,10 @@
     async function loadGallery() {
         try {
             const articles = await listArticles()
+            const paths = articles.filter(a => a.cover_path).map(a => a.cover_path)
+            const urlMap = paths.length ? await createSignedPhotoUrlsBatch(paths) : {}
             for (const art of articles) {
-                art._coverUrl = null
-                if (art.cover_path) {
-                    try { art._coverUrl = await createSignedPhotoUrl(art.cover_path) } catch (_) {}
-                }
+                art._coverUrl = art.cover_path ? (urlMap[art.cover_path] || null) : null
             }
             allArticles = articles
             renderArticles(allArticles)

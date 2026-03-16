@@ -99,6 +99,38 @@ async function createSignedPhotoUrl(path) {
     return url
 }
 
+async function createSignedPhotoUrlsBatch(paths) {
+    if (!paths.length) return {}
+    const now = Date.now()
+    const result = {}
+    const toFetch = []
+
+    for (const path of paths) {
+        const cached = _signedUrlCache.get(path)
+        if (cached && cached.expiresAt > now + 60_000) {
+            result[path] = cached.url
+        } else {
+            toFetch.push(path)
+        }
+    }
+
+    if (toFetch.length) {
+        const { data, error } = await window.supabase.storage
+            .from(PHOTOS_BUCKET)
+            .createSignedUrls(toFetch, SIGNED_URL_TTL)
+        if (!error && data) {
+            for (const item of data) {
+                if (item.signedUrl) {
+                    _signedUrlCache.set(item.path, { url: item.signedUrl, expiresAt: now + SIGNED_URL_TTL * 1000 })
+                    result[item.path] = item.signedUrl
+                }
+            }
+        }
+    }
+
+    return result
+}
+
 // ── Photos — écriture ─────────────────────────────────────────────────────────
 async function uploadPhotoFile(file, folder = 'uploads') {
     if (!file) throw new Error('Fichier manquant')
