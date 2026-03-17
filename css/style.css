@@ -1640,7 +1640,7 @@ body.theme-astra {
     body.theme-astra {
         background-attachment: scroll;
         background-image: url('../assets/nebu-mobile.png');
-        background-size: cover;
+        background-size: 100% auto;
         background-position: top center;
         background-repeat: no-repeat;
     }
