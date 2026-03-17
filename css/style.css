@@ -1639,14 +1639,18 @@ body.theme-astra {
 @media (max-width: 768px) {
     body.theme-astra {
         background-attachment: scroll;
+        background-image: url('../assets/nebu-mobile.png');
         background-size: cover;
         background-position: top center;
+        background-repeat: no-repeat;
     }
 }
 
 /* 3. Bas de page sur une seule ligne sur mobile */
 @media (max-width: 576px) {
     .footer-astra {
+        flex-direction: row;
+        align-items: center;
         flex-wrap: nowrap;
         gap: 8px;
     }
