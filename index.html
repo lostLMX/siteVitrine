@@ -162,7 +162,11 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lightboxEl.classList.contains('active')) closeLightbox() })
 
     // ── Carrousel ─────────────────────────────────────────────────────────────
-    const CAROUSEL_VISIBLE = 3
+    function getCarouselVisible() {
+        if (window.innerWidth <= 576) return 1
+        if (window.innerWidth <= 768) return 2
+        return 3
+    }
     function buildCarousel(rows) {
         carouselTrack.innerHTML = ''
         for (const row of rows) {
@@ -187,7 +191,7 @@
     }
     function updateCarousel() {
         const total = carouselTrack.children.length
-        const maxIndex = Math.max(0, total - CAROUSEL_VISIBLE)
+        const maxIndex = Math.max(0, total - getCarouselVisible())
         carouselIndex = Math.min(Math.max(carouselIndex, 0), maxIndex)
         carouselTrack.style.transform = `translateX(-${carouselIndex * getSlideStep()}px)`
         carouselPrev.disabled = carouselIndex === 0

@@ -1628,3 +1628,45 @@ body.theme-astra {
     opacity:0.6;
     pointer-events:none;
 }
+/* -- Mobile fixes ---------------------------------------------------- */
+
+/* 1. Agrandir le texte du bas de page */
+.footer-line {
+    font-size: 0.92rem;
+}
+
+/* 2. Background couvre toute la page sur mobile */
+@media (max-width: 768px) {
+    body.theme-astra {
+        background-attachment: scroll;
+        background-size: cover;
+        background-position: top center;
+    }
+}
+
+/* 3. Bas de page sur une seule ligne sur mobile */
+@media (max-width: 576px) {
+    .footer-astra {
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+    .footer-sep {
+        display: none;
+    }
+    .footer-line {
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+}
+
+/* 4. Carrousel plus grand sur mobile */
+@media (max-width: 768px) {
+    .carousel-slide {
+        flex: 0 0 calc((100% - 12px) / 2);
+    }
+}
+@media (max-width: 576px) {
+    .carousel-slide {
+        flex: 0 0 100%;
+    }
+}

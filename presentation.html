@@ -12,33 +12,34 @@
     <link rel="icon" href="assets/logo.png" type="image/png">
     <style>
         .pres-hero { text-align:center; padding:64px 0 48px; }
-        .pres-hero-title { font-family:'Cinzel',serif; font-size:clamp(2.6rem,6vw,4.8rem); font-weight:400; color:#E6C27A; text-shadow:0 0 40px rgba(230,194,122,.35); letter-spacing:.04em; line-height:1.1; margin:0 0 20px; }
+        .pres-hero-title { font-family:var(--font-title); font-size:clamp(2.6rem,6vw,4.8rem); font-weight:400; color:var(--gold); text-shadow:0 0 40px rgba(230,194,122,.35); letter-spacing:.04em; line-height:1.1; margin:0 0 20px; }
         .pres-hero-divider { display:flex; align-items:center; justify-content:center; gap:16px; }
         .pres-hero-divider::before,.pres-hero-divider::after { content:''; flex:1; max-width:120px; height:1px; }
-        .pres-hero-divider::before { background:linear-gradient(to right, transparent, rgba(138,110,47,.8)); }
-        .pres-hero-divider::after  { background:linear-gradient(to left,  transparent, rgba(138,110,47,.8)); }
-        .pres-hero-sub { font-family:'Spectral','Cormorant Garamond',Georgia,serif; font-style:italic; font-size:1.15rem; color:rgba(230,194,122,0.72); letter-spacing:.06em; }
+        .pres-hero-divider::before { background:linear-gradient(to right, transparent, rgba(230,194,122,.45)); }
+        .pres-hero-divider::after  { background:linear-gradient(to left,  transparent, rgba(230,194,122,.45)); }
+        .pres-hero-sub { font-family:var(--font-body); font-style:italic; font-size:1.15rem; color:rgba(230,194,122,0.72); letter-spacing:.06em; }
 
         .pres-content-row { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; padding:16px 0 56px; }
         @media(max-width:700px){ .pres-content-row { grid-template-columns:1fr; gap:36px; } }
         .pres-text-col { background:rgba(4,8,22,0.72); border:1px solid rgba(230,194,122,0.16); border-radius:14px; padding:32px 36px; backdrop-filter:blur(10px); }
-        .pres-lead { font-family:'Spectral','Cormorant Garamond',Georgia,serif; font-size:1.35rem; font-weight:500; line-height:1.55; color:#C0C8D8; margin-bottom:22px; }
-        .pres-body { font-family:'Spectral','Cormorant Garamond',Georgia,serif; font-size:.98rem; line-height:1.9; color:rgba(155,168,190,0.85); }
+        .pres-lead { font-family:var(--font-body); font-size:1.32rem; font-weight:600; line-height:1.6; color:var(--silver); margin-bottom:20px; }
+        .pres-body { font-family:var(--font-body); font-size:1rem; line-height:1.9; color:var(--silver-dim); margin-bottom:14px; }
+        .pres-body:last-child { margin-bottom:0; }
         .book-nook-wrap { position:relative; border-radius:6px; overflow:hidden; aspect-ratio:3/4; background:transparent; mask-image:radial-gradient(ellipse 88% 86% at 44% 50%, black 48%, transparent 82%); -webkit-mask-image:radial-gradient(ellipse 88% 86% at 44% 50%, black 48%, transparent 82%); }
         .book-nook-wrap canvas { width:100%; height:100%; display:block; }
 
         .pres-ornament { display:flex; align-items:center; gap:20px; padding:0 0 48px; }
-        .pres-ornament .po-line { flex:1; height:1px; background:linear-gradient(to right, transparent, rgba(138,110,47,.6) 40%, transparent); }
-        .po-diamond { width:10px; height:10px; background:rgba(138,110,47,.8); transform:rotate(45deg); position:relative; }
-        .po-diamond::before,.po-diamond::after { content:''; position:absolute; width:4px; height:4px; background:rgba(138,110,47,.7); top:3px; }
+        .pres-ornament .po-line { flex:1; height:1px; background:linear-gradient(to right, transparent, rgba(230,194,122,.45) 40%, transparent); }
+        .po-diamond { width:10px; height:10px; background:rgba(230,194,122,.7); transform:rotate(45deg); position:relative; }
+        .po-diamond::before,.po-diamond::after { content:''; position:absolute; width:4px; height:4px; background:rgba(230,194,122,.6); top:3px; }
         .po-diamond::before { left:-14px; } .po-diamond::after { right:-14px; }
 
         .pres-features { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding:0 0 72px; }
         @media(max-width:600px){ .pres-features { grid-template-columns:1fr; gap:16px; } }
-        .pres-feature { text-align:center; padding:26px 22px; border-radius:16px; background:rgba(2,5,20,0.62); border:1px solid rgba(201,168,76,0.16); backdrop-filter:blur(10px); }
-        .pf-icon { width:88px; height:88px; margin:0 auto 18px; display:block; border-radius:50%; object-fit:cover; box-shadow:0 0 0 2px rgba(201,168,76,.30), 0 0 22px rgba(201,168,76,.22); }
-        .pf-title { font-family:'Cinzel',serif; font-size:1.08rem; font-weight:400; color:#E6C27A; letter-spacing:.06em; margin-bottom:14px; }
-        .pf-desc  { font-family:'Spectral','Cormorant Garamond',Georgia,serif; font-size:.95rem; line-height:1.75; color:rgba(155,168,190,0.85); }
+        .pres-feature { text-align:center; padding:26px 22px; border-radius:16px; background:rgba(4,8,22,0.68); border:1px solid rgba(230,194,122,0.16); backdrop-filter:blur(10px); }
+        .pf-icon { width:88px; height:88px; margin:0 auto 18px; display:block; border-radius:50%; object-fit:cover; box-shadow:0 0 0 2px rgba(230,194,122,.28), 0 0 22px rgba(230,194,122,.20); }
+        .pf-title { font-family:var(--font-title); font-size:1.05rem; font-weight:400; color:var(--gold); letter-spacing:.06em; margin-bottom:12px; }
+        .pf-desc  { font-family:var(--font-body); font-size:.97rem; line-height:1.8; color:var(--silver-dim); }
     </style>
 </head>
 <body class="theme-astra">
@@ -86,7 +87,7 @@
 
         <!-- Hero -->
         <div class="pres-hero" data-reveal>
-            <h1 class="pres-hero-title" data-i18n="about.page.title">Presentation</h1>
+            <h1 class="pres-hero-title" data-i18n="about.page.title">Présentation</h1>
             <div class="pres-hero-divider">
                 <span class="pres-hero-sub" data-i18n="about.kicker">Un voyage entre medieval et astral</span>
             </div>
