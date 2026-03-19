@@ -75,21 +75,22 @@
                     placeholder="Rechercher une création…" autocomplete="off">
                 <span class="gallery-search-count" id="searchCount"></span>
             </div>
+            <div id="gallery-filters" class="gallery-filters"></div>
         </div>
-
         <div id="article-grid" class="article-grid"></div>
+        <div id="gallery-pagination"></div>
         <div id="gallery-empty" class="text-secondary d-none mt-3" data-i18n="gallery.empty">Aucune création pour le moment.</div>
     </div>
 </section>
 
 <footer class="section-astra section-footer">
     <div class="container">
-        <div class="footer-astra" data-reveal>
+        <div class="footer-astra">
             <span class="footer-line">© <span id="year"></span> Astra Draconis</span>
             <span class="footer-sep" aria-hidden="true">✦</span>
-            <a class="footer-line" href="contact.html" data-i18n="nav.contact">Contact</a>
+            <a class="footer-line" href="mentions-legales.html">Mentions légales</a>
             <span class="footer-sep" aria-hidden="true">✦</span>
-            <a class="footer-line" href="#top" data-i18n="footer.back">Retour en haut</a>
+            <a class="footer-line footer-top" href="#top">↑ Retour en haut</a>
         </div>
     </div>
 </footer>
@@ -100,12 +101,18 @@
 <script src="js/i18n.js"></script>
 <script src="js/script.js"></script>
 <script>
-    const articleGrid  = document.getElementById('article-grid')
-    const emptyEl      = document.getElementById('gallery-empty')
-    const searchInput  = document.getElementById('gallerySearch')
-    const searchCount  = document.getElementById('searchCount')
+    const articleGrid    = document.getElementById('article-grid')
+    const emptyEl        = document.getElementById('gallery-empty')
+    const searchInput    = document.getElementById('gallerySearch')
+    const searchCount    = document.getElementById('searchCount')
+    const paginationEl   = document.getElementById('gallery-pagination')
+    const filtersEl      = document.getElementById('gallery-filters')
 
+    const GALLERY_PAGE_SIZE = 20
+    let galleryPage = 1
     let allArticles = []
+    let currentFilteredList = []
+    let selectedTypeIds = new Set()
 
     function escapeHtml(str) {
         return (str || '').replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))
@@ -116,14 +123,75 @@
         searchCount.textContent = shown < total ? `${shown} / ${total}` : `${total} ${suffix}`
     }
 
+    function applyFilters() {
+        const q = searchInput.value.trim().toLowerCase()
+        let list = allArticles
+        if (q) list = list.filter(a =>
+            (a.title || '').toLowerCase().includes(q) ||
+            (a.description || '').toLowerCase().includes(q)
+        )
+        if (selectedTypeIds.size > 0)
+            list = list.filter(a => (a.types || []).some(t => selectedTypeIds.has(t.id)))
+        return list
+    }
+
+    function renderFilters(articles) {
+        const typeMap = new Map()
+        for (const art of articles)
+            for (const t of (art.types || []))
+                if (!typeMap.has(t.id)) typeMap.set(t.id, t.name)
+        filtersEl.innerHTML = ''
+        if (!typeMap.size) return
+        const sorted = [...typeMap.entries()].sort((a, b) => a[1].localeCompare(b[1]))
+        for (const [id, name] of sorted) {
+            const btn = document.createElement('button')
+            btn.className = 'filter-type-btn'
+            btn.textContent = name
+            btn.addEventListener('click', () => {
+                selectedTypeIds.has(id) ? selectedTypeIds.delete(id) : selectedTypeIds.add(id)
+                btn.classList.toggle('active')
+                galleryPage = 1
+                renderArticles(applyFilters())
+            })
+            filtersEl.appendChild(btn)
+        }
+    }
+
+    function renderPagination(containerEl, total, page, pageSize, onPage) {
+        const totalPages = Math.ceil(total / pageSize)
+        if (totalPages <= 1) { containerEl.innerHTML = ''; return }
+        const pages = new Set([1, totalPages])
+        for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) pages.add(i)
+        const sorted = [...pages].sort((a, b) => a - b)
+        let html = '<div class="pagination-wrap">'
+        html += `<button class="pg-btn" ${page <= 1 ? 'disabled' : ''} data-pg="${page - 1}">←</button>`
+        let prev = 0
+        for (const p of sorted) {
+            if (p - prev > 1) html += '<span class="pg-ellipsis">…</span>'
+            html += `<button class="pg-btn${p === page ? ' active' : ''}" data-pg="${p}">${p}</button>`
+            prev = p
+        }
+        html += `<button class="pg-btn" ${page >= totalPages ? 'disabled' : ''} data-pg="${page + 1}">→</button>`
+        html += '</div>'
+        containerEl.innerHTML = html
+        containerEl.querySelectorAll('.pg-btn:not([disabled])').forEach(btn => {
+            btn.addEventListener('click', () => onPage(Number(btn.dataset.pg)))
+        })
+    }
+
     function renderArticles(list) {
+        currentFilteredList = list
         articleGrid.innerHTML = ''
+        paginationEl.innerHTML = ''
+        emptyEl.classList.add('d-none')
         if (!list.length) {
             emptyEl.classList.remove('d-none')
+            updateSearchCount(0, allArticles.length)
             return
         }
-        emptyEl.classList.add('d-none')
-        for (const art of list) {
+        const start = (galleryPage - 1) * GALLERY_PAGE_SIZE
+        const pageItems = list.slice(start, start + GALLERY_PAGE_SIZE)
+        for (const art of pageItems) {
             const card = document.createElement('a')
             card.href = `article.html?id=${art.id}`
             card.className = 'article-card'
@@ -135,25 +203,66 @@
                 <div class="article-card-body">
                     <h2 class="article-card-title">${escapeHtml(art.title)}</h2>
                     ${art.description ? `<p class="article-card-desc">${escapeHtml(art.description)}</p>` : ''}
+                    ${art.types && art.types.length ? `<div class="art-card-types">${art.types.map(t => `<span class="art-card-type-tag">${escapeHtml(t.name)}</span>`).join('')}</div>` : ''}
                     <span class="article-card-link" data-i18n="article.view">Voir la création →</span>
                 </div>
             `
             articleGrid.appendChild(card)
         }
         applyTranslations()
+        renderPagination(paginationEl, list.length, galleryPage, GALLERY_PAGE_SIZE, (p) => {
+            galleryPage = p
+            renderArticles(currentFilteredList)
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        })
+        updateSearchCount(list.length, allArticles.length)
+    }
+
+    // Injecte les URLs d'une urlMap dans les cartes visibles du articleGrid
+    // et met à jour art._coverUrl pour les rendus futurs (pagination, search)
+    function applyUrlMap(articles, urlMap, targets) {
+        for (const art of targets) {
+            const url = urlMap[art.cover_path]
+            if (!url) continue
+            art._coverUrl = url
+            const card = articleGrid.querySelector(`a[href="article.html?id=${art.id}"]`)
+            if (!card) continue
+            const placeholder = card.querySelector('.article-card-cover-placeholder')
+            if (!placeholder) continue
+            const img = document.createElement('img')
+            img.className = 'article-card-cover'
+            img.src = url
+            img.alt = escapeHtml(art.title)
+            img.loading = 'lazy'
+            placeholder.replaceWith(img)
+        }
     }
 
     async function loadGallery() {
         try {
-            const articles = await listArticles()
-            const paths = articles.filter(a => a.cover_path).map(a => a.cover_path)
-            const urlMap = paths.length ? await createSignedPhotoUrlsBatch(paths) : {}
-            for (const art of articles) {
-                art._coverUrl = art.cover_path ? (urlMap[art.cover_path] || null) : null
-            }
+            const articles = await listArticlesWithTypes()
+            for (const art of articles) art._coverUrl = null
             allArticles = articles
-            renderArticles(allArticles)
-            updateSearchCount(allArticles.length, allArticles.length)
+            galleryPage = 1
+            renderFilters(articles)
+            renderArticles(allArticles)  // affichage immédiat avec placeholders
+
+            const withCover = articles.filter(a => a.cover_path)
+            if (!withCover.length) return
+
+            // Batch 1 : uniquement la première page visible → affichage rapide
+            const firstPage = withCover.slice(0, GALLERY_PAGE_SIZE)
+            const firstPaths = firstPage.map(a => a.cover_path)
+            const firstMap = await createSignedPhotoUrlsBatch(firstPaths)
+            applyUrlMap(articles, firstMap, firstPage)
+
+            // Batch 2 : le reste en arrière-plan, sans bloquer
+            const rest = withCover.slice(GALLERY_PAGE_SIZE)
+            if (!rest.length) return
+            ;(async () => {
+                const restMap = await createSignedPhotoUrlsBatch(rest.map(a => a.cover_path))
+                applyUrlMap(articles, restMap, rest)
+            })()
         } catch (e) {
             console.error(e)
             emptyEl.textContent = t('error.load')
@@ -162,18 +271,9 @@
     }
 
     searchInput.addEventListener('input', () => {
-        const q = searchInput.value.trim().toLowerCase()
-        if (!q) {
-            renderArticles(allArticles)
-            updateSearchCount(allArticles.length, allArticles.length)
-            return
-        }
-        const filtered = allArticles.filter(a =>
-            (a.title || '').toLowerCase().includes(q) ||
-            (a.description || '').toLowerCase().includes(q)
-        )
+        galleryPage = 1
+        const filtered = applyFilters()
         renderArticles(filtered)
-        updateSearchCount(filtered.length, allArticles.length)
         if (!filtered.length) {
             emptyEl.textContent = t('gallery.no.result')
             emptyEl.classList.remove('d-none')
@@ -181,10 +281,7 @@
     })
 
     document.addEventListener('langchange', () => {
-        updateSearchCount(
-            articleGrid.children.length,
-            allArticles.length
-        )
+        updateSearchCount(currentFilteredList.length, allArticles.length)
     })
 
     document.getElementById('year').textContent = new Date().getFullYear()

@@ -214,6 +214,18 @@ async function listArticles() {
     return data || []
 }
 
+async function listArticlesWithTypes() {
+    const { data, error } = await window.supabase
+        .from('articles')
+        .select('id, title, description, cover_path, created_at, article_type_links(article_types(id, name))')
+        .order('created_at', { ascending: false })
+    if (error) throw error
+    return (data || []).map(art => ({
+        ...art,
+        types: (art.article_type_links || []).map(l => l.article_types).filter(Boolean)
+    }))
+}
+
 async function getArticle(id) {
     const { data, error } = await window.supabase
         .from('articles')
@@ -283,4 +295,85 @@ async function deleteArticlePhotoRow(id) {
         .single()
     if (error) throw error
     return data
+}
+
+// ── Types d'articles ──────────────────────────────────────────────────────────
+// SQL à exécuter dans Supabase (SQL Editor) si ces tables n'existent pas :
+//
+// CREATE TABLE article_types (
+//     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+//     name TEXT NOT NULL UNIQUE,
+//     created_at TIMESTAMPTZ DEFAULT NOW()
+// );
+// CREATE TABLE article_type_links (
+//     article_id UUID REFERENCES articles(id) ON DELETE CASCADE NOT NULL,
+//     type_id UUID REFERENCES article_types(id) ON DELETE CASCADE NOT NULL,
+//     PRIMARY KEY (article_id, type_id)
+// );
+// ALTER TABLE article_types ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE article_type_links ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "Public read article_types" ON article_types FOR SELECT USING (true);
+// CREATE POLICY "Public read article_type_links" ON article_type_links FOR SELECT USING (true);
+// CREATE POLICY "Auth write article_types" ON article_types FOR ALL USING (auth.role() = 'authenticated');
+// CREATE POLICY "Auth write article_type_links" ON article_type_links FOR ALL USING (auth.role() = 'authenticated');
+
+async function listArticleTypes() {
+    const { data, error } = await window.supabase
+        .from('article_types')
+        .select('id, name, created_at')
+        .order('name', { ascending: true })
+    if (error) throw error
+    return data || []
+}
+
+async function insertArticleType({ name }) {
+    const { data, error } = await window.supabase
+        .from('article_types')
+        .insert([{ name: name.trim() }])
+        .select('id, name, created_at')
+        .single()
+    if (error) throw error
+    return data
+}
+
+async function updateArticleType(id, { name }) {
+    const { data, error } = await window.supabase
+        .from('article_types')
+        .update({ name: name.trim() })
+        .eq('id', id)
+        .select('id, name, created_at')
+        .single()
+    if (error) throw error
+    return data
+}
+
+async function deleteArticleType(id) {
+    const { error } = await window.supabase
+        .from('article_types')
+        .delete()
+        .eq('id', id)
+    if (error) throw error
+}
+
+async function listTypesForArticle(articleId) {
+    const { data, error } = await window.supabase
+        .from('article_type_links')
+        .select('type_id')
+        .eq('article_id', articleId)
+    if (error) throw error
+    return (data || []).map(r => r.type_id)
+}
+
+async function setTypesForArticle(articleId, typeIds) {
+    const { error: delErr } = await window.supabase
+        .from('article_type_links')
+        .delete()
+        .eq('article_id', articleId)
+    if (delErr) throw delErr
+    if (!typeIds.length) return
+    const rows = typeIds.map(type_id => ({ article_id: articleId, type_id }))
+    const { error: insErr } = await window.supabase
+        .from('article_type_links')
+        .insert(rows)
+    if (insErr) throw insErr
 }

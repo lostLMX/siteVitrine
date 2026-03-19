@@ -12,19 +12,19 @@
     <link rel="icon" href="assets/logo.png" type="image/png">
     <style>
         .atelier-nav { background:rgba(8,12,26,.80); border-bottom:1px solid rgba(191,233,255,.12); backdrop-filter:blur(10px); padding:14px 0; position:sticky; top:0; z-index:100; }
-        .atelier-brand { font-family:Cinzel,serif; font-size:.85rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(191,233,255,.75); }
+        .atelier-brand { font-family:var(--font-title); font-size:.85rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(191,233,255,.75); }
         .atelier-brand span { color:#9ed7ff; text-shadow:0 0 18px rgba(158,215,255,.4); }
         .atelier-section { padding:40px 0 60px; position:relative; z-index:1; }
         .atelier-panel { background:rgba(10,16,34,.55); border:1px solid rgba(191,233,255,.14); border-radius:18px; padding:28px 26px; backdrop-filter:blur(8px); }
-        .atelier-panel-title { font-family:Cinzel,serif; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(191,233,255,.55); margin:0 0 20px; }
+        .atelier-panel-title { font-family:var(--font-title); font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(191,233,255,.55); margin:0 0 20px; }
         .atelier-divider { border:none; border-top:1px solid rgba(191,233,255,.10); margin:22px 0; }
         .atelier-user-info { background:rgba(110,180,255,.07); border:1px solid rgba(110,180,255,.18); border-radius:10px; padding:10px 14px; font-size:.82rem; color:rgba(191,233,255,.70); margin-bottom:24px; }
         .atelier-user-info strong { color:rgba(230,238,247,.92); }
         .atelier-error { background:rgba(255,80,80,.08); border:1px solid rgba(255,80,80,.25); border-radius:10px; padding:10px 14px; font-size:.82rem; color:rgba(255,140,140,.90); margin-bottom:16px; display:none; }
-        .btn-atelier-primary { width:100%; padding:10px 20px; background:linear-gradient(135deg,rgba(110,180,255,.20),rgba(80,120,220,.25)); border:1px solid rgba(191,233,255,.30); border-radius:8px; color:rgba(230,238,247,.95); font-family:Cinzel,serif; font-size:.76rem; letter-spacing:.10em; text-transform:uppercase; cursor:pointer; transition:background 180ms,border-color 180ms; }
+        .btn-atelier-primary { width:100%; padding:10px 20px; background:linear-gradient(135deg,rgba(110,180,255,.20),rgba(80,120,220,.25)); border:1px solid rgba(191,233,255,.30); border-radius:8px; color:rgba(230,238,247,.95); font-family:var(--font-title); font-size:.76rem; letter-spacing:.10em; text-transform:uppercase; cursor:pointer; transition:background 180ms,border-color 180ms; }
         .btn-atelier-primary:hover { background:linear-gradient(135deg,rgba(110,180,255,.30),rgba(80,120,220,.38)); border-color:rgba(191,233,255,.50); }
         .btn-atelier-primary:disabled { opacity:.55; cursor:not-allowed; }
-        .btn-atelier-warn { width:100%; padding:9px 20px; background:transparent; border:1px solid rgba(255,190,80,.30); border-radius:8px; color:rgba(255,210,120,.85); font-family:Cinzel,serif; font-size:.76rem; letter-spacing:.10em; text-transform:uppercase; cursor:pointer; transition:background 180ms; }
+        .btn-atelier-warn { width:100%; padding:9px 20px; background:transparent; border:1px solid rgba(255,190,80,.30); border-radius:8px; color:rgba(255,210,120,.85); font-family:var(--font-title); font-size:.76rem; letter-spacing:.10em; text-transform:uppercase; cursor:pointer; transition:background 180ms; }
         .btn-atelier-warn:hover { background:rgba(255,190,80,.08); border-color:rgba(255,190,80,.55); }
         .btn-atelier-ghost { padding:8px 16px; background:transparent; border:1px solid rgba(191,233,255,.20); border-radius:8px; color:rgba(191,233,255,.65); font-size:.78rem; cursor:pointer; transition:background 180ms; }
         .btn-atelier-ghost:hover { background:rgba(191,233,255,.07); border-color:rgba(191,233,255,.38); }
@@ -38,11 +38,11 @@
         .photo-card-title { color:rgba(230,238,247,.88); font-size:.85rem; font-weight:500; }
         .photo-card-date { color:rgba(191,233,255,.45); font-size:.75rem; margin-top:2px; }
         .photos-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
-        .photos-count { font-family:Cinzel,serif; font-size:.75rem; letter-spacing:.10em; text-transform:uppercase; color:rgba(191,233,255,.45); }
+        .photos-count { font-family:var(--font-title); font-size:.75rem; letter-spacing:.10em; text-transform:uppercase; color:rgba(191,233,255,.45); }
         .article-mgmt-card { background:rgba(6,10,22,.50); border:1px solid rgba(191,233,255,.14); border-radius:14px; overflow:hidden; margin-bottom:16px; }
         .article-mgmt-header { padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:8px; cursor:pointer; }
         .article-mgmt-header:hover { background:rgba(191,233,255,.04); }
-        .article-mgmt-title { font-family:Cinzel,serif; font-size:.88rem; letter-spacing:.06em; text-transform:uppercase; color:rgba(230,238,247,.92); }
+        .article-mgmt-title { font-family:var(--font-title); font-size:.88rem; letter-spacing:.06em; text-transform:uppercase; color:rgba(230,238,247,.92); }
         .article-mgmt-meta { font-size:.75rem; color:rgba(191,233,255,.45); margin-top:2px; }
         .article-mgmt-body { padding:0 16px 16px; border-top:1px solid rgba(191,233,255,.08); display:none; }
         .article-mgmt-body.open { display:block; }
@@ -51,6 +51,29 @@
         .art-photo-thumb { position:relative; border-radius:8px; overflow:hidden; border:1px solid rgba(191,233,255,.12); }
         .art-photo-thumb img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
         .art-photo-del { position:absolute; top:4px; right:4px; background:rgba(0,0,0,.55); border:1px solid rgba(255,80,80,.40); border-radius:4px; color:rgba(255,140,140,.90); font-size:.70rem; padding:2px 7px; cursor:pointer; }
+        .type-mgmt-row { background:rgba(6,10,22,.50); border:1px solid rgba(191,233,255,.12); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
+        .type-mgmt-name { color:rgba(230,238,247,.90); font-size:.88rem; font-weight:500; }
+        .art-type-tag { display:inline-flex; align-items:center; gap:5px; font-size:.75rem; color:rgba(158,215,255,.85); background:rgba(110,180,255,.10); border:1px solid rgba(110,180,255,.22); border-radius:20px; padding:2px 10px; }
+        .pagination-wrap { display:flex; justify-content:center; align-items:center; gap:6px; margin:24px 0 8px; flex-wrap:wrap; }
+        .pg-btn { min-width:34px; height:34px; padding:0 10px; background:transparent; border:1px solid rgba(191,233,255,.20); border-radius:7px; color:rgba(191,233,255,.70); font-size:.80rem; cursor:pointer; transition:background 150ms,border-color 150ms; }
+        .pg-btn:hover:not([disabled]) { background:rgba(191,233,255,.08); border-color:rgba(191,233,255,.38); }
+        .pg-btn.active { background:rgba(110,180,255,.18); border-color:rgba(110,180,255,.50); color:rgba(230,238,247,.95); font-weight:600; }
+        .pg-btn[disabled] { opacity:.35; cursor:not-allowed; }
+        .pg-ellipsis { color:rgba(191,233,255,.40); font-size:.80rem; padding:0 2px; line-height:34px; }
+
+        @keyframes shimmer {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        @keyframes photo-fadein { from { opacity:0; } to { opacity:1; } }
+        .photo-placeholder {
+            width:100%; aspect-ratio:4/3;
+            background: linear-gradient(90deg, rgba(191,233,255,.04) 25%, rgba(191,233,255,.10) 50%, rgba(191,233,255,.04) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            display:flex; align-items:center; justify-content:center; color:rgba(191,233,255,.12); font-size:2rem;
+        }
+        .photo-card img, .article-mgmt-cover { animation: photo-fadein 0.35s ease; }
     </style>
 </head>
 <body class="theme-astra">
@@ -65,6 +88,7 @@
             <button class="atelier-tab active" data-tab="carousel">🎠 Carrousel</button>
             <button class="atelier-tab" data-tab="articles">📝 Articles</button>
             <button class="atelier-tab" data-tab="security">🔒 Sécurité</button>
+            <button class="atelier-tab" data-tab="types">🏷 Types</button>
         </div>
         <button onclick="logout()" class="btn-atelier-logout">Déconnexion</button>
     </div>
@@ -105,6 +129,7 @@
                 <span class="photos-count" id="count-carousel"></span>
             </div>
             <div id="list-carousel" class="row g-3"></div>
+            <div id="pagination-carousel"></div>
         </div>
     </div>
 </div>
@@ -132,6 +157,10 @@
                         <label class="cform-label">Photos supplémentaires <span style="opacity:.5">(optionnel, multiple)</span></label>
                         <input type="file" id="art-extra-photos" class="cform-input" accept="image/*" multiple style="padding:7px 13px;cursor:pointer;">
                     </div>
+                    <div class="cform-group" style="margin-top:12px;">
+                        <label class="cform-label">Types <span style="opacity:.5">(optionnel)</span></label>
+                        <div id="art-create-types" style="margin-top:6px;color:rgba(191,233,255,.35);font-size:.82rem;">Chargement…</div>
+                    </div>
                     <button type="submit" class="btn-atelier-primary" style="margin-top:18px;" id="article-create-btn">
                         <span id="artCreateLabel">✦ Créer l'article</span>
                         <span id="artCreateSpinner" class="cform-spinner" style="display:none;"></span>
@@ -148,6 +177,38 @@
                 </div>
             </div>
             <div id="list-articles"></div>
+            <div id="pagination-articles"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB: Types d'articles -->
+<div id="tab-types" class="tab-pane d-none">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="atelier-panel">
+                <p class="atelier-panel-title">✦ Créer un type</p>
+                <form id="type-create-form">
+                    <div class="cform-group">
+                        <label class="cform-label">Nom <span style="color:rgba(255,140,140,.7)">*</span></label>
+                        <input type="text" id="type-name" class="cform-input" placeholder="Ex : Sculpture, Bijou…" required>
+                    </div>
+                    <button type="submit" class="btn-atelier-primary" style="margin-top:14px;" id="type-create-btn">
+                        <span id="typeCreateLabel">✦ Créer le type</span>
+                        <span id="typeCreateSpinner" class="cform-spinner" style="display:none;"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="photos-header">
+                <span class="atelier-panel-title" style="margin:0;">✦ Types d'articles</span>
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="photos-count" id="count-types"></span>
+                    <button class="btn-atelier-ghost" id="refresh-types">↻ Rafraîchir</button>
+                </div>
+            </div>
+            <div id="list-types"></div>
         </div>
     </div>
 </div>
@@ -198,25 +259,91 @@
         })
     })
 
+    // Pagination helper
+    function renderPagination(containerEl, total, page, pageSize, onPage) {
+        const totalPages = Math.ceil(total / pageSize)
+        if (totalPages <= 1) { containerEl.innerHTML = ''; return }
+        const pages = new Set([1, totalPages])
+        for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) pages.add(i)
+        const sorted = [...pages].sort((a, b) => a - b)
+        let html = '<div class="pagination-wrap">'
+        html += `<button class="pg-btn" ${page <= 1 ? 'disabled' : ''} data-pg="${page - 1}">←</button>`
+        let prev = 0
+        for (const p of sorted) {
+            if (p - prev > 1) html += '<span class="pg-ellipsis">…</span>'
+            html += `<button class="pg-btn${p === page ? ' active' : ''}" data-pg="${p}">${p}</button>`
+            prev = p
+        }
+        html += `<button class="pg-btn" ${page >= totalPages ? 'disabled' : ''} data-pg="${page + 1}">→</button>`
+        html += '</div>'
+        containerEl.innerHTML = html
+        containerEl.querySelectorAll('.pg-btn:not([disabled])').forEach(btn => {
+            btn.addEventListener('click', () => onPage(Number(btn.dataset.pg)))
+        })
+    }
+
     // Galerie / Carrousel
+    const CAROUSEL_PAGE_SIZE = 10
+    let _carouselAllRows = [], _carouselPage = 1
+    const _paginationCarouselEl = document.getElementById('pagination-carousel')
+
     async function renderList(category, listEl, countEl) {
         clearError(); listEl.innerHTML = ''; countEl.textContent = ''
         try {
             const rows = await listPhotos(category)
+            _carouselAllRows = rows; _carouselPage = 1
             countEl.textContent = `${rows.length} element${rows.length!==1?'s':''}`
-            if (!rows.length) { listEl.innerHTML='<div class="col-12" style="color:rgba(191,233,255,0.40);font-size:0.85rem;">Aucune photo.</div>'; return }
-            for (const row of rows) {
-                const url = await createSignedPhotoUrl(row.path)
-                const title = row.title ? escapeHtml(row.title) : 'Sans titre'
-                const date  = row.created_at ? new Date(row.created_at).toLocaleString('fr-FR') : ''
-                const col = document.createElement('div')
-                col.className = 'col-md-6'
-                col.innerHTML = `<div class="photo-card"><img src="${url}" alt="${title}" loading="lazy">
-                    <div class="photo-card-body"><div><div class="photo-card-title">${title}</div><div class="photo-card-date">${date}</div></div>
-                    <button class="btn-atelier-danger" data-photo-id="${row.id}" data-photo-path="${escapeHtml(row.path)}">Supprimer</button></div></div>`
-                listEl.appendChild(col)
-            }
+            await renderCarouselPage()
         } catch(e) { console.error(e); showError(e?.message||'Erreur') }
+    }
+
+    async function renderCarouselPage() {
+        listCarousel.innerHTML = ''
+        if (!_carouselAllRows.length) {
+            listCarousel.innerHTML = '<div class="col-12" style="color:rgba(191,233,255,0.40);font-size:0.85rem;">Aucune photo.</div>'
+            renderPagination(_paginationCarouselEl, 0, 1, CAROUSEL_PAGE_SIZE, ()=>{})
+            return
+        }
+        const start = (_carouselPage - 1) * CAROUSEL_PAGE_SIZE
+        const pageRows = _carouselAllRows.slice(start, start + CAROUSEL_PAGE_SIZE)
+
+        // Rendu immédiat avec placeholders
+        for (const row of pageRows) {
+            const title = row.title ? escapeHtml(row.title) : 'Sans titre'
+            const date  = row.created_at ? new Date(row.created_at).toLocaleString('fr-FR') : ''
+            const col = document.createElement('div')
+            col.className = 'col-md-6'
+            col.dataset.rowId = row.id
+            col.innerHTML = `<div class="photo-card">
+                <div class="photo-placeholder">✷</div>
+                <div class="photo-card-body"><div><div class="photo-card-title">${title}</div><div class="photo-card-date">${date}</div></div>
+                <button class="btn-atelier-danger" data-photo-id="${row.id}" data-photo-path="${escapeHtml(row.path)}">Supprimer</button></div></div>`
+            listCarousel.appendChild(col)
+        }
+
+        renderPagination(_paginationCarouselEl, _carouselAllRows.length, _carouselPage, CAROUSEL_PAGE_SIZE, async (p) => {
+            _carouselPage = p
+            await renderCarouselPage()
+            document.getElementById('tab-carousel').scrollIntoView({behavior:'smooth', block:'start'})
+        })
+
+        // Chargement des images en arrière-plan
+        ;(async () => {
+            for (const row of pageRows) {
+                try {
+                    const url = await createSignedPhotoUrl(row.path)
+                    const col = listCarousel.querySelector(`[data-row-id="${row.id}"]`)
+                    if (!col) continue
+                    const wrap = col.querySelector('.photo-placeholder')
+                    if (!wrap) continue
+                    const img = document.createElement('img')
+                    img.src = url
+                    img.alt = row.title ? escapeHtml(row.title) : 'Sans titre'
+                    img.loading = 'lazy'
+                    wrap.replaceWith(img)
+                } catch(err) { console.error('[carousel] signedUrl failed:', row.path, err) }
+            }
+        })()
     }
 
     async function handleDelete(e, category, listEl, countEl) {
@@ -249,6 +376,18 @@
 <script>
     // Articles
     const listArticlesEl=document.getElementById('list-articles'), countArticlesEl=document.getElementById('count-articles')
+    const ARTICLES_PAGE_SIZE = 10
+    let _articleAllRows = [], _articlePage = 1
+    const _paginationArticlesEl = document.getElementById('pagination-articles')
+
+    async function loadCreateFormTypes() {
+        const container=document.getElementById('art-create-types')
+        try {
+            const types=await listArticleTypes()
+            if (!types.length) { container.innerHTML='<span style="color:rgba(191,233,255,.35);font-size:.82rem;">Aucun type disponible. Créez-en dans l\'onglet Types.</span>'; return }
+            container.innerHTML='<div class="d-flex flex-wrap gap-2">'+types.map(t=>`<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.82rem;color:rgba(191,233,255,.80);background:rgba(110,180,255,.07);border:1px solid rgba(110,180,255,.18);border-radius:8px;padding:5px 12px;"><input type="checkbox" name="create_type_id" value="${t.id}" style="accent-color:#9ed7ff;">${escapeHtml(t.name)}</label>`).join('')+'</div>'
+        } catch(e) { container.innerHTML='<span style="color:rgba(255,140,140,.7);font-size:.82rem;">Erreur chargement types</span>' }
+    }
 
     async function renderArticlePhotos(articleId, containerEl) {
         containerEl.innerHTML='<div style="color:rgba(191,233,255,.35);font-size:.8rem;">Chargement…</div>'
@@ -278,62 +417,86 @@
         clearError(); listArticlesEl.innerHTML=''; countArticlesEl.textContent=''
         try {
             const articles = await listArticles()
+            _articleAllRows = articles; _articlePage = 1
             countArticlesEl.textContent=`${articles.length} article${articles.length!==1?'s':''}`
-            if (!articles.length) { listArticlesEl.innerHTML='<div style="color:rgba(191,233,255,0.40);font-size:0.85rem;">Aucun article.</div>'; return }
-            for (const art of articles) {
-                const card=document.createElement('div'); card.className='article-mgmt-card'
-                const date=art.created_at?new Date(art.created_at).toLocaleString('fr-FR'):''
-                const hasCover=!!art.cover_path
-                card.innerHTML=`
-                    <div class="article-mgmt-header" data-article-id="${art.id}">
-                        <div><div class="article-mgmt-title">${escapeHtml(art.title)}</div><div class="article-mgmt-meta">${date}</div></div>
-                        <div class="d-flex gap-2">
-                            <a href="article.html?id=${art.id}" target="_blank" class="btn-atelier-ghost" style="font-size:.72rem;padding:4px 10px;" onclick="event.stopPropagation()">Voir ↗</a>
-                            <button class="btn-atelier-danger" data-delete-article="${art.id}">Supprimer</button>
-                        </div>
-                    </div>
-                    <div class="article-mgmt-body" id="art-body-${art.id}">
-                        <div id="art-edit-${art.id}" style="padding:12px 0 4px;">
-                            <p style="font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">✦ Modifier l'article</p>
-                            <form class="art-edit-form" data-article-id="${art.id}">
-                                <div class="cform-group">
-                                    <label class="cform-label">Titre</label>
-                                    <input type="text" name="title" class="cform-input" value="${escapeHtml(art.title)}" required>
-                                </div>
-                                <div class="cform-group" style="margin-top:8px;">
-                                    <label class="cform-label">Description</label>
-                                    <textarea name="description" class="cform-input cform-textarea" style="min-height:70px;">${escapeHtml(art.description||'')}</textarea>
-                                </div>
-                                <button type="submit" class="btn-atelier-primary" style="margin-top:10px;">&#10003; Enregistrer</button>
-                            </form>
-                            <hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
-                        </div>
-                        <div id="art-cover-${art.id}"></div>
-                        <div id="art-photos-${art.id}"></div>
-                        <hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
-                        <p style="font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">Ajouter une photo</p>
-                        <form class="art-photo-upload-form d-flex gap-2 flex-wrap align-items-center" data-article-id="${art.id}">
-                            <input type="text" placeholder="Légende (optionnel)" class="cform-input" name="caption" style="flex:1;min-width:130px;">
-                            <input type="file" accept="image/*" multiple class="cform-input art-photo-file" style="flex:1;min-width:130px;padding:6px 10px;cursor:pointer;">
-                            <button type="submit" class="btn-atelier-primary" style="width:auto;padding:9px 16px;">↑</button>
-                        </form>
-                        ${hasCover?'':
-                        `<hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
-                        <p style="font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">Photo de couverture</p>
-                        <form class="art-cover-upload-form d-flex gap-2 flex-wrap align-items-center" data-article-id="${art.id}">
-                            <input type="file" accept="image/*" class="cform-input" style="flex:1;min-width:130px;padding:6px 10px;cursor:pointer;">
-                            <button type="submit" class="btn-atelier-primary" style="width:auto;padding:9px 16px;">↑ Couverture</button>
-                        </form>`}
-                    </div>`
-                listArticlesEl.appendChild(card)
-                if (art.cover_path) {
-                    try {
-                        const url=await createSignedPhotoUrl(art.cover_path)
-                        document.getElementById(`art-cover-${art.id}`).innerHTML=`<img src="${url}" class="article-mgmt-cover" alt="Couverture"><p style="font-size:.72rem;color:rgba(191,233,255,.4);margin:0 0 8px;">Couverture actuelle</p>`
-                    } catch(err) { console.error('[atelier] cover signedUrl failed:', art.cover_path, err); }
-                }
-            }
+            await renderArticlesPage()
         } catch(e) { console.error(e); showError(e?.message||'Erreur articles') }
+    }
+
+    async function renderArticlesPage() {
+        listArticlesEl.innerHTML=''
+        if (!_articleAllRows.length) {
+            listArticlesEl.innerHTML='<div style="color:rgba(191,233,255,0.40);font-size:0.85rem;">Aucun article.</div>'
+            renderPagination(_paginationArticlesEl, 0, 1, ARTICLES_PAGE_SIZE, ()=>{})
+            return
+        }
+        const start = (_articlePage - 1) * ARTICLES_PAGE_SIZE
+        const pageArts = _articleAllRows.slice(start, start + ARTICLES_PAGE_SIZE)
+        for (const art of pageArts) {
+            const card=document.createElement('div'); card.className='article-mgmt-card'
+            const date=art.created_at?new Date(art.created_at).toLocaleString('fr-FR'):''
+            const hasCover=!!art.cover_path
+            card.innerHTML=`
+                <div class="article-mgmt-header" data-article-id="${art.id}">
+                    <div><div class="article-mgmt-title">${escapeHtml(art.title)}</div><div class="article-mgmt-meta">${date}</div></div>
+                    <div class="d-flex gap-2">
+                        <a href="article.html?id=${art.id}" target="_blank" class="btn-atelier-ghost" style="font-size:.72rem;padding:4px 10px;" onclick="event.stopPropagation()">Voir ↗</a>
+                        <button class="btn-atelier-danger" data-delete-article="${art.id}">Supprimer</button>
+                    </div>
+                </div>
+                <div class="article-mgmt-body" id="art-body-${art.id}">
+                    <div id="art-edit-${art.id}" style="padding:12px 0 4px;">
+                        <p style="font-family:var(--font-title);font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">✦ Modifier l'article</p>
+                        <form class="art-edit-form" data-article-id="${art.id}">
+                            <div class="cform-group">
+                                <label class="cform-label">Titre</label>
+                                <input type="text" name="title" class="cform-input" value="${escapeHtml(art.title)}" required>
+                            </div>
+                            <div class="cform-group" style="margin-top:8px;">
+                                <label class="cform-label">Description</label>
+                                <textarea name="description" class="cform-input cform-textarea" style="min-height:70px;">${escapeHtml(art.description||'')}</textarea>
+                            </div>
+                            <button type="submit" class="btn-atelier-primary" style="margin-top:10px;">&#10003; Enregistrer</button>
+                        </form>
+                        <hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
+                    </div>
+                    <div id="art-types-${art.id}"></div>
+                    <div id="art-cover-${art.id}"></div>
+                    <div id="art-photos-${art.id}"></div>
+                    <hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
+                    <p style="font-family:var(--font-title);font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">Ajouter une photo</p>
+                    <form class="art-photo-upload-form d-flex gap-2 flex-wrap align-items-center" data-article-id="${art.id}">
+                        <input type="text" placeholder="Légende (optionnel)" class="cform-input" name="caption" style="flex:1;min-width:130px;">
+                        <input type="file" accept="image/*" multiple class="cform-input art-photo-file" style="flex:1;min-width:130px;padding:6px 10px;cursor:pointer;">
+                        <button type="submit" class="btn-atelier-primary" style="width:auto;padding:9px 16px;">↑</button>
+                    </form>
+                    ${hasCover?'':
+                    `<hr style="border-color:rgba(191,233,255,.08);margin:14px 0;">
+                    <p style="font-family:var(--font-title);font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">Photo de couverture</p>
+                    <form class="art-cover-upload-form d-flex gap-2 flex-wrap align-items-center" data-article-id="${art.id}">
+                        <input type="file" accept="image/*" class="cform-input" style="flex:1;min-width:130px;padding:6px 10px;cursor:pointer;">
+                        <button type="submit" class="btn-atelier-primary" style="width:auto;padding:9px 16px;">↑ Couverture</button>
+                    </form>`}
+                </div>`
+            listArticlesEl.appendChild(card)
+        }
+
+        renderPagination(_paginationArticlesEl, _articleAllRows.length, _articlePage, ARTICLES_PAGE_SIZE, async (p) => {
+            _articlePage = p
+            await renderArticlesPage()
+            document.getElementById('tab-articles').scrollIntoView({behavior:'smooth', block:'start'})
+        })
+
+        // Chargement des couvertures en parallèle après le rendu
+        ;(async () => {
+            await Promise.all(pageArts.filter(a => a.cover_path).map(async (art) => {
+                try {
+                    const url = await createSignedPhotoUrl(art.cover_path)
+                    const el = document.getElementById(`art-cover-${art.id}`)
+                    if (el) el.innerHTML = `<img src="${url}" class="article-mgmt-cover" alt="Couverture"><p style="font-size:.72rem;color:rgba(191,233,255,.4);margin:0 0 8px;">Couverture actuelle</p>`
+                } catch(err) { console.error('[atelier] cover signedUrl failed:', art.cover_path, err) }
+            }))
+        })()
     }
 
     listArticlesEl.addEventListener('click', async e => {
@@ -365,15 +528,30 @@
             const id=header.getAttribute('data-article-id')
             const body=document.getElementById(`art-body-${id}`)
             body.classList.toggle('open')
-            if (body.classList.contains('open')) await renderArticlePhotos(id,document.getElementById(`art-photos-${id}`))
+            if (body.classList.contains('open')) {
+                await renderArticlePhotos(id,document.getElementById(`art-photos-${id}`))
+                await renderArticleTypes(id,document.getElementById(`art-types-${id}`))
+            }
         }
     })
 
     listArticlesEl.addEventListener('submit', async e => {
         const photoForm=e.target.closest('.art-photo-upload-form'), coverForm=e.target.closest('.art-cover-upload-form')
-        const editForm=e.target.closest('.art-edit-form')
-        if (!photoForm && !coverForm && !editForm) return
+        const editForm=e.target.closest('.art-edit-form'), typesForm=e.target.closest('.art-types-form')
+        if (!photoForm && !coverForm && !editForm && !typesForm) return
         e.preventDefault()
+        if (typesForm) {
+            const articleId=typesForm.getAttribute('data-article-id')
+            const typeIds=Array.from(typesForm.querySelectorAll('input[name=type_id]:checked')).map(cb=>cb.value)
+            const btn=typesForm.querySelector('button[type=submit]')
+            btn.disabled=true
+            try {
+                await setTypesForArticle(articleId,typeIds)
+                btn.textContent='✓ Sauvegardé'
+                setTimeout(()=>{btn.disabled=false;btn.textContent='✓ Enregistrer les types'},1500)
+            } catch(err) { console.error(err); showError(err?.message||'Erreur types'); btn.disabled=false }
+            return
+        }
         if (editForm) {
             const id=editForm.getAttribute('data-article-id')
             const title=editForm.querySelector('[name=title]').value.trim()
@@ -422,6 +600,8 @@
         try {
             let cover_path=null; if (file) cover_path=await uploadPhotoFile(file,'articles')
             const newArt=await insertArticle({title,description:desc||null,cover_path})
+            const typeIds=Array.from(document.querySelectorAll('#art-create-types input[name=create_type_id]:checked')).map(cb=>cb.value)
+            if (typeIds.length) await setTypesForArticle(newArt.id,typeIds)
             let sortOrder=0
             for (const f of extraFiles) {
                 const path=await uploadPhotoFile(f,'articles')
@@ -463,12 +643,120 @@
             el.innerHTML=`Connecté : <strong>${session.user.email}</strong>`
             await renderList(PHOTO_CATEGORY.CAROUSEL,listCarousel,countCarousel)
             await renderArticles()
+            await renderTypes()
         } catch(err) {
             console.error('[initAdmin]', err)
             showError('Erreur initialisation : ' + (err?.message || err))
         }
     }
     initAdmin()
+</script>
+<script>
+    // Types d'articles
+    async function renderTypes() {
+        clearError()
+        const listEl=document.getElementById('list-types'), countEl=document.getElementById('count-types')
+        listEl.innerHTML=''; countEl.textContent=''
+        try {
+            const types=await listArticleTypes()
+            countEl.textContent=`${types.length} type${types.length!==1?'s':''}`
+            loadCreateFormTypes()
+            if (!types.length) { listEl.innerHTML='<div style="color:rgba(191,233,255,0.40);font-size:0.85rem;">Aucun type créé.</div>'; return }
+            for (const t of types) {
+                const row=document.createElement('div'); row.className='type-mgmt-row'; row.setAttribute('data-type-id',t.id)
+                row.innerHTML=`
+                    <div class="type-mgmt-display d-flex justify-content-between align-items-center">
+                        <span class="type-mgmt-name">${escapeHtml(t.name)}</span>
+                        <div class="d-flex gap-2">
+                            <button class="btn-atelier-ghost btn-type-edit" style="font-size:.73rem;padding:4px 12px;">Modifier</button>
+                            <button class="btn-atelier-danger btn-type-delete">Supprimer</button>
+                        </div>
+                    </div>
+                    <div class="type-mgmt-edit d-none" style="margin-top:10px;">
+                        <form class="type-edit-form d-flex gap-2 align-items-center" data-type-id="${t.id}">
+                            <input type="text" name="name" class="cform-input" value="${escapeHtml(t.name)}" required style="flex:1;">
+                            <button type="submit" class="btn-atelier-primary" style="width:auto;padding:8px 14px;font-size:.73rem;">✓</button>
+                            <button type="button" class="btn-atelier-ghost btn-type-cancel" style="padding:8px 12px;font-size:.73rem;">✕</button>
+                        </form>
+                    </div>`
+                listEl.appendChild(row)
+            }
+        } catch(e) { console.error(e); showError(e?.message||'Erreur types') }
+    }
+
+    async function renderArticleTypes(articleId, containerEl) {
+        containerEl.innerHTML='<div style="color:rgba(191,233,255,.35);font-size:.8rem;padding:8px 0;">Chargement…</div>'
+        try {
+            const [allTypes, linkedTypeIds]=await Promise.all([listArticleTypes(), listTypesForArticle(articleId)])
+            if (!allTypes.length) {
+                containerEl.innerHTML='<hr style="border-color:rgba(191,233,255,.08);margin:14px 0;"><div style="color:rgba(191,233,255,.40);font-size:.8rem;">Aucun type disponible. <a href="#" onclick="document.querySelector(\'[data-tab=types]\').click();return false;" style="color:rgba(110,180,255,.7);">Créer un type →</a></div>'
+                return
+            }
+            const linkedSet=new Set(linkedTypeIds)
+            let html='<hr style="border-color:rgba(191,233,255,.08);margin:14px 0;"><p style="font-family:var(--font-title);font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.45);margin:0 0 10px;">🏷 Types associés</p>'
+            html+=`<form class="art-types-form" data-article-id="${articleId}"><div class="d-flex flex-wrap gap-2" style="margin-bottom:10px;">`
+            for (const t of allTypes) {
+                const checked=linkedSet.has(t.id)?'checked':''
+                html+=`<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.82rem;color:rgba(191,233,255,.80);background:rgba(110,180,255,.07);border:1px solid rgba(110,180,255,.18);border-radius:8px;padding:5px 12px;">
+                    <input type="checkbox" name="type_id" value="${t.id}" ${checked} style="accent-color:#9ed7ff;">
+                    ${escapeHtml(t.name)}
+                </label>`
+            }
+            html+='</div><button type="submit" class="btn-atelier-ghost" style="font-size:.75rem;padding:6px 14px;">✓ Enregistrer les types</button></form>'
+            containerEl.innerHTML=html
+        } catch(e) { containerEl.innerHTML=`<div style="color:rgba(255,140,140,.7);font-size:.8rem;">${escapeHtml(e.message)}</div>` }
+    }
+
+    const listTypesEl=document.getElementById('list-types')
+
+    listTypesEl.addEventListener('click', async e => {
+        const row=e.target.closest('.type-mgmt-row'); if (!row) return
+        const editBtn=e.target.closest('.btn-type-edit')
+        const cancelBtn=e.target.closest('.btn-type-cancel')
+        const deleteBtn=e.target.closest('.btn-type-delete')
+        if (editBtn) {
+            row.querySelector('.type-mgmt-display').classList.add('d-none')
+            row.querySelector('.type-mgmt-edit').classList.remove('d-none')
+            row.querySelector('input[name=name]').focus()
+            return
+        }
+        if (cancelBtn) {
+            row.querySelector('.type-mgmt-display').classList.remove('d-none')
+            row.querySelector('.type-mgmt-edit').classList.add('d-none')
+            return
+        }
+        if (deleteBtn) {
+            const id=row.getAttribute('data-type-id')
+            if (!confirm('Supprimer ce type ? Il sera dissocié de tous les articles.')) return
+            deleteBtn.disabled=true
+            try { await deleteArticleType(id); await renderTypes() }
+            catch(err) { console.error(err); showError(err?.message||'Erreur'); deleteBtn.disabled=false }
+        }
+    })
+
+    listTypesEl.addEventListener('submit', async e => {
+        const editForm=e.target.closest('.type-edit-form'); if (!editForm) return
+        e.preventDefault()
+        const id=editForm.getAttribute('data-type-id')
+        const name=editForm.querySelector('input[name=name]').value.trim()
+        if (!name) { showError('Le nom est requis.'); return }
+        const btn=editForm.querySelector('button[type=submit]'); btn.disabled=true
+        try { await updateArticleType(id,{name}); await renderTypes() }
+        catch(err) { console.error(err); showError(err?.message||'Erreur modification type'); btn.disabled=false }
+    })
+
+    document.getElementById('type-create-form').addEventListener('submit', async e => {
+        e.preventDefault(); clearError()
+        const name=document.getElementById('type-name').value.trim()
+        if (!name) { showError('Le nom est requis.'); return }
+        const btn=document.getElementById('type-create-btn'), label=document.getElementById('typeCreateLabel'), spinner=document.getElementById('typeCreateSpinner')
+        btn.disabled=true; label.style.display='none'; spinner.style.display='inline-block'
+        try { await insertArticleType({name}); e.target.reset(); await renderTypes() }
+        catch(err) { console.error(err); showError(err?.message||'Erreur création type') }
+        finally { btn.disabled=false; label.style.display='inline'; spinner.style.display='none' }
+    })
+
+    document.getElementById('refresh-types').addEventListener('click', renderTypes)
 </script>
 </body>
 </html>
