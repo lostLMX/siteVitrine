@@ -1486,7 +1486,7 @@ html { background-color: #020810; }
 
 @media (max-width: 768px) {
     .bg-layer {
-        background-image: url('../assets/nebu-mobile.png');
+        background-image: url('../assets/nebuleuse_tel.jpg');
     }
 }
 body.theme-astra {
@@ -1660,17 +1660,23 @@ body.theme-astra {
 
 /* 3. Footer responsive par orientation */
 
-/* Portrait téléphone : tout sur une ligne, séparateurs cachés */
+/* Portrait téléphone : tout sur une ligne, même style que desktop */
 @media (max-width: 768px) and (orientation: portrait) {
     .footer-astra {
         flex-direction: row;
         align-items: center;
         justify-content: center;
         flex-wrap: nowrap;
-        gap: 6px;
+        gap: 8px;
     }
-    .footer-sep  { display: none; }
-    .footer-line { font-size: 0.85rem; white-space: nowrap; }
+    .footer-sep  { display: inline; }
+    .footer-line { font-size: 0.82rem; white-space: nowrap; }
+}
+
+/* Très petit écran : on retire "Retour en haut" si ça déborde */
+@media (max-width: 480px) and (orientation: portrait) {
+    .footer-top { display: none; }
+    .footer-sep:last-of-type { display: none; }
 }
 
 /* Paysage téléphone : comme desktop, compact */
@@ -1685,7 +1691,17 @@ body.theme-astra {
     .footer-line { font-size: 0.88rem; }
 }
 
-/* 4. Carrousel plus grand sur mobile */
+/* 4. Fix scroll background sur mobile (évite le glissement des éléments fixed) */
+@media (max-width: 900px) {
+    .stars,
+    .nebula {
+        will-change: transform;
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
+}
+
+/* 5. Carrousel plus grand sur mobile */
 @media (max-width: 768px) {
     .carousel-slide {
         flex: 0 0 calc((100% - 12px) / 2);
