@@ -405,7 +405,6 @@
 
  @media (max-width: 992px) {
      .gallery-item { grid-column: span 6; }
-     .footer-astra { flex-direction: column; align-items: flex-start; }
  }
 .contact-form-box {
     background: rgba(10, 16, 34, 0.38);
