@@ -5,7 +5,6 @@ const SUPABASE_URL      = 'https://vgvudfjdibieuvukclqu.supabase.co'
 const SUPABASE_ANON_KEY = 'sb_publishable_OOK6f85ZrW9yxj58lTVBfw__hP0m_oo'
 const PHOTOS_BUCKET     = 'photos'
 const PHOTOS_TABLE      = 'photos'
-const SIGNED_URL_TTL    = 60 * 60        // 1 heure en secondes
 const UPLOAD_MAX_MB     = 8              // taille max upload
 const UPLOAD_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif']
 const PHOTO_CATEGORY = { CAROUSEL: 'carousel', GALLERY: 'gallery' }
@@ -13,10 +12,6 @@ const PHOTO_CATEGORY = { CAROUSEL: 'carousel', GALLERY: 'gallery' }
 window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: true, autoRefreshToken: true },
 })
-
-// ── Cache des URLs signées (évite de re-signer à chaque render) ───────────────
-// Structure : Map<path, { url: string, expiresAt: number }>
-const _signedUrlCache = new Map()
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 async function checkAuth() {
@@ -80,54 +75,20 @@ async function listPhotos(category = null) {
 }
 
 async function createSignedPhotoUrl(path) {
-    const now = Date.now()
-
-    const cached = _signedUrlCache.get(path)
-    if (cached && cached.expiresAt > now + 60_000) {
-        return cached.url
-    }
-
-    const { data, error } = await window.supabase.storage
+    const { data } = window.supabase.storage
         .from(PHOTOS_BUCKET)
-        .createSignedUrl(path, SIGNED_URL_TTL)
-    if (error) throw error
-
-    const url = data?.signedUrl || null
-    if (url) {
-        _signedUrlCache.set(path, { url, expiresAt: now + SIGNED_URL_TTL * 1000 })
-    }
-    return url
+        .getPublicUrl(path)
+    return data.publicUrl
 }
 
 async function createSignedPhotoUrlsBatch(paths) {
-    if (!paths.length) return {}
-    const now = Date.now()
     const result = {}
-    const toFetch = []
-
     for (const path of paths) {
-        const cached = _signedUrlCache.get(path)
-        if (cached && cached.expiresAt > now + 60_000) {
-            result[path] = cached.url
-        } else {
-            toFetch.push(path)
-        }
-    }
-
-    if (toFetch.length) {
-        const { data, error } = await window.supabase.storage
+        const { data } = window.supabase.storage
             .from(PHOTOS_BUCKET)
-            .createSignedUrls(toFetch, SIGNED_URL_TTL)
-        if (!error && data) {
-            for (const item of data) {
-                if (item.signedUrl) {
-                    _signedUrlCache.set(item.path, { url: item.signedUrl, expiresAt: now + SIGNED_URL_TTL * 1000 })
-                    result[item.path] = item.signedUrl
-                }
-            }
-        }
+            .getPublicUrl(path)
+        result[path] = data.publicUrl
     }
-
     return result
 }
 
