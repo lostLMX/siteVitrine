@@ -13,6 +13,7 @@
     <meta property="og:image" content="https://astra-draconis.fr/assets/logo.png">
     <meta property="og:url" content="https://astra-draconis.fr/atelier.html">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -82,6 +83,33 @@
             display:flex; align-items:center; justify-content:center; color:rgba(191,233,255,.12); font-size:2rem;
         }
         .photo-card img, .article-mgmt-cover { animation: photo-fadein 0.35s ease; }
+
+        /* ── Quill – thème sombre Atelier ────────────────────────────── */
+        .ql-toolbar.ql-snow { background:rgba(6,10,22,.65); border:1px solid rgba(191,233,255,.20); border-bottom:1px solid rgba(191,233,255,.08); border-radius:10px 10px 0 0; padding:6px 8px; flex-wrap:wrap; }
+        .ql-container.ql-snow { background:rgba(6,10,22,.40); border:1px solid rgba(191,233,255,.20); border-top:none; border-radius:0 0 10px 10px; font-family:inherit; }
+        .ql-editor { color:rgba(230,238,247,.90); font-size:.88rem; line-height:1.65; min-height:100px; }
+        .ql-editor.ql-blank::before { color:rgba(191,233,255,.28); font-style:italic; }
+        .ql-snow .ql-stroke { stroke:rgba(191,233,255,.65); }
+        .ql-snow .ql-fill,.ql-snow .ql-stroke.ql-fill { fill:rgba(191,233,255,.65); }
+        .ql-snow .ql-picker { color:rgba(191,233,255,.65); }
+        .ql-snow .ql-picker-options { background:rgba(8,12,26,.97); border:1px solid rgba(191,233,255,.20); border-radius:8px; }
+        .ql-snow .ql-picker-item { color:rgba(191,233,255,.80); }
+        .ql-toolbar.ql-snow button:hover .ql-stroke,.ql-toolbar.ql-snow button.ql-active .ql-stroke { stroke:rgba(230,238,247,.95); }
+        .ql-toolbar.ql-snow button:hover .ql-fill,.ql-toolbar.ql-snow button.ql-active .ql-fill { fill:rgba(230,238,247,.95); }
+        .ql-toolbar.ql-snow button:hover,.ql-toolbar.ql-snow button.ql-active,.ql-toolbar.ql-snow .ql-picker-label:hover,.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-label { color:rgba(230,238,247,.95); }
+        .ql-snow.ql-toolbar button:hover,.ql-snow.ql-toolbar button.ql-active { background:rgba(191,233,255,.10); border-radius:4px; }
+        .ql-editor h2 { font-family:var(--font-title); font-size:.90rem; letter-spacing:.08em; text-transform:uppercase; color:rgba(191,233,255,.85); margin:8px 0 4px; }
+        .ql-editor h3 { font-family:var(--font-title); font-size:.82rem; letter-spacing:.06em; color:rgba(191,233,255,.72); margin:6px 0 3px; }
+        .ql-editor ul,.ql-editor ol { padding-left:18px; margin:4px 0; }
+        .ql-editor li { margin:2px 0; }
+        .ql-editor blockquote { border-left:3px solid rgba(110,180,255,.40); padding-left:12px; color:rgba(191,233,255,.75); font-style:italic; margin:8px 0; }
+        .ql-editor a { color:rgba(110,180,255,.90); }
+        .ql-editor strong { color:rgba(230,238,247,.98); }
+        .ql-snow .ql-tooltip { background:rgba(8,12,26,.97); border:1px solid rgba(191,233,255,.22); border-radius:8px; color:rgba(191,233,255,.80); box-shadow:0 4px 20px rgba(0,0,0,.5); }
+        .ql-snow .ql-tooltip input[type=text] { background:rgba(6,10,22,.60); border:1px solid rgba(191,233,255,.25); border-radius:5px; color:rgba(230,238,247,.90); }
+        .ql-snow .ql-tooltip a.ql-action::after { color:rgba(110,180,255,.90); }
+        .ql-snow .ql-tooltip a.ql-remove::before { color:rgba(255,140,140,.80); }
+        .cform-hint { font-size:.73rem; color:rgba(191,233,255,.35); margin-top:5px; line-height:1.4; }
     </style>
 </head>
 <body class="theme-astra">
@@ -155,15 +183,17 @@
                     </div>
                     <div class="cform-group" style="margin-top:12px;">
                         <label class="cform-label">Description <span style="opacity:.5">(optionnel)</span></label>
-                        <textarea id="art-desc" class="cform-input cform-textarea" placeholder="Décrivez la pièce : thème, matériaux, dimensions…" style="min-height:80px;"></textarea>
+                        <div id="quill-create"></div>
                     </div>
                     <div class="cform-group" style="margin-top:12px;">
                         <label class="cform-label">Photo de couverture <span style="opacity:.5">(optionnel)</span></label>
                         <input type="file" id="art-cover-file" class="cform-input" accept="image/*" style="padding:7px 13px;cursor:pointer;">
+                        <p class="cform-hint">Miniature dans la galerie et première photo de l'article.</p>
                     </div>
                     <div class="cform-group" style="margin-top:12px;">
                         <label class="cform-label">Photos supplémentaires <span style="opacity:.5">(optionnel, multiple)</span></label>
                         <input type="file" id="art-extra-photos" class="cform-input" accept="image/*" multiple style="padding:7px 13px;cursor:pointer;">
+                        <p class="cform-hint">Ajoutées au carrousel sous la photo principale.</p>
                     </div>
                     <div class="cform-group" style="margin-top:12px;">
                         <label class="cform-label">Types <span style="opacity:.5">(optionnel)</span></label>
@@ -251,6 +281,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script src="js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.js"></script>
 <script>
     const adminErrorEl = document.getElementById('atelier-error')
     function showError(msg) { adminErrorEl.textContent = msg; adminErrorEl.style.display = 'block' }
@@ -382,6 +413,20 @@
     document.getElementById('refresh-carousel').addEventListener('click',()=>renderList(PHOTO_CATEGORY.CAROUSEL,listCarousel,countCarousel))
 </script>
 <script>
+    // ── Quill ─────────────────────────────────────────────────────────
+    const QUILL_TOOLBAR = [
+        ['bold','italic','underline','strike'],
+        [{header:[2,3,false]}],
+        [{list:'ordered'},{list:'bullet'}],
+        ['blockquote','link'],
+        ['clean']
+    ]
+    const createQuill = new Quill('#quill-create', {
+        theme: 'snow',
+        placeholder: 'Décrivez la pièce : thème, matériaux, dimensions…',
+        modules: { toolbar: QUILL_TOOLBAR }
+    })
+
     // Articles
     const listArticlesEl=document.getElementById('list-articles'), countArticlesEl=document.getElementById('count-articles')
     const ARTICLES_PAGE_SIZE = 10
@@ -462,7 +507,7 @@
                             </div>
                             <div class="cform-group" style="margin-top:8px;">
                                 <label class="cform-label">Description</label>
-                                <textarea name="description" class="cform-input cform-textarea" style="min-height:70px;">${escapeHtml(art.description||'')}</textarea>
+                                <div id="quill-edit-${art.id}"></div>
                             </div>
                             <button type="submit" class="btn-atelier-primary" style="margin-top:10px;">&#10003; Enregistrer</button>
                         </form>
@@ -539,6 +584,13 @@
             if (body.classList.contains('open')) {
                 await renderArticlePhotos(id,document.getElementById(`art-photos-${id}`))
                 await renderArticleTypes(id,document.getElementById(`art-types-${id}`))
+                const quillWrap=document.getElementById(`quill-edit-${id}`)
+                if (quillWrap && !quillWrap._quill) {
+                    const q=new Quill(quillWrap,{theme:'snow',placeholder:'Description…',modules:{toolbar:QUILL_TOOLBAR}})
+                    quillWrap._quill=q
+                    const art=_articleAllRows.find(a=>a.id===id)
+                    if (art?.description) q.clipboard.dangerouslyPasteHTML(art.description)
+                }
             }
         }
     })
@@ -563,11 +615,13 @@
         if (editForm) {
             const id=editForm.getAttribute('data-article-id')
             const title=editForm.querySelector('[name=title]').value.trim()
-            const description=editForm.querySelector('[name=description]').value.trim()
+            const quillWrap=document.getElementById(`quill-edit-${id}`)
+            const rawHtml=quillWrap?._quill?.root.innerHTML||''
+            const description=rawHtml==='' || rawHtml==='<p><br></p>' ? null : rawHtml
             if (!title) { showError('Le titre est requis.'); return }
             const btn=editForm.querySelector('button[type=submit]')
             btn.disabled=true
-            try { await updateArticle(id,{title,description:description||null}); await renderArticles() }
+            try { await updateArticle(id,{title,description}); await renderArticles() }
             catch(err) { console.error(err); showError(err?.message||'Erreur modification') }
             finally { btn.disabled=false }
             return
@@ -599,7 +653,8 @@
     document.getElementById('article-create-form').addEventListener('submit', async e => {
         e.preventDefault(); clearError()
         const title=document.getElementById('art-title').value.trim()
-        const desc=document.getElementById('art-desc').value.trim()
+        const rawDesc=createQuill.root.innerHTML
+        const desc=rawDesc===''||rawDesc==='<p><br></p>' ? '' : rawDesc
         const file=document.getElementById('art-cover-file').files[0]
         const extraFiles=Array.from(document.getElementById('art-extra-photos').files)
         const btn=document.getElementById('article-create-btn'), label=document.getElementById('artCreateLabel'), spinner=document.getElementById('artCreateSpinner')
@@ -616,7 +671,7 @@
                 await insertArticlePhotoRow({article_id:newArt.id,path,caption:null,sort_order:sortOrder})
                 sortOrder++
             }
-            e.target.reset()
+            e.target.reset(); createQuill.setContents([])
             document.querySelectorAll('.atelier-tab').forEach(t=>t.classList.remove('active'))
             document.querySelectorAll('.tab-pane').forEach(p=>p.classList.add('d-none'))
             document.querySelector('[data-tab="articles"]').classList.add('active')

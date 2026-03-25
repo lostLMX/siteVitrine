@@ -1807,7 +1807,20 @@ body.theme-astra {
 }
 .art-thumb:hover { border-color:rgba(230,194,122,.55); transform:translateY(-2px); }
 .art-thumb.active { border-color:rgba(230,194,122,.85); box-shadow:0 0 0 2px rgba(230,194,122,.20), 0 6px 18px rgba(0,0,0,.45); }
-.art-desc { max-width:640px; margin:0 auto; text-align:center; color:var(--silver-dim); font-size:1.05rem; line-height:1.72; font-style:italic; }
+.art-desc { max-width:640px; margin:0 auto; color:var(--silver-dim); font-size:1.05rem; line-height:1.72; font-style:italic; }
+.art-desc p { margin:0 0 .8em; }
+.art-desc p:last-child { margin-bottom:0; }
+.art-desc h2 { font-family:var(--font-title); font-size:1.1rem; letter-spacing:.10em; text-transform:uppercase; color:var(--silver-bright); font-style:normal; text-align:center; margin:1.4em 0 .6em; }
+.art-desc h3 { font-family:var(--font-title); font-size:.95rem; letter-spacing:.08em; color:rgba(191,233,255,.88); font-style:normal; text-align:center; margin:1.1em 0 .5em; }
+.art-desc strong,.art-desc b { color:var(--silver-bright); font-style:normal; }
+.art-desc em { font-style:italic; }
+.art-desc u { text-decoration:underline; }
+.art-desc s { text-decoration:line-through; opacity:.65; }
+.art-desc ul,.art-desc ol { text-align:left; padding-left:1.5em; margin:.6em auto; max-width:520px; }
+.art-desc li { margin:.3em 0; }
+.art-desc blockquote { border-left:3px solid rgba(110,180,255,.40); padding:.4em 1em; margin:1em auto; max-width:520px; color:rgba(191,233,255,.78); font-style:italic; }
+.art-desc a { color:rgba(110,180,255,.90); text-decoration:underline; }
+.art-desc a:hover { color:rgba(158,215,255,.95); }
 .art-status { text-align:center; padding:60px 0; color:rgba(191,233,255,.45); font-style:italic; }
 
 /* ── Mentions légales ───────────────────────────────────────────────── */
