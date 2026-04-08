@@ -6,18 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article — Astra Draconis</title>
     <meta name="description" content="Lisez les articles d'Astra Draconis sur l'univers des Book Nooks, l'artisanat médiéval et l'inspiration fantastique.">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="https://astra-draconis.fr/article.html">
     <meta property="og:title" content="Article — Astra Draconis">
     <meta property="og:description" content="Articles sur l'univers des Book Nooks, l'artisanat médiéval et l'inspiration fantastique.">
     <meta property="og:image" content="https://astra-draconis.fr/assets/logo.png">
     <meta property="og:url" content="https://astra-draconis.fr/article.html">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="assets/logo.png" type="image/png">
+    <style>
+        /* ── Mode édition admin ──────────────────────────────────────────── */
+        .admin-float-btn { position:fixed; bottom:28px; right:28px; z-index:200; }
+        .admin-float-btn button { padding:10px 22px; background:rgba(8,14,30,.85); border:1px solid rgba(110,180,255,.40); border-radius:30px; color:rgba(191,233,255,.90); font-family:var(--font-title); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; backdrop-filter:blur(12px); transition:all 180ms; box-shadow:0 4px 24px rgba(0,0,0,.50); }
+        .admin-float-btn button:hover { background:rgba(110,180,255,.18); border-color:rgba(110,180,255,.65); box-shadow:0 4px 24px rgba(110,180,255,.18); }
+        .admin-edit-bar { position:fixed; bottom:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:center; gap:10px; padding:13px 20px; background:rgba(6,10,22,.92); border-top:1px solid rgba(191,233,255,.12); backdrop-filter:blur(14px); flex-wrap:wrap; }
+        .admin-bar-save { padding:9px 24px; background:rgba(50,170,90,.18); border:1px solid rgba(80,200,120,.38); border-radius:8px; color:rgba(140,240,160,.95); font-family:var(--font-title); font-size:.71rem; letter-spacing:.10em; text-transform:uppercase; cursor:pointer; transition:background 150ms; }
+        .admin-bar-save:hover:not(:disabled) { background:rgba(50,170,90,.30); }
+        .admin-bar-save:disabled { opacity:.5; cursor:not-allowed; }
+        .admin-bar-cancel { padding:9px 18px; background:transparent; border:1px solid rgba(191,233,255,.22); border-radius:8px; color:rgba(191,233,255,.65); font-family:var(--font-title); font-size:.71rem; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; transition:background 150ms; }
+        .admin-bar-cancel:hover { background:rgba(191,233,255,.08); }
+        .admin-bar-delete { padding:9px 16px; background:transparent; border:1px solid rgba(255,80,80,.28); border-radius:8px; color:rgba(255,140,140,.75); font-family:var(--font-title); font-size:.71rem; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; transition:background 150ms; margin-left:16px; }
+        .admin-bar-delete:hover { background:rgba(255,80,80,.12); }
+        .edit-title-input { width:100%; background:transparent; border:none; border-bottom:2px solid rgba(110,180,255,.50); color:inherit; font-family:inherit; font-size:inherit; font-weight:inherit; letter-spacing:inherit; text-transform:inherit; text-align:center; outline:none; padding:4px 8px; line-height:inherit; }
+        .edit-title-input:focus { border-bottom-color:rgba(110,180,255,.90); }
+        .admin-main-del { position:absolute; top:10px; right:10px; padding:6px 14px; background:rgba(0,0,0,.72); border:1px solid rgba(255,80,80,.45); border-radius:8px; color:rgba(255,140,140,.90); font-size:.78rem; cursor:pointer; z-index:10; transition:background 150ms; }
+        .admin-main-del:hover { background:rgba(255,80,80,.22); }
+        .admin-add-photo-wrap { margin:28px auto 0; max-width:500px; background:rgba(10,16,34,.55); border:1px dashed rgba(191,233,255,.16); border-radius:14px; padding:22px 24px; }
+        .admin-section-title { font-family:var(--font-title); font-size:.70rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(191,233,255,.45); margin:0 0 14px; }
+        .admin-add-input { width:100%; padding:8px 12px; background:rgba(6,10,22,.60); border:1px solid rgba(191,233,255,.18); border-radius:8px; color:rgba(230,238,247,.90); font-size:.84rem; outline:none; margin-bottom:10px; box-sizing:border-box; }
+        .admin-add-input:focus { border-color:rgba(110,180,255,.45); }
+        .admin-upload-btn { width:100%; padding:9px; background:rgba(110,180,255,.14); border:1px solid rgba(110,180,255,.28); border-radius:8px; color:rgba(191,233,255,.85); font-family:var(--font-title); font-size:.71rem; letter-spacing:.10em; text-transform:uppercase; cursor:pointer; transition:background 150ms; }
+        .admin-upload-btn:hover:not(:disabled) { background:rgba(110,180,255,.24); }
+        .admin-upload-btn:disabled { opacity:.5; cursor:not-allowed; }
+        .admin-types-wrap { margin:22px auto 0; max-width:500px; text-align:center; padding-bottom:80px; }
+        .admin-type-label { display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:.82rem; color:rgba(191,233,255,.80); background:rgba(110,180,255,.07); border:1px solid rgba(110,180,255,.18); border-radius:20px; padding:5px 14px; margin:4px; transition:background 150ms; }
+        .admin-type-label input { accent-color:#9ed7ff; }
+        .admin-type-label:hover { background:rgba(110,180,255,.14); }
+        /* Quill dark theme dans la description */
+        .art-desc .ql-toolbar.ql-snow { background:rgba(6,10,22,.65); border:1px solid rgba(191,233,255,.20); border-bottom:1px solid rgba(191,233,255,.08); border-radius:10px 10px 0 0; }
+        .art-desc .ql-container.ql-snow { background:rgba(6,10,22,.40); border:1px solid rgba(191,233,255,.20); border-top:none; border-radius:0 0 10px 10px; font-family:inherit; }
+        .art-desc .ql-editor { color:rgba(230,238,247,.90); font-size:1rem; line-height:1.72; min-height:120px; font-style:normal; }
+        .art-desc .ql-editor.ql-blank::before { color:rgba(191,233,255,.28); font-style:italic; }
+        .art-desc .ql-snow .ql-stroke { stroke:rgba(191,233,255,.65); }
+        .art-desc .ql-snow .ql-fill,.art-desc .ql-snow .ql-stroke.ql-fill { fill:rgba(191,233,255,.65); }
+        .art-desc .ql-snow .ql-picker { color:rgba(191,233,255,.65); }
+        .art-desc .ql-snow .ql-picker-options { background:rgba(8,12,26,.97); border:1px solid rgba(191,233,255,.20); border-radius:8px; }
+        .art-desc .ql-toolbar.ql-snow button:hover .ql-stroke,.art-desc .ql-toolbar.ql-snow button.ql-active .ql-stroke { stroke:rgba(230,238,247,.95); }
+        .art-desc .ql-toolbar.ql-snow button:hover .ql-fill,.art-desc .ql-toolbar.ql-snow button.ql-active .ql-fill { fill:rgba(230,238,247,.95); }
+        .art-desc .ql-snow .ql-tooltip { background:rgba(8,12,26,.97); border:1px solid rgba(191,233,255,.22); border-radius:8px; color:rgba(191,233,255,.80); box-shadow:0 4px 20px rgba(0,0,0,.5); }
+        .art-desc .ql-snow .ql-tooltip input[type=text] { background:rgba(6,10,22,.60); border:1px solid rgba(191,233,255,.25); border-radius:5px; color:rgba(230,238,247,.90); }
+    </style>
 </head>
 <body class="theme-astra">
 <div class="bg-layer" aria-hidden="true"></div>
@@ -91,10 +134,38 @@
 
             <!-- Description -->
             <div class="art-desc" id="art-desc" style="display:none;"></div>
+
+            <!-- Admin : ajouter des photos (mode édition uniquement) -->
+            <div id="admin-add-photo" style="display:none;">
+                <div class="admin-add-photo-wrap">
+                    <p class="admin-section-title">✦ Ajouter des photos</p>
+                    <input type="text" id="admin-caption-input" class="admin-add-input" placeholder="Légende (optionnel)">
+                    <input type="file" id="admin-photo-file" class="admin-add-input" accept="image/*" multiple style="cursor:pointer;padding:6px 12px;">
+                    <button class="admin-upload-btn" id="admin-upload-btn" onclick="uploadNewPhotos()">↑ Uploader</button>
+                </div>
+            </div>
+
+            <!-- Admin : types (mode édition uniquement) -->
+            <div id="admin-types-section" class="admin-types-wrap" style="display:none;">
+                <p class="admin-section-title">🏷 Types associés</p>
+                <div id="admin-types-container"></div>
+            </div>
         </div>
 
     </div>
 </section>
+
+<!-- Admin : bouton éditer (fixe, visible si connecté) -->
+<div id="admin-edit-btn" class="admin-float-btn" style="display:none;">
+    <button onclick="enterEditMode()">✏ Éditer</button>
+</div>
+
+<!-- Admin : barre d'actions (mode édition) -->
+<div id="admin-edit-bar" class="admin-edit-bar" style="display:none;">
+    <button id="admin-save-btn" class="admin-bar-save" onclick="saveArticle()">✓ Enregistrer</button>
+    <button class="admin-bar-cancel" onclick="cancelEdit()">✕ Annuler</button>
+    <button class="admin-bar-delete" onclick="deleteCurrentArticle()">🗑 Supprimer l'article</button>
+</div>
 
 <!-- ── Footer ─────────────────────────────────────────────────────── -->
 <footer class="section-astra section-footer">
@@ -112,6 +183,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/script.js"></script>
 <script>
@@ -122,10 +194,10 @@
     }
 
     // ── Carousel state ───────────────────────────────────────────────
-    let photoData   = []
+    let photoData   = []   // { url, caption, id, path, isCover }
     let currentIdx  = 0
     let carouselOff = 0
-    const THUMB_W   = 98  // thumb width + gap
+    const THUMB_W   = 98
 
     const mainImg     = document.getElementById('artMainImg')
     const mainCaption = document.getElementById('artMainCaption')
@@ -156,6 +228,8 @@
         })
 
         ensureThumbVisible(idx)
+
+        if (editMode) addMainPhotoDeleteBtn()
     }
 
     function ensureThumbVisible(idx) {
@@ -177,28 +251,70 @@
     prevBtn.addEventListener('click', () => {
         if (currentIdx > 0) selectPhoto(currentIdx - 1)
     })
-
     nextBtn.addEventListener('click', () => {
         if (currentIdx < photoData.length - 1) selectPhoto(currentIdx + 1)
     })
 
+    function rebuildCarousel() {
+        track.innerHTML = ''
+        if (!photoData.length) {
+            mainImg.classList.add('d-none')
+            document.getElementById('artMainPlaceholder').classList.remove('d-none')
+            document.getElementById('artCarouselOuter').style.display = 'none'
+            document.getElementById('admin-main-del-btn')?.remove()
+            return
+        }
+        mainImg.classList.remove('d-none')
+        document.getElementById('artMainPlaceholder').classList.add('d-none')
+        const idx = Math.min(currentIdx, photoData.length - 1)
+        currentIdx = idx
+        mainImg.src = photoData[idx].url
+        mainImg.alt = escapeHtml(photoData[idx].caption || '')
+        if (photoData[idx].caption) {
+            mainCaption.textContent = photoData[idx].caption
+            mainCaption.style.display = ''
+        } else {
+            mainCaption.style.display = 'none'
+        }
+        if (photoData.length > 1) {
+            document.getElementById('artCarouselOuter').style.display = ''
+            photoData.forEach((p, i) => {
+                const thumb = document.createElement('img')
+                thumb.src = p.url
+                thumb.alt = escapeHtml(p.caption || '')
+                thumb.className = 'art-thumb' + (i === idx ? ' active' : '')
+                thumb.loading = 'lazy'
+                thumb.addEventListener('click', () => selectPhoto(i))
+                track.appendChild(thumb)
+            })
+            updateCarouselBtns()
+        } else {
+            document.getElementById('artCarouselOuter').style.display = 'none'
+        }
+        if (editMode) addMainPhotoDeleteBtn()
+    }
+
     // ── Load article ─────────────────────────────────────────────────
+    let artId          = null
+    let currentArticle = null
+
     async function initArticle() {
-        const params     = new URLSearchParams(window.location.search)
-        const articleId  = params.get('id')
+        const params    = new URLSearchParams(window.location.search)
+        artId           = params.get('id')
         const loadingEl  = document.getElementById('art-loading')
         const notFoundEl = document.getElementById('art-not-found')
         const bodyEl     = document.getElementById('art-body')
 
-        if (!articleId) {
+        if (!artId) {
             loadingEl.classList.add('d-none')
             notFoundEl.classList.remove('d-none')
             return
         }
 
         try {
-            const article = await getArticle(articleId)
+            const article = await getArticle(artId)
             if (!article) throw new Error('not found')
+            currentArticle = article
 
             document.title = `Astra Draconis — ${article.title}`
             document.getElementById('art-title').textContent = article.title
@@ -209,12 +325,12 @@
                 descEl.style.display = ''
             }
 
-            const photos = await listArticlePhotos(articleId)
+            const photos = await listArticlePhotos(artId)
 
             if (photos.length === 0) {
                 if (article.cover_path) {
                     const url = await createSignedPhotoUrl(article.cover_path)
-                    photoData = [{ url, caption: '' }]
+                    photoData = [{ url, caption: '', id: null, path: article.cover_path, isCover: true }]
                 } else {
                     mainImg.classList.add('d-none')
                     document.getElementById('artMainPlaceholder').classList.remove('d-none')
@@ -223,13 +339,13 @@
                 if (article.cover_path) {
                     try {
                         const url = await createSignedPhotoUrl(article.cover_path)
-                        photoData.push({ url, caption: '' })
+                        photoData.push({ url, caption: '', id: null, path: article.cover_path, isCover: true })
                     } catch (_) {}
                 }
                 for (const photo of photos) {
                     try {
                         const url = await createSignedPhotoUrl(photo.path)
-                        photoData.push({ url, caption: photo.caption || '' })
+                        photoData.push({ url, caption: photo.caption || '', id: photo.id, path: photo.path, isCover: false })
                     } catch (_) {}
                 }
             }
@@ -241,10 +357,8 @@
                     mainCaption.textContent = photoData[0].caption
                     mainCaption.style.display = ''
                 }
-
                 if (photoData.length > 1) {
                     document.getElementById('artCarouselOuter').style.display = ''
-
                     photoData.forEach((p, i) => {
                         const thumb = document.createElement('img')
                         thumb.src     = p.url
@@ -254,13 +368,18 @@
                         thumb.addEventListener('click', () => selectPhoto(i))
                         track.appendChild(thumb)
                     })
-
                     updateCarouselBtns()
                 }
             }
 
             loadingEl.classList.add('d-none')
             bodyEl.classList.remove('d-none')
+
+            // Vérification admin (silencieuse, sans redirection)
+            await checkAdminMode()
+            if (new URLSearchParams(window.location.search).get('edit') === 'true' && isAdmin) {
+                enterEditMode()
+            }
 
         } catch (e) {
             console.error(e)
@@ -270,6 +389,199 @@
     }
 
     initArticle()
+
+    // ── Admin ─────────────────────────────────────────────────────────
+    const QUILL_TOOLBAR = [
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ header: [2, 3, false] }],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['blockquote', 'link'],
+        ['clean']
+    ]
+
+    let isAdmin   = false
+    let editMode  = false
+    let editQuill = null
+
+    async function checkAdminMode() {
+        const session = await checkAuth()
+        if (!session) return
+        isAdmin = true
+        document.getElementById('admin-edit-btn').style.display = 'flex'
+    }
+
+    function enterEditMode() {
+        editMode = true
+        document.getElementById('admin-edit-btn').style.display = 'none'
+        document.getElementById('admin-edit-bar').style.display = 'flex'
+
+        // Titre → input
+        const titleEl = document.getElementById('art-title')
+        const inp = document.createElement('input')
+        inp.id        = 'edit-title-input'
+        inp.className = 'edit-title-input'
+        inp.type      = 'text'
+        inp.value     = currentArticle.title
+        titleEl.textContent = ''
+        titleEl.appendChild(inp)
+        inp.focus()
+
+        // Description → Quill
+        const descEl = document.getElementById('art-desc')
+        const origDesc = currentArticle.description || ''
+        descEl.style.display = ''
+        descEl.style.textAlign = 'left'
+        descEl.style.fontStyle = 'normal'
+        const editorDiv = document.createElement('div')
+        descEl.innerHTML = ''
+        descEl.appendChild(editorDiv)
+        editQuill = new Quill(editorDiv, {
+            theme: 'snow',
+            placeholder: 'Description…',
+            modules: { toolbar: QUILL_TOOLBAR }
+        })
+        if (origDesc) editQuill.clipboard.dangerouslyPasteHTML(origDesc)
+
+        // Bouton suppression photo principale
+        addMainPhotoDeleteBtn()
+
+        // Sections admin
+        document.getElementById('admin-add-photo').style.display = 'block'
+        document.getElementById('admin-types-section').style.display = 'block'
+        loadEditTypes()
+    }
+
+    function addMainPhotoDeleteBtn() {
+        document.getElementById('admin-main-del-btn')?.remove()
+        if (!photoData.length) return
+        const btn = document.createElement('button')
+        btn.id        = 'admin-main-del-btn'
+        btn.className = 'admin-main-del'
+        btn.textContent = '🗑 Supprimer cette photo'
+        btn.onclick = deleteCurrentPhoto
+        document.getElementById('artMainWrap').appendChild(btn)
+    }
+
+    function cancelEdit() {
+        window.location.reload()
+    }
+
+    async function saveArticle() {
+        const saveBtn = document.getElementById('admin-save-btn')
+        saveBtn.disabled = true
+        saveBtn.textContent = '…'
+        try {
+            const title = document.getElementById('edit-title-input').value.trim()
+            if (!title) {
+                saveBtn.disabled = false
+                saveBtn.textContent = '✓ Enregistrer'
+                return
+            }
+            const rawDesc   = editQuill.root.innerHTML
+            const description = rawDesc === '<p><br></p>' ? null : rawDesc
+            await updateArticle(artId, { title, description })
+            window.location.reload()
+        } catch (e) {
+            console.error(e)
+            saveBtn.disabled = false
+            saveBtn.textContent = '✓ Enregistrer'
+        }
+    }
+
+    async function deleteCurrentPhoto() {
+        if (!photoData.length) return
+        if (!confirm('Supprimer cette photo ?')) return
+        const p   = photoData[currentIdx]
+        const btn = document.getElementById('admin-main-del-btn')
+        if (btn) btn.disabled = true
+        try {
+            if (p.isCover) {
+                await updateArticle(artId, { cover_path: null })
+            } else {
+                await deleteArticlePhotoRow(p.id)
+            }
+            await deletePhotoFile(p.path)
+            photoData.splice(currentIdx, 1)
+            rebuildCarousel()
+        } catch (e) {
+            console.error(e)
+            if (btn) btn.disabled = false
+        }
+    }
+
+    async function uploadNewPhotos() {
+        const fileInput = document.getElementById('admin-photo-file')
+        const caption   = document.getElementById('admin-caption-input').value.trim() || null
+        const files     = Array.from(fileInput.files)
+        if (!files.length) return
+        const btn = document.getElementById('admin-upload-btn')
+        btn.disabled = true
+        btn.textContent = '…'
+        try {
+            let sortOrder = photoData.filter(p => !p.isCover).length
+            for (const file of files) {
+                const path = await uploadPhotoFile(file, 'articles')
+                const row  = await insertArticlePhotoRow({ article_id: artId, path, caption, sort_order: sortOrder })
+                const url  = await createSignedPhotoUrl(path)
+                photoData.push({ url, caption: caption || '', id: row.id, path, isCover: false })
+                sortOrder++
+            }
+            fileInput.value = ''
+            document.getElementById('admin-caption-input').value = ''
+            rebuildCarousel()
+            selectPhoto(photoData.length - 1)
+        } catch (e) {
+            console.error(e)
+        } finally {
+            btn.disabled = false
+            btn.textContent = '↑ Uploader'
+        }
+    }
+
+    async function deleteCurrentArticle() {
+        if (!confirm('Supprimer cet article et toutes ses photos définitivement ?')) return
+        try {
+            const photos = await listArticlePhotos(artId)
+            for (const p of photos) await deletePhotoFile(p.path).catch(() => {})
+            if (currentArticle?.cover_path) await deletePhotoFile(currentArticle.cover_path).catch(() => {})
+            await deleteArticle(artId)
+            window.location.replace('galerie.html')
+        } catch (e) { console.error(e) }
+    }
+
+    async function loadEditTypes() {
+        const container = document.getElementById('admin-types-container')
+        container.innerHTML = '<span style="color:rgba(191,233,255,.35);font-size:.82rem;">Chargement…</span>'
+        try {
+            const [allTypes, linkedIds] = await Promise.all([
+                listArticleTypes(),
+                listTypesForArticle(artId)
+            ])
+            const linkedSet = new Set(linkedIds)
+            container.innerHTML = ''
+            if (!allTypes.length) {
+                container.innerHTML = '<span style="color:rgba(191,233,255,.35);font-size:.82rem;">Aucun type créé.</span>'
+                return
+            }
+            for (const t of allTypes) {
+                const label = document.createElement('label')
+                label.className = 'admin-type-label'
+                const cb  = document.createElement('input')
+                cb.type   = 'checkbox'
+                cb.value  = t.id
+                cb.checked = linkedSet.has(t.id)
+                cb.addEventListener('change', async () => {
+                    const checked = Array.from(container.querySelectorAll('input:checked')).map(i => i.value)
+                    await setTypesForArticle(artId, checked).catch(e => console.error(e))
+                })
+                label.appendChild(cb)
+                label.append(' ' + t.name)
+                container.appendChild(label)
+            }
+        } catch (e) {
+            container.innerHTML = '<span style="color:rgba(255,140,140,.7);font-size:.82rem;">Erreur</span>'
+        }
+    }
 </script>
 </body>
 </html>

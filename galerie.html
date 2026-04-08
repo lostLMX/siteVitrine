@@ -91,6 +91,11 @@
     </div>
 </section>
 
+<!-- Admin : créer un article (visible si connecté) -->
+<div id="admin-new-btn" style="display:none;position:fixed;bottom:28px;right:28px;z-index:200;">
+    <button onclick="createNewArticle()" style="padding:10px 22px;background:rgba(8,14,30,.85);border:1px solid rgba(110,180,255,.40);border-radius:30px;color:rgba(191,233,255,.90);font-family:var(--font-title);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(12px);transition:all 180ms;box-shadow:0 4px 24px rgba(0,0,0,.50);">+ Nouvel article</button>
+</div>
+
 <footer class="section-astra section-footer">
     <div class="container">
         <div class="footer-astra">
@@ -294,6 +299,36 @@
 
     document.getElementById('year').textContent = new Date().getFullYear()
     loadGallery()
+
+    // Admin
+    ;(async () => {
+        const session = await checkAuth()
+        if (!session) return
+        const btn = document.getElementById('admin-new-btn')
+        btn.style.display = 'block'
+        btn.querySelector('button').addEventListener('mouseover', function() {
+            this.style.background = 'rgba(110,180,255,.18)'
+            this.style.borderColor = 'rgba(110,180,255,.65)'
+        })
+        btn.querySelector('button').addEventListener('mouseout', function() {
+            this.style.background = 'rgba(8,14,30,.85)'
+            this.style.borderColor = 'rgba(110,180,255,.40)'
+        })
+    })()
+
+    async function createNewArticle() {
+        const btn = document.querySelector('#admin-new-btn button')
+        btn.disabled = true
+        btn.textContent = '…'
+        try {
+            const art = await insertArticle({ title: 'Nouvel article' })
+            window.location.href = `article.html?id=${art.id}&edit=true`
+        } catch (e) {
+            console.error(e)
+            btn.disabled = false
+            btn.textContent = '+ Nouvel article'
+        }
+    }
 </script>
 </body>
 </html>
