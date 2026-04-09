@@ -189,18 +189,18 @@ async function listArticlesWithTypes() {
 async function getArticle(id) {
     const { data, error } = await window.supabase
         .from('articles')
-        .select('id, title, description, cover_path, created_at')
+        .select('id, title, description, cover_path, created_at, layout')
         .eq('id', id)
         .single()
     if (error) throw error
     return data
 }
 
-async function insertArticle({ title, description = null, cover_path = null }) {
+async function insertArticle({ title, description = null, cover_path = null, layout = 'classic' }) {
     const { data, error } = await window.supabase
         .from('articles')
-        .insert([{ title: title?.trim(), description: description?.trim() || null, cover_path }])
-        .select('id, title, description, cover_path, created_at')
+        .insert([{ title: title?.trim(), description: description?.trim() || null, cover_path, layout }])
+        .select('id, title, description, cover_path, created_at, layout')
         .single()
     if (error) throw error
     return data

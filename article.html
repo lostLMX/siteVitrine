@@ -60,6 +60,124 @@
         .art-desc .ql-toolbar.ql-snow button:hover .ql-fill,.art-desc .ql-toolbar.ql-snow button.ql-active .ql-fill { fill:rgba(230,238,247,.95); }
         .art-desc .ql-snow .ql-tooltip { background:rgba(8,12,26,.97); border:1px solid rgba(191,233,255,.22); border-radius:8px; color:rgba(191,233,255,.80); box-shadow:0 4px 20px rgba(0,0,0,.5); }
         .art-desc .ql-snow .ql-tooltip input[type=text] { background:rgba(6,10,22,.60); border:1px solid rgba(191,233,255,.25); border-radius:5px; color:rgba(230,238,247,.90); }
+
+        /* ── Layouts ─────────────────────────────────────────────────────── */
+        #art-layout-wrap { display:flex; flex-direction:column; }
+        #art-mosaic-grid { display:none; }
+
+        /* Split : image à gauche, texte à droite */
+        @media (min-width:768px) {
+            #art-layout-wrap.layout-split-right {
+                display:grid;
+                grid-template-columns:55fr 45fr;
+                grid-template-areas:"title title" "media desc";
+                gap:0 48px;
+                align-items:start;
+            }
+            #art-layout-wrap.layout-split-left {
+                display:grid;
+                grid-template-columns:45fr 55fr;
+                grid-template-areas:"title title" "desc media";
+                gap:0 48px;
+                align-items:start;
+            }
+            #art-layout-wrap.layout-split-right #art-title,
+            #art-layout-wrap.layout-split-left  #art-title  { grid-area:title; }
+            #art-layout-wrap.layout-split-right #art-media-group,
+            #art-layout-wrap.layout-split-left  #art-media-group { grid-area:media; }
+            #art-layout-wrap.layout-split-right #art-desc,
+            #art-layout-wrap.layout-split-left  #art-desc {
+                grid-area:desc; max-width:none; margin:0;
+                display:flex !important; flex-direction:column; justify-content:center;
+            }
+        }
+
+        /* Hero : image panoramique pleine largeur */
+        #art-layout-wrap.layout-hero #artMainWrap {
+            max-width:100%; aspect-ratio:16/9; max-height:65vh;
+            border-radius:16px; overflow:hidden;
+        }
+        #art-layout-wrap.layout-hero .art-main-img { object-fit:cover; }
+        #art-layout-wrap.layout-hero #art-title { text-align:center; }
+        #art-layout-wrap.layout-hero #art-desc { text-align:center; max-width:720px; }
+
+        /* Mosaïque : toutes les photos en grille */
+        #art-layout-wrap.layout-mosaic #art-media-group { display:none !important; }
+        #art-layout-wrap.layout-mosaic #art-mosaic-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+            gap:10px; margin-top:8px;
+        }
+        .art-mosaic-img {
+            width:100%; aspect-ratio:4/3; object-fit:cover;
+            border-radius:10px; cursor:zoom-in;
+            transition:transform 200ms, box-shadow 200ms;
+        }
+        .art-mosaic-img:hover { transform:scale(1.02); box-shadow:0 6px 24px rgba(0,0,0,.45); }
+        .art-main-img { cursor:zoom-in; }
+
+        /* ── Lightbox ────────────────────────────────────────────────────── */
+        #lightbox {
+            position:fixed; inset:0; z-index:2000;
+            background:rgba(2,4,12,.92); backdrop-filter:blur(10px);
+            display:none; align-items:center; justify-content:center;
+        }
+        #lightbox.open { display:flex; }
+        #lightbox-img {
+            max-width:92vw; max-height:88vh;
+            object-fit:contain; border-radius:6px;
+            box-shadow:0 24px 80px rgba(0,0,0,.80);
+            transition:opacity 160ms ease;
+        }
+        #lightbox-img.fading { opacity:0; }
+        #lightbox-caption {
+            position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+            color:rgba(191,233,255,.70); font-size:.82rem; font-style:italic;
+            text-align:center; max-width:600px; pointer-events:none;
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+        #lightbox-counter {
+            position:absolute; top:20px; left:50%; transform:translateX(-50%);
+            color:rgba(191,233,255,.45); font-family:var(--font-title);
+            font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;
+        }
+        #lightbox-close {
+            position:absolute; top:16px; right:20px;
+            background:none; border:none; color:rgba(191,233,255,.55);
+            font-size:1.6rem; cursor:pointer; line-height:1;
+            transition:color 150ms;
+        }
+        #lightbox-close:hover { color:rgba(191,233,255,.95); }
+        .lightbox-nav {
+            position:absolute; top:50%; transform:translateY(-50%);
+            background:rgba(10,16,34,.65); border:1px solid rgba(191,233,255,.18);
+            border-radius:50%; width:46px; height:46px;
+            display:flex; align-items:center; justify-content:center;
+            color:rgba(191,233,255,.70); font-size:1.4rem; cursor:pointer;
+            transition:background 150ms, color 150ms; backdrop-filter:blur(6px);
+        }
+        .lightbox-nav:hover { background:rgba(110,180,255,.22); color:rgba(230,238,247,.95); }
+        .lightbox-nav:disabled { opacity:.20; cursor:default; pointer-events:none; }
+        #lightbox-prev { left:16px; }
+        #lightbox-next { right:16px; }
+
+        /* Sélecteur de layout (mode édition) */
+        #layout-cards-container { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+        .layout-card {
+            flex:1; min-width:100px; max-width:140px; padding:9px 10px; cursor:pointer;
+            background:rgba(6,10,22,.55); border:1px solid rgba(191,233,255,.18);
+            border-radius:10px; text-align:center;
+            transition:border-color 150ms, background 150ms;
+        }
+        .layout-card:hover { background:rgba(110,180,255,.10); border-color:rgba(110,180,255,.45); }
+        .layout-card.active { background:rgba(110,180,255,.18); border-color:rgba(110,180,255,.65); }
+        .layout-card-preview {
+            width:100%; height:46px; border-radius:5px;
+            background:rgba(191,233,255,.04); margin-bottom:7px;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .layout-card-label { font-family:var(--font-title); font-size:.60rem; letter-spacing:.08em; text-transform:uppercase; color:rgba(191,233,255,.70); line-height:1.3; }
+        .layout-card.active .layout-card-label { color:rgba(191,233,255,1); }
     </style>
 </head>
 <body class="theme-astra">
@@ -114,26 +232,31 @@
         <div id="art-body" class="d-none">
             <a class="art-back" href="galerie.html" data-i18n="article.back">← Retour à la galerie</a>
 
-            <h1 class="art-title" id="art-title"></h1>
+            <div id="art-layout-wrap">
+                <h1 class="art-title" id="art-title"></h1>
 
-            <!-- Main image -->
-            <div class="art-main-wrap" id="artMainWrap">
-                <img class="art-main-img" id="artMainImg" src="" alt="">
-                <div class="art-main-placeholder d-none" id="artMainPlaceholder">✷</div>
-                <div class="art-main-caption" id="artMainCaption" style="display:none;"></div>
-            </div>
-
-            <!-- Thumbnail carousel -->
-            <div class="art-carousel-outer" id="artCarouselOuter" style="display:none;">
-                <button class="art-carousel-btn" id="artPrev" aria-label="Précédent">&#8249;</button>
-                <div class="art-carousel-viewport">
-                    <div class="art-carousel-track" id="artTrack"></div>
+                <!-- Groupe média : image principale + carousel miniatures -->
+                <div id="art-media-group">
+                    <div class="art-main-wrap" id="artMainWrap">
+                        <img class="art-main-img" id="artMainImg" src="" alt="">
+                        <div class="art-main-placeholder d-none" id="artMainPlaceholder">✷</div>
+                        <div class="art-main-caption" id="artMainCaption" style="display:none;"></div>
+                    </div>
+                    <div class="art-carousel-outer" id="artCarouselOuter" style="display:none;">
+                        <button class="art-carousel-btn" id="artPrev" aria-label="Précédent">&#8249;</button>
+                        <div class="art-carousel-viewport">
+                            <div class="art-carousel-track" id="artTrack"></div>
+                        </div>
+                        <button class="art-carousel-btn" id="artNext" aria-label="Suivant">&#8250;</button>
+                    </div>
                 </div>
-                <button class="art-carousel-btn" id="artNext" aria-label="Suivant">&#8250;</button>
-            </div>
 
-            <!-- Description -->
-            <div class="art-desc" id="art-desc" style="display:none;"></div>
+                <!-- Description -->
+                <div class="art-desc" id="art-desc" style="display:none;"></div>
+
+                <!-- Grille mosaïque (layout mosaic uniquement) -->
+                <div id="art-mosaic-grid"></div>
+            </div>
 
             <!-- Admin : photo de couverture (mode édition uniquement) -->
             <div id="admin-cover-upload" style="display:none;">
@@ -159,6 +282,14 @@
                 </div>
             </div>
 
+            <!-- Admin : disposition (mode édition uniquement) -->
+            <div id="admin-layout-picker" style="display:none;">
+                <div class="admin-add-photo-wrap">
+                    <p class="admin-section-title">🎨 Disposition de l'article</p>
+                    <div id="layout-cards-container"></div>
+                </div>
+            </div>
+
             <!-- Admin : types (mode édition uniquement) -->
             <div id="admin-types-section" class="admin-types-wrap" style="display:none;">
                 <p class="admin-section-title">🏷 Types associés</p>
@@ -179,6 +310,16 @@
     <button id="admin-save-btn" class="admin-bar-save" onclick="saveArticle()">✓ Enregistrer</button>
     <button class="admin-bar-cancel" onclick="cancelEdit()">✕ Annuler</button>
     <button class="admin-bar-delete" onclick="deleteCurrentArticle()">🗑 Supprimer l'article</button>
+</div>
+
+<!-- ── Lightbox ────────────────────────────────────────────────────── -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Visualisation image">
+    <button id="lightbox-close" aria-label="Fermer">✕</button>
+    <span id="lightbox-counter"></span>
+    <button class="lightbox-nav" id="lightbox-prev" aria-label="Précédent">&#8249;</button>
+    <img id="lightbox-img" src="" alt="">
+    <button class="lightbox-nav" id="lightbox-next" aria-label="Suivant">&#8250;</button>
+    <span id="lightbox-caption"></span>
 </div>
 
 <!-- ── Footer ─────────────────────────────────────────────────────── -->
@@ -305,6 +446,8 @@
             document.getElementById('artCarouselOuter').style.display = 'none'
         }
         if (editMode) addMainPhotoDeleteBtn()
+        const activeLayout = editMode ? pendingLayout : (currentArticle?.layout || 'classic')
+        if (activeLayout === 'mosaic') populateMosaicGrid()
     }
 
     // ── Load article ─────────────────────────────────────────────────
@@ -315,6 +458,7 @@
     let pendingCoverPath = null
     let pendingPhotos    = []
     let pendingTypeIds   = []
+    let pendingLayout    = 'classic'
 
     async function initArticle() {
         const params    = new URLSearchParams(window.location.search)
@@ -395,6 +539,7 @@
 
             loadingEl.classList.add('d-none')
             bodyEl.classList.remove('d-none')
+            applyLayout(article.layout || 'classic')
 
             // Vérification admin (silencieuse, sans redirection)
             await checkAdminMode()
@@ -427,6 +572,107 @@
     let isAdmin   = false
     let editMode  = false
     let editQuill = null
+
+    // ── Layouts ───────────────────────────────────────────────────────
+    const LAYOUTS = [
+        {
+            id: 'classic',
+            label: 'Classique',
+            svg: `<svg width="60" height="38" viewBox="0 0 60 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="4" width="40" height="4" rx="2" fill="rgba(191,233,255,.50)"/>
+                    <rect x="4" y="12" width="52" height="16" rx="3" fill="rgba(110,180,255,.35)"/>
+                    <rect x="10" y="31" width="40" height="3" rx="1.5" fill="rgba(191,233,255,.30)"/>
+                  </svg>`
+        },
+        {
+            id: 'split-right',
+            label: 'Image ↔ Texte',
+            svg: `<svg width="60" height="38" viewBox="0 0 60 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="52" height="3" rx="1.5" fill="rgba(191,233,255,.50)"/>
+                    <rect x="4" y="11" width="30" height="22" rx="3" fill="rgba(110,180,255,.35)"/>
+                    <rect x="38" y="11" width="18" height="4" rx="2" fill="rgba(191,233,255,.30)"/>
+                    <rect x="38" y="18" width="18" height="3" rx="1.5" fill="rgba(191,233,255,.20)"/>
+                    <rect x="38" y="24" width="14" height="3" rx="1.5" fill="rgba(191,233,255,.20)"/>
+                  </svg>`
+        },
+        {
+            id: 'split-left',
+            label: 'Texte ↔ Image',
+            svg: `<svg width="60" height="38" viewBox="0 0 60 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="52" height="3" rx="1.5" fill="rgba(191,233,255,.50)"/>
+                    <rect x="4" y="11" width="18" height="4" rx="2" fill="rgba(191,233,255,.30)"/>
+                    <rect x="4" y="18" width="18" height="3" rx="1.5" fill="rgba(191,233,255,.20)"/>
+                    <rect x="4" y="24" width="14" height="3" rx="1.5" fill="rgba(191,233,255,.20)"/>
+                    <rect x="26" y="11" width="30" height="22" rx="3" fill="rgba(110,180,255,.35)"/>
+                  </svg>`
+        },
+        {
+            id: 'hero',
+            label: 'Héro',
+            svg: `<svg width="60" height="38" viewBox="0 0 60 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="52" height="22" rx="3" fill="rgba(110,180,255,.35)"/>
+                    <rect x="14" y="29" width="32" height="3" rx="1.5" fill="rgba(191,233,255,.30)"/>
+                    <rect x="18" y="34" width="24" height="2" rx="1" fill="rgba(191,233,255,.18)"/>
+                  </svg>`
+        },
+        {
+            id: 'mosaic',
+            label: 'Mosaïque',
+            svg: `<svg width="60" height="38" viewBox="0 0 60 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="52" height="3" rx="1.5" fill="rgba(191,233,255,.50)"/>
+                    <rect x="4" y="10" width="16" height="12" rx="2" fill="rgba(110,180,255,.35)"/>
+                    <rect x="22" y="10" width="16" height="12" rx="2" fill="rgba(110,180,255,.28)"/>
+                    <rect x="40" y="10" width="16" height="12" rx="2" fill="rgba(110,180,255,.35)"/>
+                    <rect x="4" y="25" width="16" height="10" rx="2" fill="rgba(110,180,255,.28)"/>
+                    <rect x="22" y="25" width="16" height="10" rx="2" fill="rgba(110,180,255,.35)"/>
+                    <rect x="40" y="25" width="16" height="10" rx="2" fill="rgba(110,180,255,.28)"/>
+                  </svg>`
+        },
+    ]
+
+    function applyLayout(layout) {
+        const wrap = document.getElementById('art-layout-wrap')
+        if (!wrap) return
+        wrap.className = layout ? 'layout-' + layout : 'layout-classic'
+        if (layout === 'mosaic') {
+            populateMosaicGrid()
+        } else {
+            document.getElementById('art-mosaic-grid').innerHTML = ''
+        }
+    }
+
+    function populateMosaicGrid() {
+        const grid = document.getElementById('art-mosaic-grid')
+        if (!grid) return
+        grid.innerHTML = ''
+        photoData.forEach((p, i) => {
+            const img = document.createElement('img')
+            img.src       = p.url
+            img.alt       = escapeHtml(p.caption || '')
+            img.className = 'art-mosaic-img'
+            img.loading   = 'lazy'
+            if (!editMode) img.addEventListener('click', () => openLightbox(i))
+            grid.appendChild(img)
+        })
+    }
+
+    function renderLayoutPicker(activeId) {
+        const container = document.getElementById('layout-cards-container')
+        if (!container) return
+        container.innerHTML = ''
+        for (const l of LAYOUTS) {
+            const card = document.createElement('div')
+            card.className = 'layout-card' + (l.id === activeId ? ' active' : '')
+            card.innerHTML = `<div class="layout-card-preview">${l.svg}</div><div class="layout-card-label">${l.label}</div>`
+            card.addEventListener('click', () => {
+                pendingLayout = l.id
+                container.querySelectorAll('.layout-card').forEach(c => c.classList.remove('active'))
+                card.classList.add('active')
+                applyLayout(l.id)
+            })
+            container.appendChild(card)
+        }
+    }
 
     async function checkAdminMode() {
         const session = await checkAuth()
@@ -478,6 +724,9 @@
             }).catch(() => {})
         }
         document.getElementById('admin-add-photo').style.display = 'block'
+        document.getElementById('admin-layout-picker').style.display = 'block'
+        pendingLayout = currentArticle.layout || 'classic'
+        renderLayoutPicker(pendingLayout)
         document.getElementById('admin-types-section').style.display = 'block'
         loadEditTypes()
     }
@@ -527,8 +776,9 @@
             }
             const rawDesc   = editQuill.root.innerHTML
             const description = rawDesc === '<p><br></p>' ? null : rawDesc
+            const layout = pendingLayout || 'classic'
             if (!artId) {
-                const art = await insertArticle({ title, description, cover_path: pendingCoverPath })
+                const art = await insertArticle({ title, description, cover_path: pendingCoverPath, layout })
                 artId = art.id
                 history.replaceState(null, '', `article.html?id=${artId}`)
                 for (const p of pendingPhotos) {
@@ -538,11 +788,12 @@
                     await setTypesForArticle(artId, pendingTypeIds)
                 }
             } else {
-                await updateArticle(artId, { title, description })
+                await updateArticle(artId, { title, description, layout })
             }
             window.location.reload()
         } catch (e) {
             console.error(e)
+            alert('Erreur lors de l\'enregistrement : ' + (e?.message || JSON.stringify(e)))
             saveBtn.disabled = false
             saveBtn.textContent = '✓ Enregistrer'
         }
@@ -710,6 +961,64 @@
             container.innerHTML = '<span style="color:rgba(255,140,140,.7);font-size:.82rem;">Erreur</span>'
         }
     }
+
+    // ── Lightbox ──────────────────────────────────────────────────────
+    let lbIndex = 0
+
+    function openLightbox(idx) {
+        if (!photoData.length) return
+        lbIndex = Math.max(0, Math.min(idx, photoData.length - 1))
+        renderLightboxFrame()
+        document.getElementById('lightbox').classList.add('open')
+        document.body.style.overflow = 'hidden'
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('open')
+        document.body.style.overflow = ''
+    }
+
+    function renderLightboxFrame() {
+        const lb  = document.getElementById('lightbox')
+        const img = document.getElementById('lightbox-img')
+        const cap = document.getElementById('lightbox-caption')
+        const ctr = document.getElementById('lightbox-counter')
+        const p   = photoData[lbIndex]
+
+        img.classList.add('fading')
+        setTimeout(() => {
+            img.src = p.url
+            img.alt = escapeHtml(p.caption || '')
+            img.classList.remove('fading')
+        }, 160)
+
+        cap.textContent = p.caption || ''
+        cap.style.display = p.caption ? '' : 'none'
+        ctr.textContent = photoData.length > 1 ? `${lbIndex + 1} / ${photoData.length}` : ''
+        document.getElementById('lightbox-prev').disabled = lbIndex <= 0
+        document.getElementById('lightbox-next').disabled = lbIndex >= photoData.length - 1
+    }
+
+    document.getElementById('lightbox-close').addEventListener('click', closeLightbox)
+    document.getElementById('lightbox-prev').addEventListener('click', () => { if (lbIndex > 0) { lbIndex--; renderLightboxFrame() } })
+    document.getElementById('lightbox-next').addEventListener('click', () => { if (lbIndex < photoData.length - 1) { lbIndex++; renderLightboxFrame() } })
+
+    document.getElementById('lightbox').addEventListener('click', e => {
+        if (e.target === document.getElementById('lightbox')) closeLightbox()
+    })
+
+    document.addEventListener('keydown', e => {
+        const lb = document.getElementById('lightbox')
+        if (!lb.classList.contains('open')) return
+        if (e.key === 'Escape')     closeLightbox()
+        if (e.key === 'ArrowLeft')  { if (lbIndex > 0) { lbIndex--; renderLightboxFrame() } }
+        if (e.key === 'ArrowRight') { if (lbIndex < photoData.length - 1) { lbIndex++; renderLightboxFrame() } }
+    })
+
+    // Ouvre le lightbox au clic sur l'image principale
+    document.getElementById('artMainImg').addEventListener('click', () => {
+        if (!editMode) openLightbox(currentIdx)
+    })
 </script>
 </body>
 </html>
