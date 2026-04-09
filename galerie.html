@@ -18,6 +18,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="assets/logo.png" type="image/png">
+    <style>
+        .article-card { position: relative; }
+
+        /* Checkbox */
+        .card-check-wrap {
+            position: absolute; top: 10px; left: 10px; z-index: 10;
+            width: 28px; height: 28px;
+            background: rgba(6,10,22,.85); border: 1px solid rgba(191,233,255,.35);
+            border-radius: 7px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: background 150ms, border-color 150ms;
+        }
+        .card-check-wrap:hover { background: rgba(110,180,255,.28); border-color: rgba(110,180,255,.70); }
+        .card-check-wrap input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: #9ed7ff; margin: 0; pointer-events: none; }
+
+        /* État sélectionné */
+        .article-card.selected { outline: 2px solid rgba(110,180,255,.85); outline-offset: 2px; }
+        .article-card.selected::after {
+            content: ''; position: absolute; inset: 0;
+            background: rgba(110,180,255,.10); border-radius: inherit; pointer-events: none;
+        }
+        .card-check-wrap.checked { background: rgba(110,180,255,.30); border-color: rgba(110,180,255,.80); }
+
+        /* En mode sélection, toute la carte est cliquable */
+        .selection-mode .article-card { cursor: pointer; }
+
+        #admin-delete-bar button:hover:not(:disabled) { opacity: .85; }
+        #admin-delete-bar button:disabled { opacity: .45; cursor: not-allowed; }
+    </style>
 </head>
 <body class="theme-astra">
 <div class="bg-layer" aria-hidden="true"></div>
@@ -91,6 +119,14 @@
     </div>
 </section>
 
+<!-- Admin : barre de suppression multiple -->
+<div id="admin-delete-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;align-items:center;justify-content:center;gap:12px;padding:13px 20px;background:rgba(6,10,22,.94);border-top:1px solid rgba(255,80,80,.18);backdrop-filter:blur(14px);flex-wrap:wrap;">
+    <span id="delete-bar-count" style="font-family:var(--font-title);font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:rgba(191,233,255,.70);min-width:120px;text-align:center;"></span>
+    <button onclick="selectAll()" id="admin-select-all-btn" style="padding:9px 18px;background:transparent;border:1px solid rgba(191,233,255,.22);border-radius:8px;color:rgba(191,233,255,.65);font-family:var(--font-title);font-size:.71rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity 150ms;">☑ Tout sélectionner</button>
+    <button onclick="deleteSelectedArticles()" id="admin-delete-selected-btn" style="padding:9px 22px;background:rgba(255,80,80,.12);border:1px solid rgba(255,80,80,.35);border-radius:8px;color:rgba(255,140,140,.90);font-family:var(--font-title);font-size:.71rem;letter-spacing:.10em;text-transform:uppercase;cursor:pointer;transition:opacity 150ms;">🗑 Supprimer</button>
+    <button onclick="clearSelection()" style="padding:9px 18px;background:transparent;border:1px solid rgba(191,233,255,.22);border-radius:8px;color:rgba(191,233,255,.65);font-family:var(--font-title);font-size:.71rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity 150ms;">✕ Annuler</button>
+</div>
+
 <!-- Admin : créer un article (visible si connecté) -->
 <div id="admin-new-btn" style="display:none;position:fixed;bottom:28px;right:28px;z-index:200;">
     <button onclick="createNewArticle()" style="padding:10px 22px;background:rgba(8,14,30,.85);border:1px solid rgba(110,180,255,.40);border-radius:30px;color:rgba(191,233,255,.90);font-family:var(--font-title);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(12px);transition:all 180ms;box-shadow:0 4px 24px rgba(0,0,0,.50);">+ Nouvel article</button>
@@ -101,8 +137,6 @@
         <div class="footer-astra">
             <span class="footer-line">© <span id="year"></span> Astra Draconis</span>
             <span class="footer-sep" aria-hidden="true">✦</span>
-            <a class="footer-line" href="mentions-legales.html">Mentions légales</a>
-            <span class="footer-sep" aria-hidden="true">✦</span>
             <a class="footer-line footer-top" href="#top">↑ Retour en haut</a>
         </div>
     </div>
@@ -110,6 +144,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
+<script src="js/admin-bar.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/script.js"></script>
@@ -126,6 +161,108 @@
     let allArticles = []
     let currentFilteredList = []
     let selectedTypeIds = new Set()
+
+    let adminMode = false
+    const selectedIds = new Set()
+
+    function toggleCard(id, cb, card) {
+        selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id)
+        const checked = selectedIds.has(id)
+        cb.checked = checked
+        card.classList.toggle('selected', checked)
+        cb.closest('.card-check-wrap').classList.toggle('checked', checked)
+        updateDeleteBar()
+    }
+
+    function updateDeleteBar() {
+        const bar     = document.getElementById('admin-delete-bar')
+        const newBtn  = document.getElementById('admin-new-btn')
+        const allBtn  = document.getElementById('admin-select-all-btn')
+        const n       = selectedIds.size
+        const total   = currentFilteredList.length || allArticles.length
+        if (n > 0) {
+            document.getElementById('delete-bar-count').textContent =
+                `${n} / ${total} sélectionné${n > 1 ? 's' : ''}`
+            allBtn.textContent = n >= total ? '☐ Tout désélectionner' : '☑ Tout sélectionner'
+            bar.style.display = 'flex'
+            if (newBtn) newBtn.style.bottom = '76px'
+            articleGrid.classList.add('selection-mode')
+        } else {
+            bar.style.display = 'none'
+            if (newBtn) newBtn.style.bottom = '28px'
+            articleGrid.classList.remove('selection-mode')
+        }
+    }
+
+    function clearSelection() {
+        selectedIds.clear()
+        articleGrid.querySelectorAll('.article-card.selected').forEach(c => c.classList.remove('selected'))
+        articleGrid.querySelectorAll('.card-check-wrap input').forEach(cb => { cb.checked = false })
+        articleGrid.querySelectorAll('.card-check-wrap').forEach(w => w.classList.remove('checked'))
+        updateDeleteBar()
+    }
+
+    function selectAll() {
+        const list = currentFilteredList.length ? currentFilteredList : allArticles
+        const allSelected = list.every(a => selectedIds.has(a.id))
+        if (allSelected) {
+            list.forEach(a => selectedIds.delete(a.id))
+            articleGrid.querySelectorAll('.article-card').forEach(card => {
+                const id = card.getAttribute('data-art-id')
+                if (!id || selectedIds.has(id)) return
+                card.classList.remove('selected')
+                const cb   = card.querySelector('.card-check-wrap input')
+                const wrap = card.querySelector('.card-check-wrap')
+                if (cb)   cb.checked = false
+                if (wrap) wrap.classList.remove('checked')
+            })
+            updateDeleteBar()
+            return
+        }
+        list.forEach(a => selectedIds.add(a.id))
+        articleGrid.querySelectorAll('.article-card').forEach(card => {
+            const cb   = card.querySelector('.card-check-wrap input')
+            const wrap = card.querySelector('.card-check-wrap')
+            if (!cb) return
+            const id = card.getAttribute('data-art-id')
+            if (selectedIds.has(id)) {
+                cb.checked = true
+                card.classList.add('selected')
+                wrap.classList.add('checked')
+            }
+        })
+        updateDeleteBar()
+    }
+
+    // Touche Échap pour annuler la sélection
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && selectedIds.size > 0) clearSelection()
+    })
+
+    async function deleteSelectedArticles() {
+        const n = selectedIds.size
+        if (!n) return
+        if (!confirm(`Supprimer ${n} article${n > 1 ? 's' : ''} définitivement ?`)) return
+        const btn = document.getElementById('admin-delete-selected-btn')
+        btn.disabled = true
+        btn.textContent = '…'
+        try {
+            for (const id of [...selectedIds]) {
+                const art = allArticles.find(a => a.id === id)
+                const photos = await listArticlePhotos(id)
+                for (const p of photos) await deletePhotoFile(p.path).catch(() => {})
+                if (art?.cover_path) await deletePhotoFile(art.cover_path).catch(() => {})
+                await deleteArticle(id)
+            }
+            selectedIds.clear()
+            updateDeleteBar()
+            await loadGallery()
+        } catch (e) {
+            console.error(e)
+            btn.disabled = false
+            btn.textContent = '🗑 Supprimer'
+        }
+    }
 
     function escapeHtml(str) {
         return (str || '').replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))
@@ -220,6 +357,33 @@
                     <span class="article-card-link" data-i18n="article.view">Voir la création →</span>
                 </div>
             `
+            if (adminMode) {
+                card.setAttribute('data-art-id', art.id)
+
+                const wrap = document.createElement('div')
+                const cb   = document.createElement('input')
+                cb.type    = 'checkbox'
+                cb.checked = selectedIds.has(art.id)
+                wrap.className = 'card-check-wrap' + (selectedIds.has(art.id) ? ' checked' : '')
+                wrap.appendChild(cb)
+
+                // Clic sur la zone checkbox : toujours toggle
+                wrap.addEventListener('click', e => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    toggleCard(art.id, cb, card)
+                })
+
+                // Clic sur la carte entière : toggle si mode sélection actif, sinon navigation normale
+                card.addEventListener('click', e => {
+                    if (selectedIds.size === 0) return
+                    e.preventDefault()
+                    toggleCard(art.id, cb, card)
+                })
+
+                card.appendChild(wrap)
+                if (selectedIds.has(art.id)) card.classList.add('selected')
+            }
             articleGrid.appendChild(card)
         }
         applyTranslations()
@@ -304,6 +468,9 @@
     ;(async () => {
         const session = await checkAuth()
         if (!session) return
+        adminMode = true
+        // Re-render pour afficher les cases à cocher (allArticles peut déjà être chargé)
+        if (allArticles.length) renderArticles(currentFilteredList.length ? currentFilteredList : allArticles)
         const btn = document.getElementById('admin-new-btn')
         btn.style.display = 'block'
         btn.querySelector('button').addEventListener('mouseover', function() {
@@ -316,18 +483,8 @@
         })
     })()
 
-    async function createNewArticle() {
-        const btn = document.querySelector('#admin-new-btn button')
-        btn.disabled = true
-        btn.textContent = '…'
-        try {
-            const art = await insertArticle({ title: 'Nouvel article' })
-            window.location.href = `article.html?id=${art.id}&edit=true`
-        } catch (e) {
-            console.error(e)
-            btn.disabled = false
-            btn.textContent = '+ Nouvel article'
-        }
+    function createNewArticle() {
+        window.location.href = 'article.html?new=true'
     }
 </script>
 </body>

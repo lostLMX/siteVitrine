@@ -135,6 +135,20 @@
             <!-- Description -->
             <div class="art-desc" id="art-desc" style="display:none;"></div>
 
+            <!-- Admin : photo de couverture (mode édition uniquement) -->
+            <div id="admin-cover-upload" style="display:none;">
+                <div class="admin-add-photo-wrap">
+                    <p class="admin-section-title">✦ Photo de couverture</p>
+                    <p style="font-size:.78rem;color:rgba(191,233,255,.45);margin:0 0 12px;">Miniature affichée dans la galerie et sur l'accueil. Non visible dans les photos de l'article.</p>
+                    <div id="admin-cover-preview-wrap" style="display:none;margin-bottom:12px;position:relative;">
+                        <img id="admin-cover-preview" style="width:100%;border-radius:8px;aspect-ratio:4/3;object-fit:cover;" alt="Couverture actuelle">
+                        <button onclick="deleteCoverPhoto()" id="admin-cover-del-btn" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.65);border:1px solid rgba(255,80,80,.45);border-radius:6px;color:rgba(255,140,140,.90);font-size:.75rem;padding:4px 10px;cursor:pointer;">🗑</button>
+                    </div>
+                    <input type="file" id="admin-cover-file" class="admin-add-input" accept="image/*" style="cursor:pointer;padding:6px 12px;">
+                    <button class="admin-upload-btn" id="admin-cover-btn" onclick="uploadCoverPhoto()">↑ Définir comme couverture</button>
+                </div>
+            </div>
+
             <!-- Admin : ajouter des photos (mode édition uniquement) -->
             <div id="admin-add-photo" style="display:none;">
                 <div class="admin-add-photo-wrap">
@@ -173,8 +187,6 @@
         <div class="footer-astra">
             <span class="footer-line">© <span id="year"></span> Astra Draconis</span>
             <span class="footer-sep" aria-hidden="true">✦</span>
-            <a class="footer-line" href="mentions-legales.html">Mentions légales</a>
-            <span class="footer-sep" aria-hidden="true">✦</span>
             <a class="footer-line footer-top" href="#top">↑ Retour en haut</a>
         </div>
     </div>
@@ -182,6 +194,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
+<script src="js/admin-bar.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.js"></script>
 <script src="js/i18n.js"></script>
@@ -298,12 +311,31 @@
     let artId          = null
     let currentArticle = null
 
+    // État local pour les uploads d'un nouvel article (avant enregistrement)
+    let pendingCoverPath = null
+    let pendingPhotos    = []
+    let pendingTypeIds   = []
+
     async function initArticle() {
         const params    = new URLSearchParams(window.location.search)
         artId           = params.get('id')
+        const isNew     = params.get('new') === 'true'
         const loadingEl  = document.getElementById('art-loading')
         const notFoundEl = document.getElementById('art-not-found')
         const bodyEl     = document.getElementById('art-body')
+
+        if (isNew) {
+            await checkAdminMode()
+            if (!isAdmin) { loadingEl.classList.add('d-none'); notFoundEl.classList.remove('d-none'); return }
+            currentArticle = { title: '', description: null, cover_path: null }
+            document.getElementById('art-title').textContent = ''
+            mainImg.classList.add('d-none')
+            document.getElementById('artMainPlaceholder').classList.remove('d-none')
+            loadingEl.classList.add('d-none')
+            bodyEl.classList.remove('d-none')
+            enterEditMode()
+            return
+        }
 
         if (!artId) {
             loadingEl.classList.add('d-none')
@@ -327,27 +359,16 @@
 
             const photos = await listArticlePhotos(artId)
 
-            if (photos.length === 0) {
-                if (article.cover_path) {
-                    const url = await createSignedPhotoUrl(article.cover_path)
-                    photoData = [{ url, caption: '', id: null, path: article.cover_path, isCover: true }]
-                } else {
-                    mainImg.classList.add('d-none')
-                    document.getElementById('artMainPlaceholder').classList.remove('d-none')
-                }
-            } else {
-                if (article.cover_path) {
-                    try {
-                        const url = await createSignedPhotoUrl(article.cover_path)
-                        photoData.push({ url, caption: '', id: null, path: article.cover_path, isCover: true })
-                    } catch (_) {}
-                }
-                for (const photo of photos) {
-                    try {
-                        const url = await createSignedPhotoUrl(photo.path)
-                        photoData.push({ url, caption: photo.caption || '', id: photo.id, path: photo.path, isCover: false })
-                    } catch (_) {}
-                }
+            // La cover est réservée à la galerie — seules les article_photos s'affichent ici
+            for (const photo of photos) {
+                try {
+                    const url = await createSignedPhotoUrl(photo.path)
+                    photoData.push({ url, caption: photo.caption || '', id: photo.id, path: photo.path, isCover: false })
+                } catch (_) {}
+            }
+            if (!photoData.length) {
+                mainImg.classList.add('d-none')
+                document.getElementById('artMainPlaceholder').classList.remove('d-none')
             }
 
             if (photoData.length > 0) {
@@ -377,8 +398,12 @@
 
             // Vérification admin (silencieuse, sans redirection)
             await checkAdminMode()
-            if (new URLSearchParams(window.location.search).get('edit') === 'true' && isAdmin) {
-                enterEditMode()
+            if (isAdmin) {
+                if (new URLSearchParams(window.location.search).get('edit') === 'true') {
+                    enterEditMode()
+                } else {
+                    document.getElementById('admin-edit-btn').style.display = 'flex'
+                }
             }
 
         } catch (e) {
@@ -407,7 +432,6 @@
         const session = await checkAuth()
         if (!session) return
         isAdmin = true
-        document.getElementById('admin-edit-btn').style.display = 'flex'
     }
 
     function enterEditMode() {
@@ -446,6 +470,13 @@
         addMainPhotoDeleteBtn()
 
         // Sections admin
+        document.getElementById('admin-cover-upload').style.display = 'block'
+        if (currentArticle.cover_path) {
+            createSignedPhotoUrl(currentArticle.cover_path).then(url => {
+                document.getElementById('admin-cover-preview').src = url
+                document.getElementById('admin-cover-preview-wrap').style.display = 'block'
+            }).catch(() => {})
+        }
         document.getElementById('admin-add-photo').style.display = 'block'
         document.getElementById('admin-types-section').style.display = 'block'
         loadEditTypes()
@@ -462,7 +493,16 @@
         document.getElementById('artMainWrap').appendChild(btn)
     }
 
-    function cancelEdit() {
+    async function cancelEdit() {
+        if (!artId) {
+            const toDelete = [
+                ...(pendingCoverPath ? [pendingCoverPath] : []),
+                ...pendingPhotos.map(p => p.path)
+            ]
+            await Promise.all(toDelete.map(p => deletePhotoFile(p).catch(() => {})))
+            window.location.replace('galerie.html')
+            return
+        }
         window.location.reload()
     }
 
@@ -477,14 +517,55 @@
                 saveBtn.textContent = '✓ Enregistrer'
                 return
             }
+            // Valider qu'au moins une image est présente (photo d'article OU cover)
+            const hasCover = artId ? !!currentArticle?.cover_path : !!pendingCoverPath
+            if (!photoData.length && !hasCover) {
+                alert('Veuillez ajouter au moins une image avant d\'enregistrer.')
+                saveBtn.disabled = false
+                saveBtn.textContent = '✓ Enregistrer'
+                return
+            }
             const rawDesc   = editQuill.root.innerHTML
             const description = rawDesc === '<p><br></p>' ? null : rawDesc
-            await updateArticle(artId, { title, description })
+            if (!artId) {
+                const art = await insertArticle({ title, description, cover_path: pendingCoverPath })
+                artId = art.id
+                history.replaceState(null, '', `article.html?id=${artId}`)
+                for (const p of pendingPhotos) {
+                    await insertArticlePhotoRow({ article_id: artId, path: p.path, caption: p.caption, sort_order: p.sort_order })
+                }
+                if (pendingTypeIds.length) {
+                    await setTypesForArticle(artId, pendingTypeIds)
+                }
+            } else {
+                await updateArticle(artId, { title, description })
+            }
             window.location.reload()
         } catch (e) {
             console.error(e)
             saveBtn.disabled = false
             saveBtn.textContent = '✓ Enregistrer'
+        }
+    }
+
+    async function deleteCoverPhoto() {
+        if (!confirm('Supprimer la photo de couverture ?')) return
+        const delBtn = document.getElementById('admin-cover-del-btn')
+        if (delBtn) delBtn.disabled = true
+        try {
+            const path = artId ? currentArticle.cover_path : pendingCoverPath
+            if (artId) {
+                await updateArticle(artId, { cover_path: null })
+                currentArticle.cover_path = null
+            } else {
+                pendingCoverPath = null
+            }
+            if (path) await deletePhotoFile(path).catch(() => {})
+            document.getElementById('admin-cover-preview-wrap').style.display = 'none'
+            document.getElementById('admin-cover-preview').src = ''
+        } catch (e) {
+            console.error(e)
+            if (delBtn) delBtn.disabled = false
         }
     }
 
@@ -495,17 +576,52 @@
         const btn = document.getElementById('admin-main-del-btn')
         if (btn) btn.disabled = true
         try {
-            if (p.isCover) {
-                await updateArticle(artId, { cover_path: null })
+            if (!artId) {
+                pendingPhotos = pendingPhotos.filter(pp => pp.path !== p.path)
+                await deletePhotoFile(p.path)
             } else {
                 await deleteArticlePhotoRow(p.id)
+                await deletePhotoFile(p.path)
             }
-            await deletePhotoFile(p.path)
             photoData.splice(currentIdx, 1)
             rebuildCarousel()
         } catch (e) {
             console.error(e)
             if (btn) btn.disabled = false
+        }
+    }
+
+    async function uploadCoverPhoto() {
+        const fileInput = document.getElementById('admin-cover-file')
+        const file = fileInput.files[0]
+        if (!file) return
+        const btn = document.getElementById('admin-cover-btn')
+        btn.disabled = true
+        btn.textContent = '…'
+        try {
+            const path = await uploadPhotoFile(file, 'articles')
+            const url  = await createSignedPhotoUrl(path)
+
+            if (artId) {
+                // Article existant : mettre à jour en DB
+                const oldCoverPath = currentArticle.cover_path
+                await updateArticle(artId, { cover_path: path })
+                currentArticle.cover_path = path
+                if (oldCoverPath) await deletePhotoFile(oldCoverPath).catch(() => {})
+            } else {
+                // Nouvel article : stocker localement, rien en DB
+                if (pendingCoverPath) await deletePhotoFile(pendingCoverPath).catch(() => {})
+                pendingCoverPath = path
+            }
+
+            document.getElementById('admin-cover-preview').src = url
+            document.getElementById('admin-cover-preview-wrap').style.display = 'block'
+            fileInput.value = ''
+        } catch (e) {
+            console.error(e)
+        } finally {
+            btn.disabled = false
+            btn.textContent = '↑ Définir comme couverture'
         }
     }
 
@@ -518,12 +634,19 @@
         btn.disabled = true
         btn.textContent = '…'
         try {
-            let sortOrder = photoData.filter(p => !p.isCover).length
+            let sortOrder = photoData.length
             for (const file of files) {
                 const path = await uploadPhotoFile(file, 'articles')
-                const row  = await insertArticlePhotoRow({ article_id: artId, path, caption, sort_order: sortOrder })
                 const url  = await createSignedPhotoUrl(path)
-                photoData.push({ url, caption: caption || '', id: row.id, path, isCover: false })
+                if (artId) {
+                    // Article existant : insérer en DB
+                    const row = await insertArticlePhotoRow({ article_id: artId, path, caption, sort_order: sortOrder })
+                    photoData.push({ url, caption: caption || '', id: row.id, path, isCover: false })
+                } else {
+                    // Nouvel article : stocker localement, rien en DB
+                    pendingPhotos.push({ path, caption, sort_order: sortOrder })
+                    photoData.push({ url, caption: caption || '', id: null, path, isCover: false })
+                }
                 sortOrder++
             }
             fileInput.value = ''
@@ -539,6 +662,7 @@
     }
 
     async function deleteCurrentArticle() {
+        if (!artId) { cancelEdit(); return }
         if (!confirm('Supprimer cet article et toutes ses photos définitivement ?')) return
         try {
             const photos = await listArticlePhotos(artId)
@@ -555,9 +679,9 @@
         try {
             const [allTypes, linkedIds] = await Promise.all([
                 listArticleTypes(),
-                listTypesForArticle(artId)
+                artId ? listTypesForArticle(artId) : Promise.resolve([])
             ])
-            const linkedSet = new Set(linkedIds)
+            const linkedSet = new Set(artId ? linkedIds : pendingTypeIds)
             container.innerHTML = ''
             if (!allTypes.length) {
                 container.innerHTML = '<span style="color:rgba(191,233,255,.35);font-size:.82rem;">Aucun type créé.</span>'
@@ -572,7 +696,11 @@
                 cb.checked = linkedSet.has(t.id)
                 cb.addEventListener('change', async () => {
                     const checked = Array.from(container.querySelectorAll('input:checked')).map(i => i.value)
-                    await setTypesForArticle(artId, checked).catch(e => console.error(e))
+                    if (artId) {
+                        await setTypesForArticle(artId, checked).catch(e => console.error(e))
+                    } else {
+                        pendingTypeIds = checked
+                    }
                 })
                 label.appendChild(cb)
                 label.append(' ' + t.name)

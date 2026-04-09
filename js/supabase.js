@@ -136,7 +136,6 @@ async function deletePhotoRow(id) {
 
 async function deletePhotoFile(path) {
     if (!path) return
-    _signedUrlCache.delete(path)
     const { error } = await window.supabase.storage.from(PHOTOS_BUCKET).remove([path])
     if (error) throw error
 }
@@ -169,7 +168,7 @@ async function deletePhotoFile(path) {
 async function listArticles() {
     const { data, error } = await window.supabase
         .from('articles')
-        .select('id, title, description, cover_path, created_at')
+        .select('id, title, description, cover_path, created_at, layout')
         .order('created_at', { ascending: false })
     if (error) throw error
     return data || []
