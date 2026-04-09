@@ -76,71 +76,78 @@
 
 <section class="section-astra">
     <div class="container">
-        <div class="form-parchment-wrap" data-reveal>
-            <div class="form-parchment-box">
-                <form id="contactForm" novalidate>
-                    <div class="row g-2">
-                        <div class="col-sm-6">
-                            <div class="parchment-group">
-                                <label class="parchment-label" for="name" data-i18n="contact.form.name">Nom</label>
-                                <input class="parchment-input" type="text" id="name" name="from_name"
-                                    data-i18n-placeholder="contact.form.name.placeholder"
-                                    placeholder="Votre prénom ou pseudo" required>
-                                <div class="cform-error" id="nameError" data-i18n="contact.form.error.name">Veuillez entrer votre nom</div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="parchment-group">
-                                <label class="parchment-label" for="email" data-i18n="contact.form.email">Email</label>
-                                <input class="parchment-input" type="email" id="email" name="from_email"
-                                    data-i18n-placeholder="contact.form.email.placeholder"
-                                    placeholder="pour vous répondre" required>
-                                <div class="cform-error" id="emailError" data-i18n="contact.form.error.email">Email invalide</div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="row g-5 align-items-start justify-content-center" data-reveal>
 
-                    <div class="parchment-group">
-                        <label class="parchment-label" for="subject" data-i18n="contact.form.subject">Sujet</label>
-                        <input class="parchment-input" type="text" id="subject" name="subject"
-                            data-i18n-placeholder="contact.form.subject.placeholder"
-                            placeholder="Ex : commande sur mesure…" required>
-                    </div>
-
-                    <div class="parchment-group">
-                        <label class="parchment-label" for="message" data-i18n="contact.form.message">Message</label>
-                        <textarea class="parchment-input parchment-textarea" id="message" name="message"
-                            data-i18n-placeholder="contact.form.message.placeholder"
-                            placeholder="Thème, dimensions, budget, délai… Tout détail est utile !" required></textarea>
-                        <div class="cform-error" id="messageError" data-i18n="contact.form.error.message">Le message ne peut pas être vide</div>
-                    </div>
-
-                    <button class="parchment-btn" type="submit" id="submitBtn">
-                        <span id="submitLabel" data-i18n="contact.form.submit">✦ Envoyer le message</span>
-                        <span id="submitSpinner" class="parchment-spinner" aria-hidden="true"></span>
-                    </button>
-
-                    <div id="formFeedback" class="cform-feedback" aria-live="polite"></div>
-                </form>
-            </div>
-        </div>
-
-        <div class="contact-email-strip" data-reveal>
-            <span class="ced-rule"></span>
-            <span class="contact-email-icon">📧</span>
-            <a class="contact-email-link" href="mailto:Astra.draconis00@gmail.com">contact : Astra.draconis00@gmail.com</a>
-            <span class="ced-rule right"></span>
-        </div>
-
-        <div class="row g-4 justify-content-center mt-3" data-reveal>
+            <!-- ── Formulaire ─────────────────────────────────────── -->
             <div class="col-lg-7">
-                <div class="contact-info-box">
-                    <p class="contact-social-intro" data-i18n="contact.social.intro">Retrouvez-moi sur les réseaux ✨</p>
+                <div class="contact-card">
+                    <p class="contact-card-kicker">✦ Formulaire de contact</p>
+                    <form id="contactForm" novalidate>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="cform-group">
+                                    <label class="cform-label" for="name" data-i18n="contact.form.name">Nom</label>
+                                    <input class="cform-input" type="text" id="name" name="from_name"
+                                        data-i18n-placeholder="contact.form.name.placeholder"
+                                        placeholder="Votre prénom ou pseudo" required>
+                                    <div class="cform-error" id="nameError" data-i18n="contact.form.error.name">Veuillez entrer votre nom</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="cform-group">
+                                    <label class="cform-label" for="email" data-i18n="contact.form.email">Email</label>
+                                    <input class="cform-input" type="email" id="email" name="from_email"
+                                        data-i18n-placeholder="contact.form.email.placeholder"
+                                        placeholder="pour vous répondre" required>
+                                    <div class="cform-error" id="emailError" data-i18n="contact.form.error.email">Email invalide</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cform-group">
+                            <label class="cform-label" for="subject" data-i18n="contact.form.subject">Sujet</label>
+                            <input class="cform-input" type="text" id="subject" name="subject"
+                                data-i18n-placeholder="contact.form.subject.placeholder"
+                                placeholder="Ex : commande sur mesure…" required>
+                        </div>
+
+                        <div class="cform-group">
+                            <label class="cform-label" for="message" data-i18n="contact.form.message">Message</label>
+                            <textarea class="cform-input cform-textarea" id="message" name="message"
+                                data-i18n-placeholder="contact.form.message.placeholder"
+                                placeholder="Thème, dimensions, budget, délai… Tout détail est utile !" required></textarea>
+                            <div class="cform-error" id="messageError" data-i18n="contact.form.error.message">Le message ne peut pas être vide</div>
+                        </div>
+
+                        <button class="cform-btn" type="submit" id="submitBtn" style="margin-top:8px;">
+                            <span id="submitLabel" data-i18n="contact.form.submit">✦ Envoyer le message</span>
+                            <span id="submitSpinner" class="cform-spinner" aria-hidden="true"></span>
+                        </button>
+
+                        <div id="formFeedback" class="cform-feedback" aria-live="polite"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ── Sidebar ────────────────────────────────────────── -->
+            <div class="col-lg-5">
+
+                <!-- Email direct -->
+                <div class="contact-sidebar-block" data-reveal>
+                    <p class="contact-sidebar-label">✦ Email direct</p>
+                    <a class="contact-email-card" href="mailto:Astra.draconis00@gmail.com">
+                        <span class="contact-email-card-icon">📧</span>
+                        <span>Astra.draconis00@gmail.com</span>
+                        <span class="cs-arrow" style="margin-left:auto;">↗</span>
+                    </a>
+                </div>
+
+                <!-- Réseaux sociaux -->
+                <div class="contact-sidebar-block" data-reveal>
+                    <p class="contact-sidebar-label" data-i18n="contact.social.intro">✦ Retrouvez-moi sur les réseaux</p>
                     <div class="contact-social-list">
                         <a class="contact-social-item instagram" href="https://www.instagram.com/astra.draconisfr/" target="_blank" rel="noopener">
-                            <span class="cs-icon">
-                                <i class="fa-brands fa-instagram"></i>
-                            </span>
+                            <span class="cs-icon"><i class="fa-brands fa-instagram"></i></span>
                             <span class="cs-body">
                                 <span class="cs-label">Instagram</span>
                                 <span class="cs-value">astra.draconisfr</span>
@@ -173,6 +180,7 @@
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
